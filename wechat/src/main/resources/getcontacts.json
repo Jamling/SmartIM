@@ -1,0 +1,43 @@
+{
+    "BaseResponse": {
+        "Ret": 0,
+        "ErrMsg": ""
+    },
+    "MemberCount": 245,
+    "MemberList": [
+        {
+            "Uin": 0,
+            "UserName": "@d69bc5d962d8664cde26dafb48e4f2d5",
+            "NickName": "Jamling",
+            "HeadImgUrl": "/cgi-bin/mmwebwx-bin/webwxgeticon?seq=620480010&username=@d69bc5d962d8664cde26dafb48e4f2d5&skey=@crypt_349985b5_9777bb20486030540bd3044501dfe185",
+            "ContactFlag": 1,
+            "MemberCount": 0,
+            "MemberList": [],
+            "RemarkName": "",
+            "HideInputBarFlag": 0,
+            "Sex": 1,
+            "Signature": "",
+            "VerifyFlag": 0,
+            "OwnerUin": 0,
+            "PYInitial": "JAMLING",
+            "PYQuanPin": "Jamling",
+            "RemarkPYInitial": "",
+            "RemarkPYQuanPin": "",
+            "StarFriend": 0,
+            "AppAccountFlag": 0,
+            "Statues": 0,
+            "AttrStatus": 5815,
+            "Province": "Jiangsu",
+            "City": "Nanjing",
+            "Alias": "",
+            "SnsFlag": 17,
+            "UniFriend": 0,
+            "DisplayName": "",
+            "ChatRoomId": 0,
+            "KeyWord": "ljm",
+            "EncryChatRoomId": "",
+            "IsOwner": 0
+        }
+    ],
+    "Seq": 0
+}

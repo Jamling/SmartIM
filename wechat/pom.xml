@@ -7,4 +7,11 @@
   </parent>
   <artifactId>wechat</artifactId>
   <name>smartim-wechat</name>
+  <dependencies>
+  	<dependency>
+  		<groupId>cn.ieclipse.smartim</groupId>
+  		<artifactId>core</artifactId>
+  		<version>0.0.1</version>
+  	</dependency>
+  </dependencies>
 </project>

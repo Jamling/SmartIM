@@ -1,0 +1,82 @@
+{
+    "BaseResponse": {
+        "Ret": 0,
+        "ErrMsg": ""
+    },
+    "Count": 8,
+    "ContactList": [
+        {
+            "Uin": 0,
+            "UserName": "@@54b101f866078b2a621b5c7d886bb56c83cb35a807451a5c61db244fef88ac0e",
+            "NickName": "03届高中～黎川二中",
+            "HeadImgUrl": "/cgi-bin/mmwebwx-bin/webwxgetheadimg?seq=660710922&username=@@54b101f866078b2a621b5c7d886bb56c83cb35a807451a5c61db244fef88ac0e&skey=",
+            "ContactFlag": 3,
+            "MemberCount": 189,
+            "MemberList": [
+                {
+                    "Uin": 0,
+                    "UserName": "@44c1d0ffe2130ec7a0eed3a841ced761",
+                    "NickName": "人在商途",
+                    "AttrStatus": 231719,
+                    "PYInitial": "",
+                    "PYQuanPin": "",
+                    "RemarkPYInitial": "",
+                    "RemarkPYQuanPin": "",
+                    "MemberStatus": 0,
+                    "DisplayName": "王俊",
+                    "KeyWord": "see"
+                },
+                {
+                    "Uin": 0,
+                    "UserName": "@1ba549ba1a243babafc2e61eddc302fe3bffaa72d46b42bff88d05dd5c1740a4",
+                    "NickName": "阿勇",
+                    "AttrStatus": 102501,
+                    "PYInitial": "",
+                    "PYQuanPin": "",
+                    "RemarkPYInitial": "",
+                    "RemarkPYQuanPin": "",
+                    "MemberStatus": 0,
+                    "DisplayName": "邓志勇",
+                    "KeyWord": ""
+                },
+                {
+                    "Uin": 0,
+                    "UserName": "@dc291038827cf5ffb819b98a34cd1a00966ad215a3fc86ffac97dfd391b6c880",
+                    "NickName": "A付根明(圣美欣)",
+                    "AttrStatus": 2147487845,
+                    "PYInitial": "",
+                    "PYQuanPin": "",
+                    "RemarkPYInitial": "",
+                    "RemarkPYQuanPin": "",
+                    "MemberStatus": 0,
+                    "DisplayName": "A付根明",
+                    "KeyWord": ""
+                }
+            ],
+            "RemarkName": "",
+            "HideInputBarFlag": 0,
+            "Sex": 0,
+            "Signature": "",
+            "VerifyFlag": 0,
+            "OwnerUin": 0,
+            "PYInitial": "03JGZLCEZ",
+            "PYQuanPin": "03jiegaozhonglichuanerzhong",
+            "RemarkPYInitial": "",
+            "RemarkPYQuanPin": "",
+            "StarFriend": 0,
+            "AppAccountFlag": 0,
+            "Statues": 0,
+            "AttrStatus": 0,
+            "Province": "",
+            "City": "",
+            "Alias": "",
+            "SnsFlag": 0,
+            "UniFriend": 0,
+            "DisplayName": "",
+            "ChatRoomId": 0,
+            "KeyWord": "",
+            "EncryChatRoomId": "@e607869bcf5cf81ce2756e1ee4a24635",
+            "IsOwner": 0
+        }
+    ]
+}
