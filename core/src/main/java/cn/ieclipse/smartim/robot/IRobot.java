@@ -13,23 +13,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.ieclipse.smartim.callback;
+package cn.ieclipse.smartim.robot;
 
-import cn.ieclipse.smartim.model.IContact;
+import java.util.Map;
 
 /**
- * 联系人变化回调接口，接收此回调时，根据变化的对象更新联系人列表
+ * 机器人
  * 
  * @author Jamling
- * @date 2017年10月13日
+ * @date 2017年10月20日
  *       
  */
-public interface ModificationCallback {
-    /**
-     * 联系人变更
-     * 
-     * @param contact
-     *            联系人对象
-     */
-    void onContactChanged(IContact contact);
+public interface IRobot {
+    String getRobotName();
+    
+    String getRobotAnswer(String question) throws Exception;
 }

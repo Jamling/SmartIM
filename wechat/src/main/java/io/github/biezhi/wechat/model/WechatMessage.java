@@ -37,8 +37,6 @@ public class WechatMessage extends AbstractMessage {
     @SerializedName("Content")
     public String Content;
     
-    @Expose(serialize = false, deserialize = false)
-    public String raw;
     @SerializedName("MsgId")
     public String MsgId;
     
@@ -52,6 +50,16 @@ public class WechatMessage extends AbstractMessage {
     
     public String LocalID;
     public String ClientMsgId;
+    
+    @Override
+    public CharSequence getText() {
+        return text;
+    }
+    
+    @Override
+    public long getTime() {
+        return CreateTime;
+    }
     
     @Override
     public String toString() {

@@ -22,7 +22,7 @@ public class WechatMessageHandler implements MessageHandler<WechatMessage> {
     public IMessage handle(JsonObject result) {
         // WechatMessage msg = new WechatMessage();
         WechatMessage msg = gson.fromJson(result, WechatMessage.class);
-        msg.raw = result.toString();
+        msg.setRaw(result.toString());
         return msg;
     }
     

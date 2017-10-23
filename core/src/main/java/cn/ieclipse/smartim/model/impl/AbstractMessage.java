@@ -15,6 +15,8 @@
  */
 package cn.ieclipse.smartim.model.impl;
 
+import com.google.gson.annotations.Expose;
+
 import cn.ieclipse.smartim.model.IMessage;
 
 /**
@@ -22,8 +24,20 @@ import cn.ieclipse.smartim.model.IMessage;
  * 
  * @author Jamling
  * @date 2017年9月1日
- *      
+ *       
  */
-public class AbstractMessage implements IMessage {
-
+public abstract class AbstractMessage implements IMessage {
+    /**
+     * 解析之前的原始json文本
+     */
+    @Expose(serialize = false, deserialize = false)
+    protected String raw;
+    
+    public String getRaw() {
+        return raw;
+    }
+    
+    public void setRaw(String raw) {
+        this.raw = raw;
+    }
 }

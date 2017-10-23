@@ -259,7 +259,7 @@ public class WechatClient extends AbstractSmartClient {
         if (group == null) { // 未保存的群聊
             JsonArray array = api.batchGetContact(Arrays.asList(gid));
             List<Contact> list = contactHandler.handle(array);
-            if (!cn.ieclipse.smartim.Utils.isEmpty(list)) {
+            if (!cn.ieclipse.smartim.IMUtils.isEmpty(list)) {
                 group = list.get(0);
                 this.groupList.add(group);
                 if (modificationCallback != null) {
@@ -281,7 +281,7 @@ public class WechatClient extends AbstractSmartClient {
                 // 找不到群成员
                 JsonArray array = api.batchGetContact(Arrays.asList(gid));
                 List<Contact> list = contactHandler.handle(array);
-                if (!cn.ieclipse.smartim.Utils.isEmpty(list)) {
+                if (!cn.ieclipse.smartim.IMUtils.isEmpty(list)) {
                     int idx = groupList.indexOf(group);
                     group = list.get(0);
                     groupList.set(idx, group);
@@ -300,7 +300,7 @@ public class WechatClient extends AbstractSmartClient {
     
     public UserFrom getUserFrom(String uid) {
         UserFrom from = new UserFrom();
-        if (!cn.ieclipse.smartim.Utils.isEmpty(memberList)) {
+        if (!cn.ieclipse.smartim.IMUtils.isEmpty(memberList)) {
             for (Contact t : memberList) {
                 if (uid != null && uid.equals(t.UserName)) {
                     from.setUser(t);
@@ -310,7 +310,7 @@ public class WechatClient extends AbstractSmartClient {
             if (from.getContact() == null) {
                 JsonArray array = api.batchGetContact(Arrays.asList(uid));
                 List<Contact> list = contactHandler.handle(array);
-                if (!cn.ieclipse.smartim.Utils.isEmpty(list)) {
+                if (!cn.ieclipse.smartim.IMUtils.isEmpty(list)) {
                     Contact c = list.get(0);
                     from.setUser(c);
                     memberList.add(c);
@@ -331,7 +331,7 @@ public class WechatClient extends AbstractSmartClient {
             }
             else {
                 UserFrom from = new UserFrom();
-                if (!cn.ieclipse.smartim.Utils.isEmpty(memberList)) {
+                if (!cn.ieclipse.smartim.IMUtils.isEmpty(memberList)) {
                     for (Contact t : memberList) {
                         if (msg.src != null && msg.src.equals(t.UserName)) {
                             from.setUser(t);
@@ -359,7 +359,7 @@ public class WechatClient extends AbstractSmartClient {
                 boolean in_list = false;
                 
                 Contact newg = contactHandler.handle(m);
-                if (!cn.ieclipse.smartim.Utils.isEmpty(groupList)) {
+                if (!cn.ieclipse.smartim.IMUtils.isEmpty(groupList)) {
                     for (int i = 0; i < groupList.size(); i++) {
                         Contact g = groupList.get(i);
                         if (username.equals(g.UserName)) {

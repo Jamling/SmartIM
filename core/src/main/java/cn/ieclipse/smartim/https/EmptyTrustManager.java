@@ -21,11 +21,11 @@ import java.security.cert.X509Certificate;
 import javax.net.ssl.X509TrustManager;
 
 /**
- * 类/接口描述
+ * Empty server/client certificate verifier
  * 
  * @author Jamling
  * @date 2017年10月17日
- *      
+ *       
  */
 public class EmptyTrustManager implements X509TrustManager {
     

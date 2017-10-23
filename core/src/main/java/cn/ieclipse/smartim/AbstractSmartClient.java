@@ -39,7 +39,7 @@ public abstract class AbstractSmartClient implements SmartClient {
     
     protected ReceiveCallback receiveCallback;
     protected List<ReceiveCallback> receiveCallbacks = new ArrayList<>();
-    protected List<MessageInterceptor> interceptors = new ArrayList<MessageInterceptor>();
+    protected List<MessageInterceptor> interceptors = new ArrayList<>();
     protected SendCallback sendCallback;
     protected ModificationCallback modificationCallback;
     
@@ -47,6 +47,7 @@ public abstract class AbstractSmartClient implements SmartClient {
     protected boolean isLogin = false;
     protected boolean pollStarted = false;
     protected boolean isClose = false;
+    protected String name = "";
     
     @Override
     public boolean isClose() {
@@ -115,10 +116,5 @@ public abstract class AbstractSmartClient implements SmartClient {
         if (sendCallback != null) {
             sendCallback.onSendResult(type, targetId, message, e == null, e);
         }
-    }
-    
-    @Override
-    public int sendMessage(IMessage msg, IContact target) throws Exception {
-        return 0;
     }
 }

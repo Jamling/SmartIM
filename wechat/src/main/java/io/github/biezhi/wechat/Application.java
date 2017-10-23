@@ -1,11 +1,7 @@
 package io.github.biezhi.wechat;
 
-import java.awt.EventQueue;
-
-import javax.swing.UIManager;
-
-import cn.ieclipse.smartim.callback.LoginCallback;
 import cn.ieclipse.smartim.callback.ReceiveCallback;
+import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
 import io.github.biezhi.wechat.api.WechatClient;
@@ -17,39 +13,7 @@ import io.github.biezhi.wechat.ui.QRCodeFrame;
  */
 public class Application {
     QRCodeFrame qrCodeFrame;
-    LoginCallback loginCallback = new LoginCallback() {
-        
-        @Override
-        public void onQrcode(final String path) {
-            EventQueue.invokeLater(new Runnable() {
-                public void run() {
-                    try {
-                        if (null != qrCodeFrame)
-                            qrCodeFrame.dispose();
-                        UIManager.setLookAndFeel(
-                                "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel");
-                        qrCodeFrame = new QRCodeFrame(path);
-                    } catch (Exception e) {
-                        System.err.println("显示二维码失败" + e.toString());
-                    }
-                }
-            });
-        }
-        
-        @Override
-        public void onLogin(boolean success, Exception e) {
-            if (qrCodeFrame != null) {
-                qrCodeFrame.setVisible(false);
-                qrCodeFrame.dispose();
-            }
-            if (success) {
-                System.out.println("登录成功");
-            }
-            else {
-                e.printStackTrace();
-            }
-        }
-    };
+    DefaultLoginCallback loginCallback = new DefaultLoginCallback();
     
     ReceiveCallback receiveCallback = new ReceiveCallback() {
         
@@ -68,6 +32,7 @@ public class Application {
     
     public Application() {
         WechatClient client = new WechatClient();
+        loginCallback.setTitle("微信登录", "请使用手机微信扫码登录");
         client.setLoginCallback(loginCallback);
         client.setReceiveCallback(receiveCallback);
         client.login();

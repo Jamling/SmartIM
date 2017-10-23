@@ -15,7 +15,7 @@
  */
 package io.github.biezhi.wechat.api;
 
-import cn.ieclipse.smartim.Utils;
+import cn.ieclipse.smartim.IMUtils;
 import okhttp3.internal.http.HttpMethod;
 
 /**
@@ -137,7 +137,7 @@ public final class URLConst {
         }
         
         protected String getQuery() {
-            if (Utils.isEmpty(query)) {
+            if (IMUtils.isEmpty(query)) {
                 return "";
             }
             else if (url.indexOf("?") >= 0) {

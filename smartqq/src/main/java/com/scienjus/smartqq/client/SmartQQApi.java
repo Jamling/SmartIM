@@ -116,7 +116,7 @@ public class SmartQQApi implements Closeable {
         // 本地存储二维码图片
         String filePath;
         try {
-            File file = new File(workDir, "qrcode.png");
+            File file = new File(workDir, "smartqq.jpg");
             if (file.getParentFile() != null
                     && !file.getParentFile().exists()) {
                 file.getParentFile().mkdirs();

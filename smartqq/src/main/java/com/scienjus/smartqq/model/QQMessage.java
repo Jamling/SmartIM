@@ -16,8 +16,6 @@ public class QQMessage extends AbstractMessage {
     
     private List<String> ats;
     
-    private String result;
-    
     public long getTime() {
         return time * 1000;
     }
@@ -78,18 +76,15 @@ public class QQMessage extends AbstractMessage {
         return ats;
     }
     
-    public String getResult() {
-        return result;
-    }
-    
-    public void setResult(String result) {
-        this.result = result;
-    }
-    
     @Override
     public String toString() {
         return String.format("%s{from=%s, time=%s, content=%s, ats=%s}",
                 getClass().getSimpleName(), getUserId(), time, content,
                 (ats == null ? "" : ats));
+    }
+    
+    @Override
+    public CharSequence getText() {
+        return getContent();
     }
 }

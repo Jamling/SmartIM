@@ -31,7 +31,7 @@ public class LimitQueue<E> implements Queue<E> {
     
     private int size;
     
-    Queue<E> queue = new LinkedList<E>();
+    private Queue<E> queue = new LinkedList<E>();
     
     public LimitQueue(int size) {
         this.size = size;

@@ -71,7 +71,7 @@ public abstract class AbstractMessageHandler
             contentBuilder.append(e.getAsString());
         }
         m.setContent(contentBuilder.toString());
-        m.setResult(result.toString());
+        m.setRaw(result.toString());
         
         if (m instanceof DiscussMessage) {
             DiscussMessage dm = (DiscussMessage) m;

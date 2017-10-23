@@ -20,8 +20,10 @@ package cn.ieclipse.smartim.model;
  * 
  * @author Jamling
  * @date 2017年8月26日
- *      
+ *       
  */
 public interface IMessage {
-
+    CharSequence getText();
+    
+    long getTime();
 }

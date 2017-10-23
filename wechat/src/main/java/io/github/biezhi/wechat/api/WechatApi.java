@@ -293,7 +293,7 @@ public class WechatApi {
      */
     public String genqrcode() {
         String url = conf.get("API_qrcode_img") + session.getUuid();
-        final File output = new File(workDir, "qrcode.jpg");
+        final File output = new File(workDir, "wechat.jpg");
         if (output.getParentFile() != null
                 && !output.getParentFile().exists()) {
             output.getParentFile().mkdirs();

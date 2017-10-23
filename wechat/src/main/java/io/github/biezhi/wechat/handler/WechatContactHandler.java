@@ -87,7 +87,7 @@ public class WechatContactHandler extends AbstractContactHandler<Contact> {
     
     public List<Contact> handleRecents(String chatSet) {
         List<Contact> recentList = new ArrayList<Contact>();
-        if (!cn.ieclipse.smartim.Utils.isEmpty(chatSet)) {
+        if (!cn.ieclipse.smartim.IMUtils.isEmpty(chatSet)) {
             String[] set = chatSet.split(",");
             for (int i = 0; i < set.length; i++) {
                 Contact c = find(set[i], this.allList);
@@ -129,8 +129,8 @@ public class WechatContactHandler extends AbstractContactHandler<Contact> {
     }
     
     public Contact find(String uin, List<Contact> list) {
-        if (!cn.ieclipse.smartim.Utils.isEmpty(uin)
-                && !cn.ieclipse.smartim.Utils.isEmpty(list)) {
+        if (!cn.ieclipse.smartim.IMUtils.isEmpty(uin)
+                && !cn.ieclipse.smartim.IMUtils.isEmpty(list)) {
             for (Contact c : list) {
                 if (c.UserName.equals(uin)) {
                     return c;

@@ -58,7 +58,7 @@ public class SmartQQClient extends AbstractSmartClient {
     public static boolean DEBUG = true;
     // 日志
     private static final Logger LOGGER = LoggerFactory
-            .getLogger(SmartQQApi.class);
+            .getLogger(SmartQQClient.class);
     private SmartQQApi api;
     
     // 消息处理器
@@ -85,6 +85,7 @@ public class SmartQQClient extends AbstractSmartClient {
     public UserInfo account;
     
     public SmartQQClient() {
+        name = "SmartQQ";
         api = new SmartQQApi();
     }
     
@@ -115,7 +116,7 @@ public class SmartQQClient extends AbstractSmartClient {
         }
     }
     
-    public void handleMessage(JsonArray array) {
+    private void handleMessage(JsonArray array) {
         for (int i = 0; array != null && i < array.size(); i++) {
             JsonObject message = (JsonObject) array.get(i);
             String type = message.get("poll_type").getAsString();
@@ -161,6 +162,38 @@ public class SmartQQClient extends AbstractSmartClient {
         }
     }
     
+    @Override
+    public void setWorkDir(File path) {
+        api.setWorkDir(path);
+    }
+    
+    @Override
+    public void init() throws Exception {
+        UserInfo t = userInfoHandler.handle(api.getAccountInfo());
+        if (t != null) {
+            this.account = t;
+        }
+        List<Category> tc = friendHandler
+                .handleCategoryList(api.getFriendListWithCategory());
+        if (!isEmpty(tc)) {
+            this.categories = tc;
+        }
+        List<Group> tg = groupHandler.handle(api.getGroupList());
+        if (!isEmpty(tg)) {
+            this.groups = tg;
+        }
+        
+        List<Discuss> td = discussHandler.handle(api.getDiscussList());
+        if (!isEmpty(td)) {
+            this.discusses = td;
+        }
+        
+        List<Recent> tr = new RecentHandler().handle(api.getRecentList());
+        if (!isEmpty(tr)) {
+            this.recents = tr;
+        }
+    }
+    
     public List<Category> getFriendListWithCategory() {
         if (isEmpty(categories)) {
             try {
@@ -182,33 +215,6 @@ public class SmartQQClient extends AbstractSmartClient {
             }
         }
         return groups;
-    }
-    
-    public void sendMessageToGroup(long groupId, String msg) {
-        try {
-            api.sendMessageToGroup(groupId, msg);
-            notifySend(1, String.valueOf(groupId), msg, null);
-        } catch (Exception e) {
-            notifySend(1, String.valueOf(groupId), msg, e);
-        }
-    }
-    
-    public void sendMessageToDiscuss(long discussId, String msg) {
-        try {
-            api.sendMessageToDiscuss(discussId, msg);
-            notifySend(2, String.valueOf(discussId), msg, null);
-        } catch (Exception e) {
-            notifySend(2, String.valueOf(discussId), msg, e);
-        }
-    }
-    
-    public void sendMessageToFriend(long friendId, String msg) {
-        try {
-            api.sendMessageToFriend(friendId, msg);
-            notifySend(0, String.valueOf(friendId), msg, null);
-        } catch (Exception e) {
-            notifySend(0, String.valueOf(friendId), msg, e);
-        }
     }
     
     public List<Discuss> getDiscussList() {
@@ -280,10 +286,6 @@ public class SmartQQClient extends AbstractSmartClient {
             e.printStackTrace();
         }
         return null;
-    }
-    
-    public void setLoginCallback(LoginCallback loginCallback) {
-        this.loginCallback = loginCallback;
     }
     
     public void saveAuthInfo() {
@@ -624,33 +626,6 @@ public class SmartQQClient extends AbstractSmartClient {
         return from;
     }
     
-    public int broadcast(String msg, Object... targets) {
-        int ret = 0;
-        if (targets != null) {
-            for (Object target : targets) {
-                if (target != null) {
-                    try {
-                        if (target instanceof Friend) {
-                            api.sendMessageToFriend(
-                                    ((Friend) target).getUserId(), msg);
-                        }
-                        else if (target instanceof Group) {
-                            api.sendMessageToGroup(((Group) target).id, msg);
-                        }
-                        else if (target instanceof Discuss) {
-                            api.sendMessageToDiscuss(((Discuss) target).id,
-                                    msg);
-                        }
-                        ret++;
-                    } catch (Exception e) {
-                    
-                    }
-                }
-            }
-        }
-        return ret;
-    }
-    
     public IContact getRecentTarget(Recent r) {
         if (r.getType() == 0) {
             Friend f = getFriend(r.getUin());
@@ -724,6 +699,107 @@ public class SmartQQClient extends AbstractSmartClient {
         return name;
     }
     
+    @Override
+    public int sendMessage(IMessage msg, IContact target) {
+        Long uin = Long.parseLong(target.getUin());
+        String content = ((QQMessage) msg).getContent();
+        if (target instanceof Friend || target instanceof UserInfo) {
+            sendMessageToFriend(uin, content);
+        }
+        else if (target instanceof Group || target instanceof GroupInfo) {
+            sendMessageToGroup(uin, content);
+        }
+        else if (target instanceof Discuss || target instanceof DiscussInfo) {
+            sendMessageToDiscuss(uin, content);
+        }
+        return 0;
+    }
+    
+    public void sendMessageToGroup(long groupId, String msg) {
+        try {
+            api.sendMessageToGroup(groupId, msg);
+            notifySend(1, String.valueOf(groupId), msg, null);
+        } catch (Exception e) {
+            notifySend(1, String.valueOf(groupId), msg, e);
+        }
+    }
+    
+    public void sendMessageToDiscuss(long discussId, String msg) {
+        try {
+            api.sendMessageToDiscuss(discussId, msg);
+            notifySend(2, String.valueOf(discussId), msg, null);
+        } catch (Exception e) {
+            notifySend(2, String.valueOf(discussId), msg, e);
+        }
+    }
+    
+    public void sendMessageToFriend(long friendId, String msg) {
+        try {
+            api.sendMessageToFriend(friendId, msg);
+            notifySend(0, String.valueOf(friendId), msg, null);
+        } catch (Exception e) {
+            notifySend(0, String.valueOf(friendId), msg, e);
+        }
+    }
+    
+    public IMessage createMessage(String msg, IContact target) {
+        long uin = Long.parseLong(target.getUin());
+        if (target instanceof Friend || target instanceof UserInfo) {
+            QQMessage ret = new FriendMessage();
+            ret.setContent(msg);
+            ret.setTime(System.currentTimeMillis());
+            ret.setFont(Font.DEFAULT_FONT);
+            ret.setUserId(getAccount().getId());
+            return ret;
+        }
+        else if (target instanceof Group || target instanceof GroupInfo) {
+            GroupMessage ret = new GroupMessage();
+            ret.setContent(msg);
+            ret.setTime(System.currentTimeMillis());
+            ret.setFont(Font.DEFAULT_FONT);
+            ret.setUserId(getAccount().getId());
+            ret.setGroupId(uin);
+            return ret;
+        }
+        else if (target instanceof Discuss || target instanceof DiscussInfo) {
+            DiscussMessage ret = new DiscussMessage();
+            ret.setContent(msg);
+            ret.setTime(System.currentTimeMillis());
+            ret.setFont(Font.DEFAULT_FONT);
+            ret.setUserId(getAccount().getId());
+            ret.setDiscussId(uin);
+            return ret;
+        }
+        return null;
+    }
+    
+    public int broadcast(String msg, Object... targets) {
+        int ret = 0;
+        if (targets != null) {
+            for (Object target : targets) {
+                if (target != null) {
+                    try {
+                        if (target instanceof Friend) {
+                            api.sendMessageToFriend(
+                                    ((Friend) target).getUserId(), msg);
+                        }
+                        else if (target instanceof Group) {
+                            api.sendMessageToGroup(((Group) target).id, msg);
+                        }
+                        else if (target instanceof Discuss) {
+                            api.sendMessageToDiscuss(((Discuss) target).id,
+                                    msg);
+                        }
+                        ret++;
+                    } catch (Exception e) {
+                    
+                    }
+                }
+            }
+        }
+        return ret;
+    }
+    
     public static void main(String[] args) throws Exception {
         SmartQQClient client = new SmartQQClient();
         client.setReceiveCallback(new ReceiveCallback() {
@@ -753,84 +829,5 @@ public class SmartQQClient extends AbstractSmartClient {
         }
         client.init();
         client.start();
-    }
-    
-    @Override
-    public void setWorkDir(File path) {
-        api.setWorkDir(path);
-    }
-    
-    @Override
-    public void init() throws Exception {
-        UserInfo t = userInfoHandler.handle(api.getAccountInfo());
-        if (t != null) {
-            this.account = t;
-        }
-        List<Category> tc = friendHandler
-                .handleCategoryList(api.getFriendListWithCategory());
-        if (!isEmpty(tc)) {
-            this.categories = tc;
-        }
-        List<Group> tg = groupHandler.handle(api.getGroupList());
-        if (!isEmpty(tg)) {
-            this.groups = tg;
-        }
-        
-        List<Discuss> td = discussHandler.handle(api.getDiscussList());
-        if (!isEmpty(td)) {
-            this.discusses = td;
-        }
-        
-        List<Recent> tr = new RecentHandler().handle(api.getRecentList());
-        if (!isEmpty(tr)) {
-            this.recents = tr;
-        }
-    }
-    
-    @Override
-    public int sendMessage(IMessage msg, IContact target) {
-        Long uin = Long.parseLong(target.getUin());
-        String content = ((QQMessage) msg).getContent();
-        if (target instanceof Friend) {
-            sendMessageToFriend(uin, content);
-        }
-        else if (target instanceof Group || target instanceof GroupInfo) {
-            sendMessageToGroup(uin, content);
-        }
-        else if (target instanceof Discuss || target instanceof DiscussInfo) {
-            sendMessageToDiscuss(uin, content);
-        }
-        return 0;
-    }
-    
-    public IMessage createMessage(String msg, IContact target) {
-        long uin = Long.parseLong(target.getUin());
-        if (target instanceof Friend) {
-            QQMessage ret = new FriendMessage();
-            ret.setContent(msg);
-            ret.setTime(System.currentTimeMillis());
-            ret.setFont(Font.DEFAULT_FONT);
-            ret.setUserId(getAccount().getId());
-            return ret;
-        }
-        else if (target instanceof Group || target instanceof GroupInfo) {
-            GroupMessage ret = new GroupMessage();
-            ret.setContent(msg);
-            ret.setTime(System.currentTimeMillis());
-            ret.setFont(Font.DEFAULT_FONT);
-            ret.setUserId(getAccount().getId());
-            ret.setGroupId(uin);
-            return ret;
-        }
-        else if (target instanceof Discuss || target instanceof DiscussInfo) {
-            DiscussMessage ret = new DiscussMessage();
-            ret.setContent(msg);
-            ret.setTime(System.currentTimeMillis());
-            ret.setFont(Font.DEFAULT_FONT);
-            ret.setUserId(getAccount().getId());
-            ret.setDiscussId(uin);
-            return ret;
-        }
-        return null;
     }
 }

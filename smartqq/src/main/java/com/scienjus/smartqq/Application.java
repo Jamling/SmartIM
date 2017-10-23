@@ -1,11 +1,12 @@
 package com.scienjus.smartqq;
 
-import java.io.IOException;
 import java.util.List;
 
 import com.scienjus.smartqq.client.SmartQQClient;
 import com.scienjus.smartqq.model.Category;
 import com.scienjus.smartqq.model.Friend;
+
+import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
 
 /**
  * @author ScienJus
@@ -16,6 +17,9 @@ public class Application {
     public static void main(String[] args) throws Exception{
         // 创建一个新对象时需要扫描二维码登录，并且传一个处理接收到消息的回调，如果你不需要接收消息，可以传null
         final SmartQQClient client = new SmartQQClient();
+        DefaultLoginCallback loginCallback = new DefaultLoginCallback();
+        loginCallback.setTitle("QQ", "请使用手机QQ扫描");
+        client.setLoginCallback(loginCallback);
         client.login();
         // 登录成功后便可以编写你自己的业务逻辑了
         List<Category> categories = client.getFriendListWithCategory();

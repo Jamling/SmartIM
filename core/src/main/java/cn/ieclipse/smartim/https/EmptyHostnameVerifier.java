@@ -19,11 +19,11 @@ import javax.net.ssl.HostnameVerifier;
 import javax.net.ssl.SSLSession;
 
 /**
- * 类/接口描述
+ * Empty https host name verifier
  * 
  * @author Jamling
  * @date 2017年10月17日
- *      
+ *       
  */
 public class EmptyHostnameVerifier implements HostnameVerifier {
     

@@ -15,10 +15,23 @@
  */
 package cn.ieclipse.smartim.helper;
 
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.io.RandomAccessFile;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+
+import ch.qos.logback.core.util.FileUtil;
+import cn.ieclipse.util.IOUtils;
 
 /**
  * 简单的文件存储器
@@ -30,77 +43,85 @@ import java.util.ArrayList;
 public class FileStorage {
     private int size;
     private int lines;
-    private ArrayList<Long> lineOffsets;
     private String path;
-    private RandomAccessFile raf;
     private String cr = System.getProperty("line.separator");
+    private LimitArrayList<String> queue;
     
-    public FileStorage(int size, String path) throws IOException {
-        File f = new File(path);
-        // if (!f.exists()) {
-        // System.out.println(f.getAbsoluteFile());
-        // if (f.getAbsoluteFile().getParentFile() != null) {
-        // f.getAbsoluteFile().getParentFile().mkdirs();
-        // }
-        // f.createNewFile();
-        // }
-        
-        this.size = size;
+    public FileStorage(int size, String path) {
+        queue = new LimitArrayList<>(size);
         this.path = path;
-        this.lineOffsets = new ArrayList<>();
-        this.raf = new RandomAccessFile(path, "rw");
-        this.lines = 0;
-        lineOffsets.add(0l);
-        String line = raf.readLine();
-        while (line != null) {
-            this.lines++;
-            lineOffsets.add(raf.getFilePointer());
-            line = raf.readLine();
+        File f = new File(path);
+        if (!f.exists()) {
+            FileUtil.createMissingParentDirectories(f);
         }
-        raf.close();
+        BufferedReader br = null;
+        try {
+            br = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(f), Charset.forName("utf-8")));
+            Iterator<String> itr = br.lines().iterator();
+            while (itr.hasNext()) {
+                queue.add(itr.next());
+            }
+        } catch (Exception e) {
+        
+        } finally {
+            if (br != null) {
+                IOUtils.close(br);
+            }
+        }
+        this.lines = queue.size();
     }
     
     public String read(int line) throws IOException {
-        String ret;
-        if (line < 0 || line >= lines) {
-            throw new IndexOutOfBoundsException();
-        }
-        this.raf = new RandomAccessFile(path, "r");
-        raf.seek(lineOffsets.get(line));
-        ret = raf.readLine();
-        raf.close();
-        if (ret == null) {
-            return null;
-        }
-        
-        return new String(ret.getBytes("ISO-8859-1"), "utf-8");
+        return queue.get(line);
     }
     
     public boolean append(String content) throws IOException {
-        this.raf = new RandomAccessFile(path, "rw");
-        long len1 = raf.length();
-        raf.seek(len1);
-        byte[] bytes = content.getBytes("utf-8");
-        raf.write(bytes, 0, bytes.length);
-        raf.writeBytes(cr);
-        long len2 = raf.length();
-        lines++;
-        lineOffsets.add(len2 - len1);
-        raf.close();
-        raf.readLine();
-        return true;
+        return queue.add(content);
     }
     
     public int getLines() {
-        return this.lines;
+        return queue.size();
+    }
+    
+    public boolean flush() {
+        BufferedWriter bw;
+        try {
+            File f = new File(path);
+            if (!f.exists()) {
+                FileUtil.createMissingParentDirectories(f);
+                f.createNewFile();
+            }
+            
+            bw = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream(f), Charset.forName("utf-8")));
+                    
+            for (int i = 0; i < queue.size(); i++) {
+                if (i > 0) {
+                    bw.newLine();
+                }
+                String line = queue.get(i);
+                bw.write(line);
+            }
+            IOUtils.close(bw);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+    
+    public void release() {
+        File f = new File(path);
+        if (f.exists()) {
+            f.delete();
+        }
     }
     
     public static void main(String[] args) throws Exception {
-        FileStorage fs = new FileStorage(0, "test.txt");
-        System.out.println("lines:" + fs.getLines());
-        System.out.println("offsets: " + fs.lineOffsets);
+        FileStorage fs = new FileStorage(3, "test.txt");
         fs.append("中文abc哈哈");
-        String line = fs.read(fs.getLines() - 1);
+        String line = fs.read(0);
         System.out.println("lines:" + line);
+        fs.flush();
     }
 }

@@ -4,7 +4,8 @@ import java.util.List;
 
 import com.google.gson.annotations.SerializedName;
 
-import cn.ieclipse.smartim.Utils;
+import cn.ieclipse.smartim.IMUtils;
+import cn.ieclipse.smartim.model.IMessage;
 import cn.ieclipse.smartim.model.impl.AbstractContact;
 
 public class Contact extends AbstractContact implements Comparable<Contact> {
@@ -76,7 +77,7 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
     }
     
     public Contact getMember(String uid) {
-        if (!cn.ieclipse.smartim.Utils.isEmpty(this.MemberList)) {
+        if (!cn.ieclipse.smartim.IMUtils.isEmpty(this.MemberList)) {
             for (Contact t : this.MemberList) {
                 if (uid != null && uid.equals(t.UserName)) {
                     return t;
@@ -91,9 +92,9 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
         int ret = 0;
         if (this.lastMessage != null) {
             if (that.lastMessage != null) {
-                WechatMessage m1 = (WechatMessage) this.lastMessage;
-                WechatMessage m2 = (WechatMessage) that.lastMessage;
-                long diff = (m1.CreateTime - m2.CreateTime);
+                IMessage m1 = (WechatMessage) this.lastMessage;
+                IMessage m2 = (WechatMessage) that.lastMessage;
+                long diff = (m1.getTime() - m2.getTime());
                 ret = (int) diff;
             }
             else {
@@ -117,18 +118,18 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
     }
     
     public String getPYInitial() {
-        String py = Utils.isEmpty(RemarkPYInitial) ? PYInitial
+        String py = IMUtils.isEmpty(RemarkPYInitial) ? PYInitial
                 : RemarkPYInitial;
         return py;
     }
     
     public boolean match(String input) {
         boolean ret = false;
-        if (!Utils.isEmpty(PYInitial)) {
+        if (!IMUtils.isEmpty(PYInitial)) {
             ret = PYInitial.toLowerCase().contains(input);
         }
         if (!ret) {
-            if (!Utils.isEmpty(PYQuanPin)) {
+            if (!IMUtils.isEmpty(PYQuanPin)) {
                 ret = PYQuanPin.toLowerCase().contains(input);
             }
         }
