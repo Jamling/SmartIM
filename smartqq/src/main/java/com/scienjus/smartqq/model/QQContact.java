@@ -13,31 +13,23 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.scienjus.smartqq.handler;
+package com.scienjus.smartqq.model;
 
-import java.util.List;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-import com.scienjus.smartqq.model.FriendStatus;
+import cn.ieclipse.smartim.model.impl.AbstractContact;
 
 /**
  * 类/接口描述
  * 
  * @author Jamling
- * @date 2017年9月1日
+ * @date 2017年10月25日
  *       
  */
-public class FriendStatusHandler extends AbstractContactHandler<FriendStatus> {
-    
+public abstract class QQContact extends AbstractContact
+        implements Comparable<QQContact> {
+        
     @Override
-    public FriendStatus handle(JsonObject result) {
-        // TODO Auto-generated method stub
-        return null;
+    public int compareTo(QQContact o) {
+        return super.compareTo(o);
     }
     
-    @Override
-    public List<FriendStatus> handle(JsonArray array) {
-        return gson.fromJson(array, type(List.class, FriendStatus.class));
-    }
 }

@@ -21,8 +21,6 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.scienjus.smartqq.model.Group;
 
-import cn.ieclipse.smartim.handler.ContactHandler;
-
 /**
  * 类/接口描述
  * 

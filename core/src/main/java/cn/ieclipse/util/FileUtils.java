@@ -166,20 +166,24 @@ public final class FileUtils {
         return ret;
     }
     
-    public static boolean mkDirOrFile(File dir, boolean create) {
+    public static boolean mkDir(File dir, boolean create) {
         if (dir != null && !dir.exists()) {
-            if (dir.isDirectory()) {
-                return dir.mkdirs();
+            return dir.mkdirs();
+        }
+        return false;
+    }
+    
+    public static boolean mkFile(File file, boolean create) {
+        if (file != null && !file.exists()) {
+            File dir = file.getParentFile();
+            if (dir != null && !dir.exists()) {
+                dir.mkdirs();
             }
-            else {
-                File p = dir.getParentFile();
-                FileUtils.mkDirOrFile(p, create);
-                if (create) {
-                    try {
-                        return dir.createNewFile();
-                    } catch (IOException e) {
-                        return false;
-                    }
+            if (create) {
+                try {
+                    return dir.createNewFile();
+                } catch (IOException e) {
+                    return false;
                 }
             }
         }

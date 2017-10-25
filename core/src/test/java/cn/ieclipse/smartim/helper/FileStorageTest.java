@@ -57,4 +57,12 @@ public class FileStorageTest {
         }
     }
     
+    @Test
+    public void testSave(){
+        String path = "E:\\runtime-EclipseApplication\\.metadata\\.plugins\\cn.ieclipse.smartqq\\QQ\\history\\96252510";
+        
+        FileStorage fs = new FileStorage(3, path);
+        fs.append("line2");
+        fs.flush();
+    }
 }

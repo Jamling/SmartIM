@@ -62,6 +62,11 @@ public class DiscussInfo implements IContact {
         return String.valueOf(id);
     }
     
+    @Override
+    public String toString() {
+        return getName();
+    }
+    
     public static class MemInfo implements java.io.Serializable {
         public long mem_uin;
         public long ruin;

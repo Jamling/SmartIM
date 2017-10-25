@@ -4,12 +4,12 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeoutException;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -111,11 +111,12 @@ public class WechatClient extends AbstractSmartClient {
         pollStarted = false;
         isClose = true;
         isLogin = false;
-        
+        api.close();
     }
     
     @Override
     public void setWorkDir(File path) {
+        super.setWorkDir(path);
         api.setWorkDir(path);
     }
     
@@ -142,7 +143,7 @@ public class WechatClient extends AbstractSmartClient {
         JsonArray array = api.batchGetContact(
                 Arrays.asList(Const.API_SPECIAL_USER.toArray(new String[] {})));
         List<Contact> special = contactHandler.handle(array);
-        System.out.println(special);
+        this.specialUsersList = special;
         
         log.info(Const.LOG_MSG_CONTACT_COUNT, memberCount, memberList.size());
         log.info(Const.LOG_MSG_OTHER_CONTACT_COUNT, groupList.size(),
@@ -259,7 +260,7 @@ public class WechatClient extends AbstractSmartClient {
         if (group == null) { // 未保存的群聊
             JsonArray array = api.batchGetContact(Arrays.asList(gid));
             List<Contact> list = contactHandler.handle(array);
-            if (!cn.ieclipse.smartim.IMUtils.isEmpty(list)) {
+            if (!cn.ieclipse.smartim.Utils.isEmpty(list)) {
                 group = list.get(0);
                 this.groupList.add(group);
                 if (modificationCallback != null) {
@@ -281,7 +282,7 @@ public class WechatClient extends AbstractSmartClient {
                 // 找不到群成员
                 JsonArray array = api.batchGetContact(Arrays.asList(gid));
                 List<Contact> list = contactHandler.handle(array);
-                if (!cn.ieclipse.smartim.IMUtils.isEmpty(list)) {
+                if (!cn.ieclipse.smartim.Utils.isEmpty(list)) {
                     int idx = groupList.indexOf(group);
                     group = list.get(0);
                     groupList.set(idx, group);
@@ -300,7 +301,7 @@ public class WechatClient extends AbstractSmartClient {
     
     public UserFrom getUserFrom(String uid) {
         UserFrom from = new UserFrom();
-        if (!cn.ieclipse.smartim.IMUtils.isEmpty(memberList)) {
+        if (!cn.ieclipse.smartim.Utils.isEmpty(memberList)) {
             for (Contact t : memberList) {
                 if (uid != null && uid.equals(t.UserName)) {
                     from.setUser(t);
@@ -310,7 +311,7 @@ public class WechatClient extends AbstractSmartClient {
             if (from.getContact() == null) {
                 JsonArray array = api.batchGetContact(Arrays.asList(uid));
                 List<Contact> list = contactHandler.handle(array);
-                if (!cn.ieclipse.smartim.IMUtils.isEmpty(list)) {
+                if (!cn.ieclipse.smartim.Utils.isEmpty(list)) {
                     Contact c = list.get(0);
                     from.setUser(c);
                     memberList.add(c);
@@ -330,17 +331,7 @@ public class WechatClient extends AbstractSmartClient {
                         msg.src == null ? "" : msg.src);
             }
             else {
-                UserFrom from = new UserFrom();
-                if (!cn.ieclipse.smartim.IMUtils.isEmpty(memberList)) {
-                    for (Contact t : memberList) {
-                        if (msg.src != null && msg.src.equals(t.UserName)) {
-                            from.setUser(t);
-                            break;
-                        }
-                    }
-                    
-                }
-                return from;
+                UserFrom from = getUserFrom(msg.src);
             }
         } catch (Exception e) {
             if (receiveCallback != null) {
@@ -359,7 +350,7 @@ public class WechatClient extends AbstractSmartClient {
                 boolean in_list = false;
                 
                 Contact newg = contactHandler.handle(m);
-                if (!cn.ieclipse.smartim.IMUtils.isEmpty(groupList)) {
+                if (!cn.ieclipse.smartim.Utils.isEmpty(groupList)) {
                     for (int i = 0; i < groupList.size(); i++) {
                         Contact g = groupList.get(i);
                         if (username.equals(g.UserName)) {
@@ -371,6 +362,9 @@ public class WechatClient extends AbstractSmartClient {
                 }
                 if (!in_list) {
                     groupList.add(newg);
+                    if (modificationCallback != null) {
+                        modificationCallback.onContactChanged(newg);
+                    }
                 }
             }
             else if (username.startsWith("@")) {
@@ -387,23 +381,35 @@ public class WechatClient extends AbstractSmartClient {
                 }
                 if (!in_list) {
                     memberList.add(c);
+                    if (modificationCallback != null) {
+                        modificationCallback.onContactChanged(c);
+                    }
                 }
             }
         }
     }
     
-    private void handle_msg(JsonObject json) {
+    public IMessage handleMessage(String raw) {
+        return msgHandler.handle(raw);
+    }
+    
+    public void handle_msg(JsonObject json) {
         List<WechatMessage> msgs = msgHandler.handleAll(json);
         for (WechatMessage msg : msgs) {
             boolean handled = intercept(msg);
             AbstractFrom from = getFrom(msg);
             if (!handled) {
+                if (from != null && from.getContact() != null) {
+                    if (!getRecentList().contains(from.getContact())) {
+                        getRecentList().add(0, (Contact) from.getContact());
+                    }
+                }
                 if (receiveCallback != null) {
                     receiveCallback.onReceiveMessage(msg, from);
                 }
             }
             else {
-                System.out.println("intercept msg : " + msg);
+                log.info("intercept msg : " + msg);
             }
         }
     }
@@ -422,33 +428,25 @@ public class WechatClient extends AbstractSmartClient {
     private WechatMessageHandler msgHandler = new WechatMessageHandler();
     
     @Override
-    public int sendMessage(IMessage msg, IContact target) throws Exception {
-        JsonObject ret = api.wxSendMessage(WechatMessage.MSGTYPE_TEXT,
-                new Gson().toJson(msg));
+    public int sendMessage(IMessage msg, IContact target) {
+        String uin = target.getUin();
+        try {
+            Map<String, Object> body = cn.ieclipse.smartim.Utils.toMap(msg);
+            JsonObject ret = api.wxSendMessage(body);
+            notifySend(0, uin, msg.getText(), null);
+        } catch (Exception e) {
+            notifySend(0, uin, msg.getText(), e);
+        }
         return 0;
     }
     
-    public IMessage createMessage(int type, String msg, IContact target) {
-        String clientMsgId = System.currentTimeMillis()
-                + Utils.getRandomNumber(5);
+    public WechatMessage createMessage(int type, String msg, IContact target) {
         WechatMessage m = new WechatMessage();
-        m.MsgType = type;
+        m.MsgType = type <= 0 ? WechatMessage.MSGTYPE_TEXT : type;
         m.Content = Utils.unicodeToUtf8(msg);
         m.FromUserName = getAccount().getUin();
         m.ToUserName = target.getUin();
-        m.LocalID = clientMsgId;
-        m.ClientMsgId = clientMsgId;
         return m;
-    }
-    
-    public int sendMessage(String msg, String uin) {
-        try {
-            api.wxSendMessage(msg, uin);
-            notifySend(0, uin, msg, null);
-        } catch (Exception e) {
-            notifySend(0, uin, msg, e);
-        }
-        return 0;
     }
     
     public int broadcast(String msg, Object... targets) {

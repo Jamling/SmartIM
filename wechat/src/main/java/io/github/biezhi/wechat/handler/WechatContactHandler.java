@@ -19,7 +19,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import cn.ieclipse.smartim.model.IContact;
@@ -87,17 +86,17 @@ public class WechatContactHandler extends AbstractContactHandler<Contact> {
     
     public List<Contact> handleRecents(String chatSet) {
         List<Contact> recentList = new ArrayList<Contact>();
-        if (!cn.ieclipse.smartim.IMUtils.isEmpty(chatSet)) {
-            String[] set = chatSet.split(",");
-            for (int i = 0; i < set.length; i++) {
-                Contact c = find(set[i], this.allList);
-                if (c != null) {
+        if (!cn.ieclipse.smartim.Utils.isEmpty(chatSet)) {
+            for (Contact c : this.allList) {
+                if (c.isTop()) {
                     recentList.add(c);
                 }
             }
-            for (Contact c : this.allList) {
-                if (c.isTop()) {
-                    recentList.add(0, c);
+            String[] set = chatSet.split(",");
+            for (int i = 0; i < set.length; i++) {
+                Contact c = find(set[i], this.allList);
+                if (c != null && !recentList.contains(c)) {
+                    recentList.add(c);
                 }
             }
         }
@@ -129,8 +128,8 @@ public class WechatContactHandler extends AbstractContactHandler<Contact> {
     }
     
     public Contact find(String uin, List<Contact> list) {
-        if (!cn.ieclipse.smartim.IMUtils.isEmpty(uin)
-                && !cn.ieclipse.smartim.IMUtils.isEmpty(list)) {
+        if (!cn.ieclipse.smartim.Utils.isEmpty(uin)
+                && !cn.ieclipse.smartim.Utils.isEmpty(list)) {
             for (Contact c : list) {
                 if (c.UserName.equals(uin)) {
                     return c;

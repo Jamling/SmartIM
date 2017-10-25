@@ -63,4 +63,23 @@ public abstract class AbstractContact implements IContact {
         this.unread = unread;
     }
     
+    public int compareTo(AbstractContact that) {
+        int ret = 0;
+        if (this.lastMessage != null) {
+            if (that.lastMessage != null) {
+                IMessage m1 = this.lastMessage;
+                IMessage m2 = that.lastMessage;
+                long diff = (m1.getTime() - m2.getTime());
+                ret = (int) diff;
+            }
+            else {
+                ret = -1;
+            }
+        }
+        else if (that.lastMessage != null) {
+            ret = 1;
+        }
+        
+        return ret;
+    }
 }

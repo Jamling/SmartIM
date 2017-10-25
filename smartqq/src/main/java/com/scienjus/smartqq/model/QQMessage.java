@@ -3,6 +3,8 @@ package com.scienjus.smartqq.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gson.annotations.Expose;
+
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
 
 public class QQMessage extends AbstractMessage {
@@ -14,6 +16,7 @@ public class QQMessage extends AbstractMessage {
     
     private Font font;
     
+    @Expose(deserialize = false, serialize = false)
     private List<String> ats;
     
     public long getTime() {

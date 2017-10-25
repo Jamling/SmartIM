@@ -23,5 +23,17 @@ package cn.ieclipse.smartim.model;
  *       
  */
 public interface IFrom {
+    /**
+     * 来源于哪个联系人或群组
+     * 
+     * @return 联系人或群组
+     */
     IContact getContact();
+    
+    /**
+     * 来源于联系人中的哪个成员，如果联系人为好友，则返回{@link #getContact()}
+     * 
+     * @return 群成员或null
+     */
+    IContact getMember();
 }

@@ -1,5 +1,7 @@
 package io.github.biezhi.wechat;
 
+import java.io.File;
+
 import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
@@ -32,6 +34,7 @@ public class Application {
     
     public Application() {
         WechatClient client = new WechatClient();
+        client.setWorkDir(new File("target").getAbsoluteFile());
         loginCallback.setTitle("微信登录", "请使用手机微信扫码登录");
         client.setLoginCallback(loginCallback);
         client.setReceiveCallback(receiveCallback);

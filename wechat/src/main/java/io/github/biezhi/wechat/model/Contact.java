@@ -2,11 +2,8 @@ package io.github.biezhi.wechat.model;
 
 import java.util.List;
 
-import com.google.gson.annotations.SerializedName;
-
-import cn.ieclipse.smartim.IMUtils;
-import cn.ieclipse.smartim.model.IMessage;
 import cn.ieclipse.smartim.model.impl.AbstractContact;
+import cn.ieclipse.util.StringUtils;
 
 public class Contact extends AbstractContact implements Comparable<Contact> {
     
@@ -77,7 +74,7 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
     }
     
     public Contact getMember(String uid) {
-        if (!cn.ieclipse.smartim.IMUtils.isEmpty(this.MemberList)) {
+        if (!StringUtils.isEmpty(this.MemberList)) {
             for (Contact t : this.MemberList) {
                 if (uid != null && uid.equals(t.UserName)) {
                     return t;
@@ -89,21 +86,7 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
     
     @Override
     public int compareTo(Contact that) {
-        int ret = 0;
-        if (this.lastMessage != null) {
-            if (that.lastMessage != null) {
-                IMessage m1 = (WechatMessage) this.lastMessage;
-                IMessage m2 = (WechatMessage) that.lastMessage;
-                long diff = (m1.getTime() - m2.getTime());
-                ret = (int) diff;
-            }
-            else {
-                ret = -1;
-            }
-        }
-        else if (that.lastMessage != null) {
-            ret = 1;
-        }
+        int ret = super.compareTo(that);
         if (ret == 0) {
             if ((this.ContactFlag & CONTACTFLAG_TOPCONTACT) != 0) {
                 ret = -1;
@@ -118,18 +101,18 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
     }
     
     public String getPYInitial() {
-        String py = IMUtils.isEmpty(RemarkPYInitial) ? PYInitial
+        String py = StringUtils.isEmpty(RemarkPYInitial) ? PYInitial
                 : RemarkPYInitial;
         return py;
     }
     
     public boolean match(String input) {
         boolean ret = false;
-        if (!IMUtils.isEmpty(PYInitial)) {
+        if (!StringUtils.isEmpty(PYInitial)) {
             ret = PYInitial.toLowerCase().contains(input);
         }
         if (!ret) {
-            if (!IMUtils.isEmpty(PYQuanPin)) {
+            if (!StringUtils.isEmpty(PYQuanPin)) {
                 ret = PYQuanPin.toLowerCase().contains(input);
             }
         }
@@ -138,6 +121,14 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
             ret = name.contains(input);
         }
         return ret;
+    }
+    
+    @Override
+    public boolean equals(Object obj) {
+        if (obj instanceof Contact) {
+            return getUin().equals(((Contact) obj).getUin());
+        }
+        return super.equals(obj);
     }
     
     @Override

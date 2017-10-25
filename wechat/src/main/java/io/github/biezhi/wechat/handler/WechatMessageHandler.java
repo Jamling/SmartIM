@@ -9,9 +9,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
-import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.handler.MessageHandler;
-import cn.ieclipse.smartim.model.IMessage;
 import io.github.biezhi.wechat.model.WechatMessage;
 
 public class WechatMessageHandler implements MessageHandler<WechatMessage> {
@@ -19,7 +17,7 @@ public class WechatMessageHandler implements MessageHandler<WechatMessage> {
     protected JsonParser jsonParser = new JsonParser();
     
     @Override
-    public IMessage handle(JsonObject result) {
+    public WechatMessage handle(JsonObject result) {
         // WechatMessage msg = new WechatMessage();
         WechatMessage msg = gson.fromJson(result, WechatMessage.class);
         msg.setRaw(result.toString());
@@ -27,7 +25,7 @@ public class WechatMessageHandler implements MessageHandler<WechatMessage> {
     }
     
     @Override
-    public IMessage handle(String json) {
+    public WechatMessage handle(String json) {
         JsonObject result = jsonParser.parse(json).getAsJsonObject();
         return handle(result);
     }

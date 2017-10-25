@@ -20,17 +20,15 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.RandomAccessFile;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Iterator;
+import java.util.List;
 
 import ch.qos.logback.core.util.FileUtil;
+import cn.ieclipse.util.FileUtils;
 import cn.ieclipse.util.IOUtils;
 
 /**
@@ -52,7 +50,7 @@ public class FileStorage {
         this.path = path;
         File f = new File(path);
         if (!f.exists()) {
-            FileUtil.createMissingParentDirectories(f);
+            FileUtils.mkFile(f, false);
         }
         BufferedReader br = null;
         try {
@@ -76,7 +74,7 @@ public class FileStorage {
         return queue.get(line);
     }
     
-    public boolean append(String content) throws IOException {
+    public boolean append(String content) {
         return queue.add(content);
     }
     
@@ -84,13 +82,22 @@ public class FileStorage {
         return queue.size();
     }
     
+    public List<String> getLast(int count) {
+        int size = getLines();
+        if (size <= count) {
+            return queue;
+        }
+        else {
+            return queue.subList(size - count, size - 1);
+        }
+    }
+    
     public boolean flush() {
         BufferedWriter bw;
         try {
             File f = new File(path);
             if (!f.exists()) {
-                FileUtil.createMissingParentDirectories(f);
-                f.createNewFile();
+                FileUtils.mkFile(f, true);
             }
             
             bw = new BufferedWriter(new OutputStreamWriter(
@@ -104,6 +111,7 @@ public class FileStorage {
                 bw.write(line);
             }
             IOUtils.close(bw);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }

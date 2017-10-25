@@ -2,8 +2,6 @@ package com.scienjus.smartqq.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import cn.ieclipse.smartim.model.impl.AbstractContact;
-
 /**
  * 好友.
  *
@@ -11,7 +9,7 @@ import cn.ieclipse.smartim.model.impl.AbstractContact;
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
  * @date 2015/12/18.
  */
-public class Friend extends AbstractContact {
+public class Friend extends QQContact {
     
     @SerializedName("uin")
     private long userId;
@@ -28,9 +26,7 @@ public class Friend extends AbstractContact {
     
     @Override
     public String toString() {
-        return "Friend{" + "userId=" + userId + ", markname='" + markname + '\''
-                + ", nickname='" + nickname + '\'' + ", vip=" + vip
-                + ", vipLevel=" + vipLevel + '}';
+        return getName();
     }
     
     public long getUserId() {
@@ -85,4 +81,5 @@ public class Friend extends AbstractContact {
     public String getUin() {
         return String.valueOf(getUserId());
     }
+    
 }

@@ -21,11 +21,11 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
-import com.scienjus.smartqq.model.QQMessage;
 import com.scienjus.smartqq.model.DiscussMessage;
 import com.scienjus.smartqq.model.Font;
-import com.scienjus.smartqq.model.GroupMessage;
 import com.scienjus.smartqq.model.FriendMessage;
+import com.scienjus.smartqq.model.GroupMessage;
+import com.scienjus.smartqq.model.QQMessage;
 
 import cn.ieclipse.smartim.handler.MessageHandler;
 import cn.ieclipse.smartim.model.IMessage;
@@ -50,6 +50,7 @@ public abstract class AbstractMessageHandler
     }
     
     protected void handleCommon(QQMessage message, JsonObject result) {
+        message.setRaw(result.toString());
         JsonArray cont = result.getAsJsonArray("content");
         String fontJson = cont.get(0).getAsJsonArray().get(1).toString();
         QQMessage m = (QQMessage) message;
@@ -86,5 +87,16 @@ public abstract class AbstractMessageHandler
         else if (m instanceof FriendMessage) {
             m.setUserId(result.get("from_uin").getAsLong());
         }
+    }
+    
+    /**
+     * TODO 将自己发送的消息序列化
+     * 
+     * @param message
+     * @return
+     */
+    protected JsonObject serializeCommon(QQMessage message) {
+        JsonObject result = new JsonObject();
+        return result;
     }
 }

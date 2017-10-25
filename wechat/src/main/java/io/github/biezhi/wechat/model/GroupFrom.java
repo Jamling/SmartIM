@@ -47,8 +47,13 @@ public class GroupFrom extends AbstractFrom {
     }
     
     @Override
-    public IContact getContact() {
+    public Contact getContact() {
         return getGroup();
+    }
+    
+    @Override
+    public Contact getMember() {
+        return user;
     }
     
     @Override

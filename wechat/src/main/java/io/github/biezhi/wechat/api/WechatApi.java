@@ -26,6 +26,7 @@ import io.github.biezhi.wechat.Utils;
 import io.github.biezhi.wechat.model.Const;
 import io.github.biezhi.wechat.model.Environment;
 import io.github.biezhi.wechat.model.Session;
+import io.github.biezhi.wechat.model.WechatMessage;
 import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.MediaType;
@@ -595,6 +596,7 @@ public class WechatApi {
      * @param msg
      * @param to
      * @return
+     * @deprecated
      */
     public JsonObject wxSendMessage(String msg, String to) throws Exception {
         
@@ -621,7 +623,7 @@ public class WechatApi {
         return response.getAsJsonObject();
     }
     
-    public JsonObject wxSendMessage(int type, String body) throws Exception {
+    public JsonObject wxSendMessage(Map<String, Object> Msg) throws Exception {
         String url = conf.get("API_webwxsendmsg") + "?pass_ticket=%s";
         url = String.format(url, session.getPassTicket());
         
@@ -629,9 +631,16 @@ public class WechatApi {
                 + Utils.getRandomNumber(5);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("BaseRequest", this.baseRequest);
-        Map<String, Object> Msg = new HashMap<String, Object>();
-        Msg.put("Type", type);
-        params.put("Msg", body);
+        int type = (Integer) Msg.get("Type");
+        if (type == WechatMessage.MSGTYPE_TEXT) {
+            if (Msg.get("LocalID") == null) {
+                Msg.put("LocalID", clientMsgId);
+            }
+            if (Msg.get("ClientMsgId") == null) {
+                Msg.put("ClientMsgId", clientMsgId);
+            }
+        }
+        params.put("Msg", Msg);
         
         JsonElement response = doPost(url, params);
         if (null == response) {
@@ -645,6 +654,7 @@ public class WechatApi {
      *
      * @param msg
      * @param uid
+     * @deprecated
      */
     public void sendText(String msg, String uid) throws Exception {
         this.wxSendMessage(msg, uid);
@@ -724,6 +734,12 @@ public class WechatApi {
     
     public void setWorkDir(File workDir) {
         this.workDir = workDir;
+    }
+    
+    public void close() {
+        if (client != null) {
+            client.dispatcher().cancelAll();
+        }
     }
     
     public static class BaseRequest {

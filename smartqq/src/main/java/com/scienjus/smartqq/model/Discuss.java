@@ -2,8 +2,6 @@ package com.scienjus.smartqq.model;
 
 import com.google.gson.annotations.SerializedName;
 
-import cn.ieclipse.smartim.model.impl.AbstractContact;
-
 /**
  * 讨论组.
  *
@@ -11,7 +9,7 @@ import cn.ieclipse.smartim.model.impl.AbstractContact;
  * @author <a href="http://88250.b3log.org">Liang Ding</a>
  * @date 2015/12/23.
  */
-public class Discuss extends AbstractContact {
+public class Discuss extends QQContact {
     
     @SerializedName("did")
     public long id;
@@ -28,5 +26,10 @@ public class Discuss extends AbstractContact {
     @Override
     public String getUin() {
         return String.valueOf(id);
+    }
+    
+    @Override
+    public String toString() {
+        return getName();
     }
 }

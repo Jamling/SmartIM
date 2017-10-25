@@ -23,6 +23,6 @@ package cn.ieclipse.smartim.callback;
  *       
  */
 public interface SendCallback {
-    void onSendResult(int type, String targetId, String msg, boolean success,
+    void onSendResult(int type, String targetId, CharSequence msg, boolean success,
             Throwable t);
 }

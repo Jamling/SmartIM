@@ -106,4 +106,9 @@ public class GroupInfo implements IContact {
     public String getUin() {
         return String.valueOf(getId());
     }
+    
+    @Override
+    public String toString() {
+        return getName();
+    }
 }

@@ -23,7 +23,7 @@ import cn.ieclipse.smartim.model.impl.AbstractFrom;
  * 
  * @author Jamling
  * @date 2017年10月12日
- *      
+ *       
  */
 public class UserFrom extends AbstractFrom {
     
@@ -34,7 +34,12 @@ public class UserFrom extends AbstractFrom {
     }
     
     @Override
-    public IContact getContact() {
+    public Contact getContact() {
+        return user;
+    }
+    
+    @Override
+    public Contact getMember() {
         return user;
     }
     

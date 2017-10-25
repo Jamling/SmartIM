@@ -30,7 +30,7 @@ import java.util.TreeMap;
  * @date 2017年9月1日
  *       
  */
-public abstract class IMUtils {
+public abstract class Utils {
     
     public static ParameterizedType type(final Type raw, final Type... args) {
         return new ParameterizedType() {

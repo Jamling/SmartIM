@@ -1,12 +1,16 @@
 package com.scienjus.smartqq;
 
+import java.io.File;
 import java.util.List;
 
 import com.scienjus.smartqq.client.SmartQQClient;
 import com.scienjus.smartqq.model.Category;
 import com.scienjus.smartqq.model.Friend;
 
+import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
+import cn.ieclipse.smartim.model.impl.AbstractFrom;
+import cn.ieclipse.smartim.model.impl.AbstractMessage;
 
 /**
  * @author ScienJus
@@ -17,6 +21,7 @@ public class Application {
     public static void main(String[] args) throws Exception{
         // 创建一个新对象时需要扫描二维码登录，并且传一个处理接收到消息的回调，如果你不需要接收消息，可以传null
         final SmartQQClient client = new SmartQQClient();
+        client.setWorkDir(new File("target").getAbsoluteFile());
         DefaultLoginCallback loginCallback = new DefaultLoginCallback();
         loginCallback.setTitle("QQ", "请使用手机QQ扫描");
         client.setLoginCallback(loginCallback);
@@ -29,7 +34,20 @@ public class Application {
                 System.out.println("————" + friend.getNickname());
             }
         }
+        client.setReceiveCallback(new ReceiveCallback() {
+            
+            @Override
+            public void onReceiveMessage(AbstractMessage message, AbstractFrom from) {
+                System.out.println("from " + from + " msg: " + message);
+            }
+            
+            @Override
+            public void onReceiveError(Throwable e) {
+                e.printStackTrace(System.err);
+            }
+        });
+        client.start();
         // 使用后调用close方法关闭，你也可以使用try-with-resource创建该对象并自动关闭
-        client.close();
+        // client.close();
     }
 }

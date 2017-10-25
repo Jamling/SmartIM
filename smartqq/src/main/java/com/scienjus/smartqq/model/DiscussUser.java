@@ -1,6 +1,5 @@
 package com.scienjus.smartqq.model;
 
-import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.impl.AbstractContact;
 
 /**

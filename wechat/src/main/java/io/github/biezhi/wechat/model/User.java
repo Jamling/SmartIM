@@ -15,7 +15,6 @@
  */
 package io.github.biezhi.wechat.model;
 
-import cn.ieclipse.smartim.IMUtils;
 import cn.ieclipse.smartim.model.impl.AbstractContact;
 
 /**

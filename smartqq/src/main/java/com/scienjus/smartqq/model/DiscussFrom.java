@@ -1,6 +1,5 @@
 package com.scienjus.smartqq.model;
 
-import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 
 public class DiscussFrom extends AbstractFrom {
@@ -29,7 +28,12 @@ public class DiscussFrom extends AbstractFrom {
     }
     
     @Override
-    public IContact getContact() {
-        return discuss;
+    public DiscussInfo getContact() {
+        return getDiscuss();
+    }
+    
+    @Override
+    public DiscussUser getMember() {
+        return gu;
     }
 }

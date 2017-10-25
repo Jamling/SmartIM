@@ -15,6 +15,7 @@
  */
 package cn.ieclipse.smartim.model.impl;
 
+import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.IFrom;
 
 /**
@@ -33,5 +34,15 @@ public abstract class AbstractFrom implements IFrom {
     
     public boolean isNewbie() {
         return newbie;
+    }
+    
+    @Override
+    public String toString() {
+        return getName();
+    }
+    
+    public String getName() {
+        IContact contact = getMember();
+        return contact == null ? "未知用户" : contact.getName();
     }
 }

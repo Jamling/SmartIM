@@ -16,22 +16,18 @@
 package com.scienjus.smartqq.handler.msg;
 
 import com.google.gson.JsonObject;
-import com.scienjus.smartqq.model.DiscussMessage;
 import com.scienjus.smartqq.model.GroupMessage;
-import com.scienjus.smartqq.model.FriendMessage;
-
-import cn.ieclipse.smartim.model.IMessage;
 
 /**
  * 类/接口描述
  * 
  * @author Jamling
  * @date 2017年9月1日
- *      
+ *       
  */
 public class GroupMessageHandler extends AbstractMessageHandler {
     @Override
-    public IMessage handle(JsonObject result) {
+    public GroupMessage handle(JsonObject result) {
         GroupMessage m = new GroupMessage();
         handleCommon(m, result);
         

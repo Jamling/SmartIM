@@ -1,6 +1,5 @@
 package com.scienjus.smartqq.model;
 
-import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 
 public class GroupFrom extends AbstractFrom {
@@ -29,7 +28,12 @@ public class GroupFrom extends AbstractFrom {
     }
     
     @Override
-    public IContact getContact() {
+    public GroupInfo getContact() {
         return getGroup();
+    }
+    
+    @Override
+    public GroupUser getMember() {
+        return gu;
     }
 }

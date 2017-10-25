@@ -47,8 +47,8 @@ import com.scienjus.smartqq.model.Recent;
 import com.scienjus.smartqq.model.UserInfo;
 
 import cn.ieclipse.smartim.AbstractSmartClient;
-import cn.ieclipse.smartim.callback.LoginCallback;
 import cn.ieclipse.smartim.callback.ReceiveCallback;
+import cn.ieclipse.smartim.exception.LogicException;
 import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.IMessage;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
@@ -109,6 +109,15 @@ public class SmartQQClient extends AbstractSmartClient {
                             }
                         } catch (Exception e) {
                             LOGGER.error(e.getMessage());
+                            if (e instanceof LogicException) {
+                                int code = ((LogicException) e).getCode();
+                                if (code == 103 || code == 100100) {
+                                    close();
+                                    if (receiveCallback != null) {
+                                        receiveCallback.onReceiveError(e);
+                                    }
+                                }
+                            }
                         }
                     }
                 }
@@ -116,24 +125,50 @@ public class SmartQQClient extends AbstractSmartClient {
         }
     }
     
+    public QQMessage handleMessage(JsonObject message) {
+        String type = message.get("poll_type").getAsString();
+        if ("message".equals(type)) {
+            FriendMessage m = (FriendMessage) friendMessageHandler
+                    .handle(message.getAsJsonObject("value"));
+            return m;
+        }
+        else if ("group_message".equals(type)) {
+            GroupMessage m = (GroupMessage) groupMessageHandler
+                    .handle(message.getAsJsonObject("value"));
+            return m;
+        }
+        else if ("discu_message".equals(type)) {
+            DiscussMessage m = (DiscussMessage) discussMessageHandler
+                    .handle(message.getAsJsonObject("value"));
+            return m;
+        }
+        return null;
+    }
+    
     private void handleMessage(JsonArray array) {
         for (int i = 0; array != null && i < array.size(); i++) {
             JsonObject message = (JsonObject) array.get(i);
-            String type = message.get("poll_type").getAsString();
-            if ("message".equals(type)) {
-                FriendMessage m = (FriendMessage) friendMessageHandler
-                        .handle(message.getAsJsonObject("value"));
-                notifyReceive(m, parseFrom(m));
-            }
-            else if ("group_message".equals(type)) {
-                GroupMessage m = (GroupMessage) groupMessageHandler
-                        .handle(message.getAsJsonObject("value"));
-                notifyReceive(m, parseFrom(m));
-            }
-            else if ("discu_message".equals(type)) {
-                DiscussMessage m = (DiscussMessage) discussMessageHandler
-                        .handle(message.getAsJsonObject("value"));
-                notifyReceive(m, parseFrom(m));
+            QQMessage m = handleMessage(message);
+            if (m != null) {
+                AbstractFrom from = parseFrom(m);
+                if (from != null && from.getContact() != null) {
+                    Recent r = new Recent();
+                    long uin = Long.parseLong(from.getContact().getUin());
+                    r.setUin(uin);
+                    if (from instanceof FriendFrom) {
+                        r.setType(0);
+                    }
+                    else if (from instanceof GroupFrom) {
+                        r.setType(1);
+                    }
+                    else if (from instanceof DiscussFrom) {
+                        r.setType(2);
+                    }
+                    if (!getRecentList().contains(r)) {
+                        getRecentList().add(0, r);
+                    }
+                }
+                notifyReceive(m, from);
             }
         }
     }
@@ -164,6 +199,7 @@ public class SmartQQClient extends AbstractSmartClient {
     
     @Override
     public void setWorkDir(File path) {
+        super.setWorkDir(path);
         api.setWorkDir(path);
     }
     
@@ -521,6 +557,21 @@ public class SmartQQClient extends AbstractSmartClient {
         return null;
     }
     
+    public AbstractFrom parseFrom(QQMessage m) {
+        if (m != null) {
+            if (m instanceof FriendMessage) {
+                return parseFrom((FriendMessage) m);
+            }
+            else if (m instanceof GroupMessage) {
+                return parseFrom((GroupMessage) m);
+            }
+            else if (m instanceof DiscussMessage) {
+                return parseFrom((DiscussMessage) m);
+            }
+        }
+        return null;
+    }
+    
     public FriendFrom parseFrom(FriendMessage friendMessage) {
         FriendFrom from = new FriendFrom();
         Friend f = getFriend(friendMessage.getUserId());
@@ -742,7 +793,7 @@ public class SmartQQClient extends AbstractSmartClient {
         }
     }
     
-    public IMessage createMessage(String msg, IContact target) {
+    public QQMessage createMessage(String msg, IContact target) {
         long uin = Long.parseLong(target.getUin());
         if (target instanceof Friend || target instanceof UserInfo) {
             QQMessage ret = new FriendMessage();
@@ -809,8 +860,8 @@ public class SmartQQClient extends AbstractSmartClient {
                 QQMessage m = (QQMessage) message;
                 String date = new SimpleDateFormat("HH:mm:ss")
                         .format(m.getTime());
-                String content = String.format("%s %s %s", date,
-                        from.getContact().getName(), m.getContent());
+                String content = String.format("%s %s %s", date, from.getName(),
+                        m.getContent());
                 System.out.println(content);
                 if (from.isNewbie()) {
                     System.out.println("new friend");

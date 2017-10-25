@@ -1,7 +1,5 @@
 package com.scienjus.smartqq.model;
 
-import com.google.gson.JsonObject;
-
 /**
  * 讨论组消息.
  *
