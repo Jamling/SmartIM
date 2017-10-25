@@ -61,7 +61,7 @@ public class FileStorage {
                 queue.add(itr.next());
             }
         } catch (Exception e) {
-        
+            e.printStackTrace();
         } finally {
             if (br != null) {
                 IOUtils.close(br);
@@ -109,6 +109,7 @@ public class FileStorage {
                 }
                 String line = queue.get(i);
                 bw.write(line);
+                bw.flush();
             }
             IOUtils.close(bw);
             return true;

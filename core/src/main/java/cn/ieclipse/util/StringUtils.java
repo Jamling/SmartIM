@@ -18,6 +18,8 @@ package cn.ieclipse.util;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
+import java.security.MessageDigest;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;

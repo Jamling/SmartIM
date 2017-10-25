@@ -737,6 +737,7 @@ public class WechatApi {
     }
     
     public void close() {
+        cookie = null;
         if (client != null) {
             client.dispatcher().cancelAll();
         }

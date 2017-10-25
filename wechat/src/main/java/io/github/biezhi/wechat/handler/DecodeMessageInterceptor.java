@@ -12,9 +12,8 @@ public class DecodeMessageInterceptor implements MessageInterceptor {
             WechatMessage wxMsg = (WechatMessage) message;
             String text = wxMsg.text;
             if (text == null) {
-                text = wxMsg.Content;
+                wxMsg.parseContent();
             }
-            wxMsg.text = text.replace("&lt;", "<").replace("&gt;", ">");
         }
         return false;
     }

@@ -4,6 +4,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
+import io.github.biezhi.wechat.handler.WechatMessageHandler;
 
 public class WechatMessage extends AbstractMessage {
     
@@ -48,12 +49,16 @@ public class WechatMessage extends AbstractMessage {
     public String src;
     public String groupId;
     
-    public String LocalID;
-    public String ClientMsgId;
-    
     @Override
     public CharSequence getText() {
+        if (text == null) {
+            parseContent();
+        }
         return text;
+    }
+    
+    public void parseContent() {
+        text = Content.replace("&lt;", "<").replace("&gt;", ">");
     }
     
     @Override

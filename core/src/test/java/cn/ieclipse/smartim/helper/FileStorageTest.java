@@ -64,5 +64,10 @@ public class FileStorageTest {
         FileStorage fs = new FileStorage(3, path);
         fs.append("line2");
         fs.flush();
+        
+        path = "E:\\runtime-EclipseApplication\\.metadata\\.plugins\\cn.ieclipse.smartqq\\QQ\\history\\@a579d18eab22008a6db04d383ddf043989892f2a5944f8a5585c72de91dc9810";
+        fs = new FileStorage(3, path);
+        fs.append("11:22:33 Jamling: hello!");
+        fs.flush();
     }
 }

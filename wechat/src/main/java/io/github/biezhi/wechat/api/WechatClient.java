@@ -3,6 +3,7 @@ package io.github.biezhi.wechat.api;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeoutException;
@@ -23,6 +24,7 @@ import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.IMessage;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
+import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.Utils;
 import io.github.biezhi.wechat.handler.DecodeMessageInterceptor;
 import io.github.biezhi.wechat.handler.GroupMessageInterceptor;
@@ -260,7 +262,7 @@ public class WechatClient extends AbstractSmartClient {
         if (group == null) { // 未保存的群聊
             JsonArray array = api.batchGetContact(Arrays.asList(gid));
             List<Contact> list = contactHandler.handle(array);
-            if (!cn.ieclipse.smartim.Utils.isEmpty(list)) {
+            if (!StringUtils.isEmpty(list)) {
                 group = list.get(0);
                 this.groupList.add(group);
                 if (modificationCallback != null) {
@@ -282,7 +284,7 @@ public class WechatClient extends AbstractSmartClient {
                 // 找不到群成员
                 JsonArray array = api.batchGetContact(Arrays.asList(gid));
                 List<Contact> list = contactHandler.handle(array);
-                if (!cn.ieclipse.smartim.Utils.isEmpty(list)) {
+                if (!StringUtils.isEmpty(list)) {
                     int idx = groupList.indexOf(group);
                     group = list.get(0);
                     groupList.set(idx, group);
@@ -301,7 +303,7 @@ public class WechatClient extends AbstractSmartClient {
     
     public UserFrom getUserFrom(String uid) {
         UserFrom from = new UserFrom();
-        if (!cn.ieclipse.smartim.Utils.isEmpty(memberList)) {
+        if (!StringUtils.isEmpty(memberList)) {
             for (Contact t : memberList) {
                 if (uid != null && uid.equals(t.UserName)) {
                     from.setUser(t);
@@ -311,7 +313,7 @@ public class WechatClient extends AbstractSmartClient {
             if (from.getContact() == null) {
                 JsonArray array = api.batchGetContact(Arrays.asList(uid));
                 List<Contact> list = contactHandler.handle(array);
-                if (!cn.ieclipse.smartim.Utils.isEmpty(list)) {
+                if (!StringUtils.isEmpty(list)) {
                     Contact c = list.get(0);
                     from.setUser(c);
                     memberList.add(c);
@@ -350,7 +352,7 @@ public class WechatClient extends AbstractSmartClient {
                 boolean in_list = false;
                 
                 Contact newg = contactHandler.handle(m);
-                if (!cn.ieclipse.smartim.Utils.isEmpty(groupList)) {
+                if (!StringUtils.isEmpty(groupList)) {
                     for (int i = 0; i < groupList.size(); i++) {
                         Contact g = groupList.get(i);
                         if (username.equals(g.UserName)) {
@@ -390,7 +392,11 @@ public class WechatClient extends AbstractSmartClient {
     }
     
     public IMessage handleMessage(String raw) {
-        return msgHandler.handle(raw);
+        WechatMessage msg = msgHandler.handle(raw);
+        if (!intercept(msg)) {
+            return msg;
+        }
+        return null;
     }
     
     public void handle_msg(JsonObject json) {
@@ -430,8 +436,13 @@ public class WechatClient extends AbstractSmartClient {
     @Override
     public int sendMessage(IMessage msg, IContact target) {
         String uin = target.getUin();
+        WechatMessage m = (WechatMessage) msg;
         try {
-            Map<String, Object> body = cn.ieclipse.smartim.Utils.toMap(msg);
+            Map<String, Object> body = new HashMap<>();
+            body.put("Type", m.MsgType);
+            body.put("Content", m.Content);
+            body.put("FromUserName", m.FromUserName);
+            body.put("ToUserName", m.ToUserName);
             JsonObject ret = api.wxSendMessage(body);
             notifySend(0, uin, msg.getText(), null);
         } catch (Exception e) {

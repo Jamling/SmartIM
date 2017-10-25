@@ -15,6 +15,8 @@
  */
 package io.github.biezhi.wechat.api;
 
+import cn.ieclipse.util.StringUtils;
+
 /**
  * 类/接口描述
  * 
@@ -134,7 +136,7 @@ public final class URLConst {
         }
         
         protected String getQuery() {
-            if (cn.ieclipse.smartim.Utils.isEmpty(query)) {
+            if (StringUtils.isEmpty(query)) {
                 return "";
             }
             else if (url.indexOf("?") >= 0) {

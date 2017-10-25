@@ -16,7 +16,7 @@ public class GroupMessageInterceptor implements MessageInterceptor {
                     String[] temp = wxMsg.Content
                             .split(WechatMessage.CONTENT_DELIMITER);
                     wxMsg.src = temp[0];
-                    wxMsg.text = temp[1];
+                    wxMsg.Content = temp[1];
                 }
                 wxMsg.groupId = wxMsg.FromUserName;
             }

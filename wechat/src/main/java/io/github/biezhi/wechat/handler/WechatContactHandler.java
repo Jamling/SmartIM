@@ -22,6 +22,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 
 import cn.ieclipse.smartim.model.IContact;
+import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.model.Const;
 import io.github.biezhi.wechat.model.Contact;
 
@@ -86,7 +87,7 @@ public class WechatContactHandler extends AbstractContactHandler<Contact> {
     
     public List<Contact> handleRecents(String chatSet) {
         List<Contact> recentList = new ArrayList<Contact>();
-        if (!cn.ieclipse.smartim.Utils.isEmpty(chatSet)) {
+        if (!StringUtils.isEmpty(chatSet)) {
             for (Contact c : this.allList) {
                 if (c.isTop()) {
                     recentList.add(c);
@@ -128,8 +129,8 @@ public class WechatContactHandler extends AbstractContactHandler<Contact> {
     }
     
     public Contact find(String uin, List<Contact> list) {
-        if (!cn.ieclipse.smartim.Utils.isEmpty(uin)
-                && !cn.ieclipse.smartim.Utils.isEmpty(list)) {
+        if (!StringUtils.isEmpty(uin)
+                && !StringUtils.isEmpty(list)) {
             for (Contact c : list) {
                 if (c.UserName.equals(uin)) {
                     return c;
