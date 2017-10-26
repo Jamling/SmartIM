@@ -27,7 +27,6 @@ import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
-import ch.qos.logback.core.util.FileUtil;
 import cn.ieclipse.util.FileUtils;
 import cn.ieclipse.util.IOUtils;
 
@@ -39,26 +38,24 @@ import cn.ieclipse.util.IOUtils;
  *       
  */
 public class FileStorage {
-    private int size;
-    private int lines;
+    private static final String cr = System.getProperty("line.separator");
+    private boolean persistent;
     private String path;
-    private String cr = System.getProperty("line.separator");
     private LimitArrayList<String> queue;
     
     public FileStorage(int size, String path) {
         queue = new LimitArrayList<>(size);
         this.path = path;
-        File f = new File(path);
-        if (!f.exists()) {
-            FileUtils.mkFile(f, false);
-        }
         BufferedReader br = null;
         try {
-            br = new BufferedReader(new InputStreamReader(
-                    new FileInputStream(f), Charset.forName("utf-8")));
-            Iterator<String> itr = br.lines().iterator();
-            while (itr.hasNext()) {
-                queue.add(itr.next());
+            File f = new File(path);
+            if (f.exists()) {
+                br = new BufferedReader(new InputStreamReader(
+                        new FileInputStream(f), Charset.forName("utf-8")));
+                Iterator<String> itr = br.lines().iterator();
+                while (itr.hasNext()) {
+                    queue.add(itr.next());
+                }
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -67,7 +64,6 @@ public class FileStorage {
                 IOUtils.close(br);
             }
         }
-        this.lines = queue.size();
     }
     
     public String read(int line) throws IOException {
@@ -90,6 +86,14 @@ public class FileStorage {
         else {
             return queue.subList(size - count, size - 1);
         }
+    }
+    
+    public void setPersistent(boolean persistent) {
+        this.persistent = persistent;
+    }
+    
+    public boolean isPersistent() {
+        return persistent;
     }
     
     public boolean flush() {
