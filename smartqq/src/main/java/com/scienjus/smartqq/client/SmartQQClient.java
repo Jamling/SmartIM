@@ -42,6 +42,7 @@ import com.scienjus.smartqq.model.GroupFrom;
 import com.scienjus.smartqq.model.GroupInfo;
 import com.scienjus.smartqq.model.GroupMessage;
 import com.scienjus.smartqq.model.GroupUser;
+import com.scienjus.smartqq.model.QQContact;
 import com.scienjus.smartqq.model.QQMessage;
 import com.scienjus.smartqq.model.Recent;
 import com.scienjus.smartqq.model.UserInfo;
@@ -108,10 +109,10 @@ public class SmartQQClient extends AbstractSmartClient {
                                 LOGGER.debug(e.getMessage());
                             }
                         } catch (Exception e) {
-                            LOGGER.error(e.getMessage());
+                            LOGGER.error(e.getMessage(), e);
                             if (e instanceof LogicException) {
                                 int code = ((LogicException) e).getCode();
-                                if (code == 103 || code == 100100) {
+                                if (code == 103 || code == 100100 || code == 100001) {
                                     close();
                                     if (receiveCallback != null) {
                                         receiveCallback.onReceiveError(e);
@@ -228,6 +229,8 @@ public class SmartQQClient extends AbstractSmartClient {
         if (!isEmpty(tr)) {
             this.recents = tr;
         }
+        
+        parseRecents(tr);
     }
     
     public List<Category> getFriendListWithCategory() {
@@ -675,6 +678,19 @@ public class SmartQQClient extends AbstractSmartClient {
         from.setDiscussUser(gu);
         from.setDiscuss(info);
         return from;
+    }
+    
+    public List<QQContact> parseRecents(List<Recent> list) {
+        List<QQContact> ret = new ArrayList<>();
+        if (list != null) {
+            for (int i = 0; i < list.size(); i++) {
+                IContact c = getRecentTarget(list.get(i));
+                if (c != null && c instanceof QQContact) {
+                    ret.add((QQContact) c);
+                }
+            }
+        }
+        return ret;
     }
     
     public IContact getRecentTarget(Recent r) {

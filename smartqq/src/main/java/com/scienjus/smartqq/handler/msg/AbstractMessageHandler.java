@@ -69,7 +69,7 @@ public abstract class AbstractMessageHandler
             if (e instanceof JsonPrimitive && e.getAsString().startsWith("@")) {
                 m.addAt(e.getAsString());
             }
-            contentBuilder.append(e.getAsString());
+            contentBuilder.append(e.toString());
         }
         m.setContent(contentBuilder.toString());
         m.setRaw(result.toString());
