@@ -66,10 +66,32 @@ public abstract class AbstractMessageHandler
         
         for (int i = start; i < size; i++) {
             JsonElement e = cont.get(i);
-            if (e instanceof JsonPrimitive && e.getAsString().startsWith("@")) {
-                m.addAt(e.getAsString());
+            if (e instanceof JsonPrimitive) {
+                String s = e.getAsString();
+                if (s.startsWith("@")) {
+                    m.addAt(e.getAsString());
+                }
+                else if (s.equals("")) {
+                    contentBuilder.append(" ");
+                }
+                contentBuilder.append(s);
             }
-            contentBuilder.append(e.toString());
+            else {
+                // TODO face [{"face":0}]
+                if (e instanceof JsonArray) {
+                    JsonArray array = (JsonArray) e;
+                    for (int j = 0; j < array.size(); j++) {
+                        JsonElement temp = array.get(j);
+                        if (temp instanceof JsonObject) {
+                            JsonObject ej = ((JsonObject) temp);
+                            if (ej.has("face")) {
+                                m.setFace(ej.get("face").getAsInt());
+                            }
+                        }
+                    }
+                }
+                contentBuilder.append(e.toString());
+            }
         }
         m.setContent(contentBuilder.toString());
         m.setRaw(result.toString());

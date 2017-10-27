@@ -77,6 +77,7 @@ public class SmartQQClient extends AbstractSmartClient {
     
     // 保存的数据
     public List<Recent> recents;
+    public List<QQContact> recents2;
     public List<Group> groups;
     public List<Friend> temps;
     public List<Discuss> discusses;
@@ -112,7 +113,8 @@ public class SmartQQClient extends AbstractSmartClient {
                             LOGGER.error(e.getMessage(), e);
                             if (e instanceof LogicException) {
                                 int code = ((LogicException) e).getCode();
-                                if (code == 103 || code == 100100 || code == 100001) {
+                                if (code == 103 || code == 100100
+                                        || code == 100001) {
                                     close();
                                     if (receiveCallback != null) {
                                         receiveCallback.onReceiveError(e);
@@ -230,40 +232,40 @@ public class SmartQQClient extends AbstractSmartClient {
             this.recents = tr;
         }
         
-        parseRecents(tr);
+        this.recents2 = parseRecents(this.recents);
     }
     
     public List<Category> getFriendListWithCategory() {
-        if (isEmpty(categories)) {
-            try {
-                categories = friendHandler
-                        .handleCategoryList(api.getFriendListWithCategory());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        // if (isEmpty(categories)) {
+        // try {
+        // categories = friendHandler
+        // .handleCategoryList(api.getFriendListWithCategory());
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // }
+        // }
         return categories;
     }
     
     public List<Group> getGroupList() {
-        if (isEmpty(groups)) {
-            try {
-                groups = groupHandler.handle(api.getGroupList());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        // if (isEmpty(groups)) {
+        // try {
+        // groups = groupHandler.handle(api.getGroupList());
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // }
+        // }
         return groups;
     }
     
     public List<Discuss> getDiscussList() {
-        if (isEmpty(discusses)) {
-            try {
-                discusses = discussHandler.handle(api.getDiscussList());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        // if (isEmpty(discusses)) {
+        // try {
+        // discusses = discussHandler.handle(api.getDiscussList());
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // }
+        // }
         return discusses;
     }
     
@@ -281,14 +283,18 @@ public class SmartQQClient extends AbstractSmartClient {
     }
     
     public List<Recent> getRecentList() {
-        if (isEmpty(recents)) {
-            try {
-                recents = new RecentHandler().handle(api.getRecentList());
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
+        // if (isEmpty(recents)) {
+        // try {
+        // recents = new RecentHandler().handle(api.getRecentList());
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // }
+        // }
         return recents;
+    }
+    
+    public List<QQContact> getRecents2() {
+        return recents2;
     }
     
     public long getQQById(long friendId) {
@@ -434,21 +440,21 @@ public class SmartQQClient extends AbstractSmartClient {
             }
         }
         // groups out of date
-        try {
-            groups = groupHandler.handle(api.getGroupList());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (groups != null) {
-            for (Group g : groups) {
-                if (g.id == uin) {
-                    if (modificationCallback != null) {
-                        modificationCallback.onContactChanged(g);
-                    }
-                    return g;
-                }
-            }
-        }
+        // try {
+        // groups = groupHandler.handle(api.getGroupList());
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // }
+        // if (groups != null) {
+        // for (Group g : groups) {
+        // if (g.id == uin) {
+        // if (modificationCallback != null) {
+        // modificationCallback.onContactChanged(g);
+        // }
+        // return g;
+        // }
+        // }
+        // }
         
         return null;
     }
@@ -469,21 +475,21 @@ public class SmartQQClient extends AbstractSmartClient {
             }
         }
         // out of date
-        try {
-            discusses = discussHandler.handle(api.getDiscussList());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        if (discusses != null) {
-            for (Discuss g : discusses) {
-                if (g.id == uin) {
-                    if (modificationCallback != null) {
-                        modificationCallback.onContactChanged(g);
-                    }
-                    return g;
-                }
-            }
-        }
+        // try {
+        // discusses = discussHandler.handle(api.getDiscussList());
+        // } catch (Exception e) {
+        // e.printStackTrace();
+        // }
+        // if (discusses != null) {
+        // for (Discuss g : discusses) {
+        // if (g.id == uin) {
+        // if (modificationCallback != null) {
+        // modificationCallback.onContactChanged(g);
+        // }
+        // return g;
+        // }
+        // }
+        // }
         
         return null;
     }
@@ -596,6 +602,13 @@ public class SmartQQClient extends AbstractSmartClient {
     public GroupFrom parseFrom(final GroupMessage message) {
         GroupFrom from = new GroupFrom();
         Group g = getGroup(message.getGroupId());
+        boolean newGroup = false;
+        if (g == null) {
+            g = new Group();
+            g.code = message.getGroupId();
+            g.id = g.code;
+            newGroup = true;
+        }
         
         GroupInfo info = null;
         if (ginfos == null) {
@@ -609,6 +622,9 @@ public class SmartQQClient extends AbstractSmartClient {
         }
         else {
             info = getGroupInfo(g);
+        }
+        if (newGroup) {
+            g.name = info.getName();
         }
         GroupUser gu = info.getGroupUser(message.getUserId());
         if (gu == null) {
@@ -634,12 +650,23 @@ public class SmartQQClient extends AbstractSmartClient {
         }
         from.setGroupUser(gu);
         from.setGroup(info);
+        if (newGroup) {
+            if (modificationCallback != null) {
+                modificationCallback.onContactChanged(g);
+            }
+        }
         return from;
     }
     
     public DiscussFrom parseFrom(final DiscussMessage message) {
         DiscussFrom from = new DiscussFrom();
         Discuss g = getDiscuss(message.getDiscussId());
+        boolean newGroup = false;
+        if (g == null) {
+            g = new Discuss();
+            g.id = message.getDiscussId();
+            newGroup = true;
+        }
         DiscussInfo info = null;
         if (dinfos == null) {
             try {
@@ -652,6 +679,9 @@ public class SmartQQClient extends AbstractSmartClient {
         }
         else {
             info = getDiscussInfo(g);
+        }
+        if (newGroup) {
+            g.name = info.getName();
         }
         DiscussUser gu = info.getDiscussUser(message.getUserId());
         if (gu == null) {
@@ -677,6 +707,11 @@ public class SmartQQClient extends AbstractSmartClient {
         }
         from.setDiscussUser(gu);
         from.setDiscuss(info);
+        if (newGroup) {
+            if (modificationCallback != null) {
+                modificationCallback.onContactChanged(g);
+            }
+        }
         return from;
     }
     

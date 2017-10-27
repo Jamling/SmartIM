@@ -16,8 +16,13 @@ public class QQMessage extends AbstractMessage {
     
     private Font font;
     
+    private int msg_type;
+    
     @Expose(deserialize = false, serialize = false)
     private List<String> ats;
+    
+    @Expose(deserialize = false, serialize = false)
+    private int face;
     
     public long getTime() {
         return time * 1000;
@@ -77,6 +82,14 @@ public class QQMessage extends AbstractMessage {
     
     public List<String> getAts() {
         return ats;
+    }
+    
+    public void setFace(int face) {
+        this.face = face;
+    }
+    
+    public int getFace() {
+        return face;
     }
     
     @Override

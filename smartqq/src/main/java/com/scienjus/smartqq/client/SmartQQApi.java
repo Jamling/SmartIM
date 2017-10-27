@@ -260,8 +260,8 @@ public class SmartQQApi implements Closeable {
      *
      */
     public JsonArray pollMessage() throws Exception {
-        if (DEBUG)
-            LOGGER.debug("开始接收消息");
+//        if (DEBUG)
+//            LOGGER.debug("开始接收消息");
             
         JsonObject r = new JsonObject();
         r.addProperty("ptwebqq", ptwebqq);

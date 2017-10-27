@@ -36,4 +36,9 @@ public class DiscussFrom extends AbstractFrom {
     public DiscussUser getMember() {
         return gu;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("%s %s", discuss.getName(), gu.getName());
+    }
 }

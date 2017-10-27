@@ -36,4 +36,9 @@ public class GroupFrom extends AbstractFrom {
     public GroupUser getMember() {
         return gu;
     }
+    
+    @Override
+    public String toString() {
+        return String.format("%s %s", group.getName(), gu.getName());
+    }
 }
