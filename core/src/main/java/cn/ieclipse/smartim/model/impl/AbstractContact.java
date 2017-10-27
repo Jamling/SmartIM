@@ -77,8 +77,13 @@ public abstract class AbstractContact implements IContact {
             if (that.lastMessage != null) {
                 IMessage m1 = this.lastMessage;
                 IMessage m2 = that.lastMessage;
-                long diff = (m1.getTime() - m2.getTime());
-                ret = (int) diff;
+                long diff = (m2.getTime() - m1.getTime());
+                if (diff > 0) {
+                    ret = 1;
+                }
+                else if (diff < 0) {
+                    ret = -1;
+                }
             }
             else {
                 ret = -1;
