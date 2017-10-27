@@ -86,12 +86,10 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
     
     @Override
     public int compareTo(Contact that) {
-        int ret = super.compareTo(that);
-        if (ret == 0) {
-            if ((this.ContactFlag & CONTACTFLAG_TOPCONTACT) != 0) {
-                ret = -1;
-            }
+        if (isTop()) {
+            return -1;
         }
+        int ret = super.compareTo(that);
         
         return ret;
     }
