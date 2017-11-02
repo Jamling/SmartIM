@@ -130,13 +130,15 @@ public class DefaultLoginCallback implements LoginCallback {
             this.setContentPane(contentPane);
             contentPane.setLayout(new BorderLayout());
             
-            final ImageIcon icon = new ImageIcon(filePath);
+            ImageIcon temp = new ImageIcon(filePath, filePath);
+            if (temp.getImage() != null) {
+                temp.getImage().flush();
+            }
+            final ImageIcon icon = new ImageIcon(filePath, filePath);
+            
             JPanel qrcodePanel = new JPanel() {
                 public void paintComponent(Graphics g) {
                     super.paintComponent(g);
-                    if (icon.getImage() != null) {
-                        icon.getImage().flush();
-                    }
                     // 图片随窗体大小而变化
                     int x = 0, y = 0;
                     if (getWidth() > 0 && getWidth() > icon.getIconWidth()) {
