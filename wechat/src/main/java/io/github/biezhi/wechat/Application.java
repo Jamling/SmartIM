@@ -15,7 +15,11 @@ import io.github.biezhi.wechat.ui.QRCodeFrame;
  */
 public class Application {
     QRCodeFrame qrCodeFrame;
-    DefaultLoginCallback loginCallback = new DefaultLoginCallback();
+    DefaultLoginCallback loginCallback = new DefaultLoginCallback() {
+        protected void onLoginFinish(boolean success, Exception e) {
+            
+        };
+    };
     
     ReceiveCallback receiveCallback = new ReceiveCallback() {
         

@@ -26,13 +26,9 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.LookAndFeel;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
 import javax.swing.border.EmptyBorder;
-import javax.swing.plaf.metal.MetalLookAndFeel;
 
 import cn.ieclipse.smartim.callback.LoginCallback;
 
@@ -55,16 +51,19 @@ public class DefaultLoginCallback implements LoginCallback {
         this.tip = tip;
     }
     
+    private void initQrCodeFrame(final String path) {
+        if (null != qrCodeFrame)
+            qrCodeFrame.dispose();
+        qrCodeFrame = new QRCodeFrame(path, title);
+        qrCodeFrame.setTip(tip);
+    }
+    
     @Override
     public void onQrcode(final String path) {
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {
-                    if (null != qrCodeFrame)
-                        qrCodeFrame.dispose();
-                    UIManager.setLookAndFeel(MetalLookAndFeel.class.getName());
-                    qrCodeFrame = new QRCodeFrame(path, title);
-                    qrCodeFrame.setTip(tip);
+                    initQrCodeFrame(path);
                 } catch (Exception e) {
                     System.err.println("显示二维码失败" + e.toString());
                 }
@@ -73,23 +72,43 @@ public class DefaultLoginCallback implements LoginCallback {
     }
     
     @Override
-    public void onLogin(boolean success, Exception e) {
-        if (qrCodeFrame != null) {
-            if (success) {
-                qrCodeFrame.setTip("登录成功");
+    public void onLogin(final boolean success, final Exception e) {
+        EventQueue.invokeLater(new Runnable() {
+            public void run() {
+                if (success) {
+                    if (qrCodeFrame != null) {
+                        qrCodeFrame.setTip("登录成功");
+                        qrCodeFrame.setVisible(false);
+                        qrCodeFrame.dispose();
+                    }
+                }
+                else {
+                    if (qrCodeFrame == null) {
+                        qrCodeFrame = new QRCodeFrame(null, title);
+                    }
+                    qrCodeFrame.setError(e.toString());
+                }
+                onLoginFinish(success, e);
             }
-            else {
-                qrCodeFrame.setError(e.toString());
-            }
-            
-            qrCodeFrame.setVisible(false);
-            qrCodeFrame.dispose();
-        }
+        });
+    }
+    
+    /**
+     * Overwrite this method to do the work after login finished. This method
+     * run on UI thread.
+     * 
+     * @param success
+     *            login success or not
+     * @param e
+     *            exception when login failed
+     */
+    protected void onLoginFinish(final boolean success, final Exception e) {
+    
     }
     
     public static class QRCodeFrame extends JFrame {
         private JPanel contentPane;
-        private JTextField tfError;
+        private JTextArea tfError;
         private JLabel tfTip;
         private String title;
         private String error;
@@ -103,7 +122,7 @@ public class DefaultLoginCallback implements LoginCallback {
             setBackground(Color.WHITE);
             this.setResizable(true);
             this.setTitle(title);
-            this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
             // this.setBounds(100, 100, 500, 400);
             this.contentPane = new JPanel();
             // contentPane.setBackground(new Color(102, 153, 255));
@@ -115,6 +134,9 @@ public class DefaultLoginCallback implements LoginCallback {
             JPanel qrcodePanel = new JPanel() {
                 public void paintComponent(Graphics g) {
                     super.paintComponent(g);
+                    if (icon.getImage() != null) {
+                        icon.getImage().flush();
+                    }
                     // 图片随窗体大小而变化
                     int x = 0, y = 0;
                     if (getWidth() > 0 && getWidth() > icon.getIconWidth()) {
@@ -131,7 +153,7 @@ public class DefaultLoginCallback implements LoginCallback {
             qrcodePanel.setPreferredSize(
                     new Dimension(icon.getIconWidth(), icon.getIconHeight()));
             qrcodePanel.setOpaque(true);
-            //qrcodePanel.setBackground(Color.WHITE);
+            // qrcodePanel.setBackground(Color.WHITE);
             
             tfTip = new JLabel(tip == null ? title : tip);
             tfTip.setFont(new Font("微软雅黑", Font.PLAIN, 18));
@@ -139,11 +161,12 @@ public class DefaultLoginCallback implements LoginCallback {
             tfTip.setOpaque(true);
             tfTip.setBackground(new Color(102, 153, 255));
             
-            tfError = new JTextField();
+            tfError = new JTextArea();
             tfError.setEditable(false);
             tfError.setBorder(new EmptyBorder(0, 0, 0, 0));
             tfError.setCaretColor(Color.RED);
-            // tfError.setBackground(Color.WHITE);
+            tfError.setForeground(Color.RED);
+            tfError.setLineWrap(true);
             
             contentPane.add(tfTip, BorderLayout.NORTH);
             contentPane.add(qrcodePanel, BorderLayout.CENTER);
