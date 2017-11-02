@@ -68,10 +68,11 @@ public class WechatClient extends AbstractSmartClient {
     }
     
     private boolean waitForLogin() {
-        int maxCount = 30;
+        int maxCount = 10;
         while (maxCount > 0) {
-            Utils.sleep(maxCount < 15 ? 3 : 1);
+            Utils.sleep(maxCount < 5 ? 500 : 1000);
             log.info(Const.LOG_MSG_SCAN_QRCODE);
+            // 这是一个阻塞方法
             if (!api.waitforlogin(1)) {
                 maxCount--;
                 continue;
