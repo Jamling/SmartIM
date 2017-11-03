@@ -335,6 +335,7 @@ public class WechatClient extends AbstractSmartClient {
             }
             else {
                 UserFrom from = getUserFrom(msg.src);
+                return from;
             }
         } catch (Exception e) {
             if (receiveCallback != null) {
