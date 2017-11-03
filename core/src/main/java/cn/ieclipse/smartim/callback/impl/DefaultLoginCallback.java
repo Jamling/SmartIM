@@ -22,6 +22,7 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Graphics;
 
+import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -31,6 +32,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
 import cn.ieclipse.smartim.callback.LoginCallback;
+import cn.ieclipse.util.ScaleIcon;
 
 /**
  * 类/接口描述
@@ -134,7 +136,8 @@ public class DefaultLoginCallback implements LoginCallback {
             if (temp.getImage() != null) {
                 temp.getImage().flush();
             }
-            final ImageIcon icon = new ImageIcon(filePath, filePath);
+            
+            final Icon icon = new ScaleIcon(new ImageIcon(filePath, filePath));
             
             JPanel qrcodePanel = new JPanel() {
                 public void paintComponent(Graphics g) {
@@ -147,13 +150,13 @@ public class DefaultLoginCallback implements LoginCallback {
                     if (getHeight() > 0 && getHeight() > icon.getIconHeight()) {
                         y = (getHeight() - icon.getIconHeight()) / 2;
                     }
-                    g.drawImage(icon.getImage(), x, y, icon.getIconWidth(),
-                            icon.getIconHeight(), this);
-                            
+                    // g.drawImage(icon.getImage(), x, y, icon.getIconWidth(),
+                    // icon.getIconHeight(), this);
+                    icon.paintIcon(this, g, x, y);
                 }
             };
-            qrcodePanel.setPreferredSize(
-                    new Dimension(icon.getIconWidth(), icon.getIconHeight()));
+            qrcodePanel.setToolTipText(filePath);
+            qrcodePanel.setPreferredSize(new Dimension(192, 192));
             qrcodePanel.setOpaque(true);
             // qrcodePanel.setBackground(Color.WHITE);
             
@@ -174,12 +177,12 @@ public class DefaultLoginCallback implements LoginCallback {
             contentPane.add(qrcodePanel, BorderLayout.CENTER);
             contentPane.add(tfError, BorderLayout.SOUTH);
             
-            this.setMinimumSize(new Dimension(300, 300));
+            // this.setPreferredSize(new Dimension(400, 400));
             this.setMaximumSize(new Dimension(600, 600));
-            pack();
             
             this.setLocationRelativeTo(null);
             this.setVisible(true);
+            pack();
         }
         
         public void setError(String string) {
@@ -201,7 +204,7 @@ public class DefaultLoginCallback implements LoginCallback {
         }
         
         public static void main(String[] args) {
-            new QRCodeFrame("qrcode.jpg", "微信登录");
+            new QRCodeFrame("../example/output/wechat.jpg", "微信登录");
         }
     }
 }
