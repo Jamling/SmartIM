@@ -1,6 +1,8 @@
 # SmartIM
 一个简单的IM API封装，支持SmartQQ、微信
 
+![screenshot](https://raw.githubusercontent.com/Jamling/SmartIM/master/example/example.png)
+
 ## 实现
 
 - SmartQQ: 腾讯WebQQ
@@ -14,5 +16,14 @@
 
 ## 应用
 
+- SmartIM example: SmartIM的Swing客户端，支持SmartQQ、微信聊天
 - SmartQQ4Eclipse: SmartIM的eclipse插件，可以在eclipse中使用QQ、微信进行聊天并且相互交流代码问题
 - SmartQQ4IntelliJ: SmartIM的Idea插件，功能上要比eclipse少
+
+## Example运行
+
+三种运行方式，提前是都需要安装Java SDK或JRE。
+
+1. 下载SmartIM-App.jar，双击执行
+2. 通过`java -jar SmartIM-App.jar`来执行
+3. 找到example下的Application类，在IDE中Run As Main

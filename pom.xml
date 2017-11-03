@@ -77,5 +77,6 @@
 		<module>smartqq</module>
 		<module>wechat</module>
 		<module>core</module>
+		<module>example</module>
 	</modules>
 </project>

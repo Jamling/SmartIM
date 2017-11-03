@@ -58,8 +58,7 @@ public class WechatClient extends AbstractSmartClient {
     private WechatContactHandler contactHandler = new WechatContactHandler();
     
     public WechatClient() {
-        System.setProperty("https.protocols", "TLSv1");
-        System.setProperty("jsse.enableSNIExtension", "false");
+        WechatClient.initSSL();
         Environment environment = Environment.of("classpath:config.properties");
         api = new WechatApi(environment);
         addMessageInterceptor(new TypeMessageInterceptor());
@@ -509,6 +508,11 @@ public class WechatClient extends AbstractSmartClient {
     
     public Contact find(String uin, List<Contact> list) {
         return contactHandler.find(uin, list);
+    }
+    
+    public static void initSSL() {
+        System.setProperty("https.protocols", "TLSv1");
+        System.setProperty("jsse.enableSNIExtension", "false");
     }
     
     public static void main(String[] args) throws Exception {
