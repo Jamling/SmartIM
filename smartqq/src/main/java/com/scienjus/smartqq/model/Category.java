@@ -26,12 +26,7 @@ public class Category {
 
     @Override
     public String toString() {
-        return "Category{"
-                + "index=" + index
-                + ", sort=" + sort
-                + ", name='" + name + '\''
-                + ", friends=" + friends
-                + '}';
+        return getName();
     }
 
     public static Category defaultCategory() {

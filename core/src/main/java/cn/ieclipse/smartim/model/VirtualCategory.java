@@ -43,4 +43,8 @@ public class VirtualCategory<T> {
         return list.toArray();
     }
     
+    @Override
+    public String toString() {
+        return name;
+    }
 }

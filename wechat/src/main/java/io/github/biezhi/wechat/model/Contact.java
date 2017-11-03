@@ -131,6 +131,6 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
     
     @Override
     public String toString() {
-        return String.format("Contact(name=%s)", getName());
+        return getName();
     }
 }

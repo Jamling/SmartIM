@@ -25,7 +25,14 @@ public class Application {
         // 创建一个新对象时需要扫描二维码登录，并且传一个处理接收到消息的回调，如果你不需要接收消息，可以传null
         final SmartQQClient client = new SmartQQClient();
         client.setWorkDir(new File("target").getAbsoluteFile());
-        DefaultLoginCallback loginCallback = new DefaultLoginCallback();
+        DefaultLoginCallback loginCallback = new DefaultLoginCallback() {
+            @Override
+            protected void onLoginFinish(boolean success, Exception e) {
+                if (success) {
+                    System.out.println("登录成功！");
+                }
+            }
+        };
         loginCallback.setTitle("QQ", "请使用手机QQ扫描");
         client.setLoginCallback(loginCallback);
         client.login();
