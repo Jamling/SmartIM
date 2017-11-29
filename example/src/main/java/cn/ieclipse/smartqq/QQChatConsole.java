@@ -66,8 +66,6 @@ public class QQChatConsole extends IMChatConsole {
                             String.format("文件：%s(%s)", file, e.getMessage()));
                 }
             }
-            
-            ;
         }.start();
     }
     
@@ -119,7 +117,7 @@ public class QQChatConsole extends IMChatConsole {
                 try {
                     historyWidget.getDocument().insertString(
                             historyWidget.getDocument().getLength(),
-                            msg + ENTER_KEY, null);
+                            trimMsg(msg), null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

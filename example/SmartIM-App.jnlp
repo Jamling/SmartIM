@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+  spec="1.0+"
+  codebase="https://Jamling.github.io/jws"
+  href="SmartIM-App.jnlp">
+  <information>
+    <title>SmartIM</title>
+    <vendor>www.ieclipse.cn</vendor>
+    <homepage href="https://Jamling.github.io/jws/index.html#SmartIM"/>
+    <description>SmartQQ/微信网页版</description>
+    <description kind="short">SmartQQ/微信网页版
+    </description>
+    <offline-allowed/>
+  </information>
+  <resources>
+    <j2se version="1.7+"/>
+    <jar href="SmartIM-App.jar"/>
+  </resources>
+  <application-desc main-class="cn.ieclipse.smartim.Application"/>
+  <security>
+    <all-permissions/>
+ </security>
+</jnlp> 

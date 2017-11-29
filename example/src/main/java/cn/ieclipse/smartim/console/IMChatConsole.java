@@ -63,6 +63,13 @@ public abstract class IMChatConsole extends JPanel {
         return uin;
     }
     
+    public String trimMsg(String msg) {
+        if (msg.endsWith(ENTER_KEY)) {
+            return msg;
+        }
+        return msg + ENTER_KEY;
+    }
+    
     public void loadHistories() {
         SmartClient client = getClient();
         if (client != null && client instanceof AbstractSmartClient) {
@@ -97,7 +104,7 @@ public abstract class IMChatConsole extends JPanel {
             try {
                 historyWidget.getDocument().insertString(
                         historyWidget.getDocument().getLength(),
-                        msg + ENTER_KEY, null);
+                        trimMsg(msg), null);
                 // historyWidget.setCaretPosition(historyWidget.getDocument().getEndPosition().getOffset());
             } catch (BadLocationException e) {
                 e.printStackTrace();
@@ -115,14 +122,14 @@ public abstract class IMChatConsole extends JPanel {
     }
     
     public void error(Throwable e) {
-        // e.printStackTrace(new PrintStream(errorStream));
+        error(e == null ? "null" : e.toString());
     }
     
     public void error(String msg) {
         try {
             historyWidget.getDocument().insertString(
                     historyWidget.getDocument().getLength(),
-                    msg + ENTER_KEY, null);
+                    trimMsg(msg), null);
             // historyWidget.setCaretPosition(historyWidget.getDocument().getEndPosition().getOffset());
         } catch (BadLocationException e) {
             e.printStackTrace();
@@ -140,7 +147,7 @@ public abstract class IMChatConsole extends JPanel {
                 try {
                     historyWidget.getDocument().insertString(
                             historyWidget.getDocument().getLength(),
-                            msg + ENTER_KEY, null);
+                            trimMsg(msg), null);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

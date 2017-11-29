@@ -73,7 +73,6 @@ public abstract class IMPanel extends JSplitPane {
         btnLogin.setToolTipText("登录");
         btnLogin.setIcon(SmartIcons.signin);
         btnLogin.addActionListener(new ActionListener() {
-            
             @Override
             public void actionPerformed(ActionEvent e) {
                 final SmartClient client = getClient();
@@ -112,7 +111,6 @@ public abstract class IMPanel extends JSplitPane {
         btnClose.setToolTipText("关闭");
         btnClose.setIcon(SmartIcons.close);
         btnClose.addActionListener(new ActionListener() {
-            
             @Override
             public void actionPerformed(ActionEvent e) {
                 close();
