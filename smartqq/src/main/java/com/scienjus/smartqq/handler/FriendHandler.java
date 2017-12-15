@@ -92,7 +92,13 @@ public class FriendHandler extends AbstractContactHandler<Friend> {
             JsonObject item = friends.get(i).getAsJsonObject();
             Friend friend = friendMap.get(item.get("uin").getAsLong());
             int catId = item.get("categories").getAsInt();
-            categoryMap.get(catId).addFriend(friend);
+            Category category = categoryMap.get(catId);
+            // fix https://github.com/Jamling/SmartQQ4IntelliJ/issues/26
+            if (category == null) {
+                category = Category.unknownCategory(catId);
+                categoryMap.put(category.getIndex(), category);
+            }
+            category.addFriend(friend);
         }
         
         return new ArrayList<>(categoryMap.values());

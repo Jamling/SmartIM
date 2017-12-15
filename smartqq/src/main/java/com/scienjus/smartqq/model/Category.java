@@ -36,6 +36,14 @@ public class Category {
         category.setName("我的好友");
         return category;
     }
+    
+    public static Category unknownCategory(int id) {
+        Category category = new Category();
+        category.setIndex(id);
+        category.setSort(0);
+        category.setName("未知分组");
+        return category;
+    }
 
     public int getIndex() {
         return index;
