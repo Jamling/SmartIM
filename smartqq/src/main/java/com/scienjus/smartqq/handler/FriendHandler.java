@@ -91,8 +91,8 @@ public class FriendHandler extends AbstractContactHandler<Friend> {
         for (int i = 0; friends != null && i < friends.size(); i++) {
             JsonObject item = friends.get(i).getAsJsonObject();
             Friend friend = friendMap.get(item.get("uin").getAsLong());
-            categoryMap.get(item.get("categories").getAsInt())
-                    .addFriend(friend);
+            int catId = item.get("categories").getAsInt();
+            categoryMap.get(catId).addFriend(friend);
         }
         
         return new ArrayList<>(categoryMap.values());

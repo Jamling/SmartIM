@@ -227,9 +227,16 @@ public class SmartQQClient extends AbstractSmartClient {
             this.discusses = td;
         }
         
-        List<Recent> tr = new RecentHandler().handle(api.getRecentList());
-        if (!isEmpty(tr)) {
-            this.recents = tr;
+        try {
+            List<Recent> tr = new RecentHandler().handle(api.getRecentList());
+            if (!isEmpty(tr)) {
+                this.recents = tr;
+            }
+        } catch (LogicException e) {
+            // see https://github.com/Jamling/SmartQQ4IntelliJ/issues/13
+            if (e.getCode() == 1202) {
+                this.recents = new ArrayList<>();
+            }
         }
         
         this.recents2 = parseRecents(this.recents);
