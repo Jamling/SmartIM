@@ -63,7 +63,7 @@ public class WechatMessage extends AbstractMessage {
     
     @Override
     public long getTime() {
-        return CreateTime;
+        return CreateTime * 1000;
     }
     
     @Override

@@ -1,6 +1,7 @@
 package io.github.biezhi.wechat;
 
 import java.io.File;
+import java.util.Date;
 
 import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
@@ -26,7 +27,7 @@ public class Application {
         @Override
         public void onReceiveMessage(AbstractMessage message,
                 AbstractFrom from) {
-            System.out.println(from);
+            System.out.println(from + " " + new Date(message.getTime()));
             System.out.println(message);
         }
         
