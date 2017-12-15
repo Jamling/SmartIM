@@ -63,6 +63,8 @@ public class WechatMessage extends AbstractMessage {
     
     @Override
     public long getTime() {
+        // fix #2 wechat timeline error refer to
+        // https://github.com/Jamling/SmartQQ4IntelliJ/issues/30
         return CreateTime * 1000;
     }
     

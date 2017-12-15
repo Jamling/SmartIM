@@ -174,7 +174,7 @@ public class WechatClient extends AbstractSmartClient {
                                 case 1101:
                                 case 1102:
                                     logout++;
-                                    if (logout > 8) {
+                                    if (logout > 3) {
                                         log.warn(Const.LOG_MSG_LOGOUT);
                                         close();
                                         if (receiveCallback != null) {
@@ -548,7 +548,6 @@ public class WechatClient extends AbstractSmartClient {
         client.login();
         if (client.isLogin()) {
             client.init();
-            
             client.start();
         }
     }
