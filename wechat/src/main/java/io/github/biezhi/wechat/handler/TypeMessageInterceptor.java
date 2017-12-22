@@ -10,12 +10,21 @@ public class TypeMessageInterceptor implements MessageInterceptor {
     public boolean handle(IMessage message) {
         if (message instanceof WechatMessage) {
             WechatMessage wxMsg = (WechatMessage) message;
-            if (wxMsg.MsgType == WechatMessage.MSGTYPE_STATUSNOTIFY) {
-                return true;
+            boolean ret = false;
+            switch (wxMsg.MsgType) {
+                case WechatMessage.MSGTYPE_STATUSNOTIFY:
+                    ret = true;
+                    break;
+                case WechatMessage.MSGTYPE_TEXT:
+                    break;
+                case WechatMessage.MSGTYPE_IMAGE:
+                case WechatMessage.MSGTYPE_EMOTICON:
+                    break;
+                default:
+                    todo(wxMsg);
+                    break;
             }
-            if (wxMsg.MsgType != WechatMessage.MSGTYPE_TEXT) {
-                wxMsg.text = "暂不支持的消息，请在手机上查看";
-            }
+            return ret;
         }
         return false;
     }

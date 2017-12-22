@@ -31,6 +31,7 @@ import io.github.biezhi.wechat.handler.GroupMessageInterceptor;
 import io.github.biezhi.wechat.handler.TypeMessageInterceptor;
 import io.github.biezhi.wechat.handler.WechatContactHandler;
 import io.github.biezhi.wechat.handler.WechatMessageHandler;
+import io.github.biezhi.wechat.handler.msg.InitMsgXmlHandler;
 import io.github.biezhi.wechat.model.Const;
 import io.github.biezhi.wechat.model.Contact;
 import io.github.biezhi.wechat.model.Environment;
@@ -45,6 +46,7 @@ public class WechatClient extends AbstractSmartClient {
     private static final Logger log = LoggerFactory
             .getLogger(WechatClient.class);
             
+    private static WechatClient instance;
     private WechatApi api;
     private int memberCount;
     private List<Contact> publicUsersList;
@@ -57,6 +59,10 @@ public class WechatClient extends AbstractSmartClient {
     
     private WechatContactHandler contactHandler = new WechatContactHandler();
     
+    public static WechatClient getInstance() {
+        return instance;
+    }
+    
     public WechatClient() {
         WechatClient.initSSL();
         Environment environment = Environment.of("classpath:config.properties");
@@ -64,6 +70,7 @@ public class WechatClient extends AbstractSmartClient {
         addMessageInterceptor(new TypeMessageInterceptor());
         addMessageInterceptor(new GroupMessageInterceptor());
         addMessageInterceptor(new DecodeMessageInterceptor());
+        instance = this;
     }
     
     private boolean waitForLogin() {
@@ -403,6 +410,16 @@ public class WechatClient extends AbstractSmartClient {
     public void handle_msg(JsonObject json) {
         List<WechatMessage> msgs = msgHandler.handleAll(json);
         for (WechatMessage msg : msgs) {
+            if (msg.MsgType == WechatMessage.MSGTYPE_STATUSNOTIFY
+                    && msg.StatusNotifyCode == 4
+                    && !StringUtils.isEmpty(msg.StatusNotifyUserName)) {
+                // String r = new InitMsgXmlHandler(msg.Content).getRecents();
+                this.recentList = contactHandler
+                        .handleRecents(msg.StatusNotifyUserName);
+                if (modificationCallback != null) {
+                    modificationCallback.onContactChanged((IContact) null);
+                }
+            }
             boolean handled = intercept(msg);
             AbstractFrom from = getFrom(msg);
             if (!handled) {
@@ -508,6 +525,14 @@ public class WechatClient extends AbstractSmartClient {
     
     public Contact find(String uin, List<Contact> list) {
         return contactHandler.find(uin, list);
+    }
+    
+    public String getQueryString() {
+        if (api != null && api.session != null) {
+            return String.format("sid=%s&skey=%s", api.session.getSid(),
+                    api.session.getSkey());
+        }
+        return null;
     }
     
     public static void initSSL() {

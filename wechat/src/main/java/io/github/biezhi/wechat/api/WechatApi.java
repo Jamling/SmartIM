@@ -575,7 +575,7 @@ public class WechatApi {
         params.put("synckey", this.synckey);
         params.put("_", System.currentTimeMillis());
         
-        String response = doGet(url, this.cookie, params);
+        String response = doGet(false, url, this.cookie, params);
         
         int[] arr = new int[] { -1, -1 };
         if (Utils.isBlank(response)) {
@@ -667,10 +667,10 @@ public class WechatApi {
     
     private String doGet(String url, Map<String, Object>... params)
             throws Exception {
-        return doGet(url, null, params);
+        return doGet(true, url, null, params);
     }
     
-    private String doGet(String url, String cookie,
+    private String doGet(boolean enableLog, String url, String cookie,
             Map<String, Object>... params) throws Exception {
         if (null != params && params.length > 0) {
             Map<String, Object> param = params[0];
@@ -694,13 +694,15 @@ public class WechatApi {
         }
         
         Request request = requestBuilder.build();
-        
-        log.debug("[*] 请求 => {}\n", request);
+        if (enableLog) {
+            log.debug("[*] 请求 => {}\n", request);
+        }
         
         Response response = client.newCall(request).execute();
         String body = response.body().string();
-        
-        log.debug("[*] 响应 => {}", body);
+        if (enableLog) {
+            log.debug("[*] 响应 => {}", body);
+        }
         return body;
     }
     

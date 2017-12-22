@@ -1,0 +1,24 @@
+
+<msg>
+	<op id='4'>
+		<!-- 最近联系的联系人 -->
+		<username>
+			filehelper,xxx@chatroom,wxid_xxx,xxx,...
+		</username>
+		<unreadchatlist>
+			<chat>
+				<!-- 朋友圈 -->
+				<username>
+					MomentsUnreadMsgStatus
+				</username>
+				<lastreadtime>
+					1454502365
+				</lastreadtime>
+			</chat>
+		</unreadchatlist>
+		<!-- 未读的功能账号消息，群发助手，漂流瓶等 -->
+		<unreadfunctionlist>
+			test
+		</unreadfunctionlist>
+	</op>
+</msg>

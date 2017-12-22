@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
 import io.github.biezhi.wechat.handler.WechatMessageHandler;
+import io.github.biezhi.wechat.handler.msg.EmojiMsgXmlHandler;
+import io.github.biezhi.wechat.handler.msg.ImageMsgXmlHandler;
 
 public class WechatMessage extends AbstractMessage {
     
@@ -44,6 +46,12 @@ public class WechatMessage extends AbstractMessage {
     @SerializedName("CreateTime")
     public long CreateTime;
     
+    @SerializedName("StatusNotifyCode")
+    public int StatusNotifyCode;
+    
+    @SerializedName("StatusNotifyUserName")
+    public String StatusNotifyUserName;
+    
     @Expose(serialize = false, deserialize = false)
     public String text;
     public String src;
@@ -58,7 +66,16 @@ public class WechatMessage extends AbstractMessage {
     }
     
     public void parseContent() {
-        text = Content.replace("&lt;", "<").replace("&gt;", ">");
+        String temp = Content.replace("&lt;", "<").replace("&gt;", ">");
+        if (MsgType == WechatMessage.MSGTYPE_EMOTICON) {
+            text = new EmojiMsgXmlHandler(temp).getHtml();
+        }
+        else if (MsgType == WechatMessage.MSGTYPE_IMAGE) {
+            text = new ImageMsgXmlHandler(temp).getHtml();
+        }
+        else {
+            text = temp;
+        }
     }
     
     @Override
