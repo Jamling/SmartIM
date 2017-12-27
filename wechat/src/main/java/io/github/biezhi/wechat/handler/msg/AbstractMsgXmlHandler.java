@@ -15,6 +15,8 @@
  */
 package io.github.biezhi.wechat.handler.msg;
 
+import java.util.regex.Pattern;
+
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
@@ -41,12 +43,14 @@ public class AbstractMsgXmlHandler {
     // }
     
     public AbstractMsgXmlHandler(String content) {
-        this.content = content;
+        this.content = Pattern.compile(".*(<msg>.*</msg>).*").matcher(content)
+                .replaceAll("$1");
         try {
-            this.document = DocumentHelper.parseText(content);
+            this.document = DocumentHelper.parseText(this.content);
             this.root = this.document.getRootElement();
         } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("xml content: " + content);
         }
     }
     

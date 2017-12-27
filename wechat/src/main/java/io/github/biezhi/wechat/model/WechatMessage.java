@@ -71,7 +71,8 @@ public class WechatMessage extends AbstractMessage {
             text = new EmojiMsgXmlHandler(temp).getHtml();
         }
         else if (MsgType == WechatMessage.MSGTYPE_IMAGE) {
-            text = new ImageMsgXmlHandler(temp).getHtml();
+            // text = new ImageMsgXmlHandler(temp).getHtml();
+            text = "对方给您发了一张图片（请在手机上查看）";
         }
         else {
             text = temp;

@@ -43,9 +43,8 @@ public class EmojiMsgXmlHandler extends AbstractMsgXmlHandler {
                 q = "";
             }
             return String.format(
-                    "<img src=\"%s?%s\" alt=\"emoji表情\"/> <img src=\"%s?%s\" alt=\"emoji表情\"/>",
-                    node.attributeValue("cdnurl"), q,
-                    node.attributeValue("externurl"), q);
+                    "<img src=\"%s?%s\" alt=\"emoji表情\"/>",
+                    node.attributeValue("cdnurl"), q);
         } catch (Exception e) {
             return "emoji表情，请在手机上查看";
         }

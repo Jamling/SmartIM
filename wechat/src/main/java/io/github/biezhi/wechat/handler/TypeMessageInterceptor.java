@@ -44,6 +44,8 @@ public class TypeMessageInterceptor implements MessageInterceptor {
         }
         else if (wxMsg.MsgType == WechatMessage.MSGTYPE_VOIPINVITE) {
             wxMsg.text = "视频邀请消息（请在手机上查看）";
+        } else {
+            wxMsg.text = "暂不支持的消息（请在手机上查看）";
         }
     }
 }

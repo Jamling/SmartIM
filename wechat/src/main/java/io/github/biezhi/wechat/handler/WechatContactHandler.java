@@ -85,7 +85,7 @@ public class WechatContactHandler extends AbstractContactHandler<Contact> {
         }
     }
     
-    public List<Contact> handleRecents(String chatSet) {
+    public List<Contact> handleRecents(String chatSet, List<Contact> specials) {
         List<Contact> recentList = new ArrayList<Contact>();
         if (!StringUtils.isEmpty(chatSet)) {
             for (Contact c : this.allList) {
@@ -96,6 +96,9 @@ public class WechatContactHandler extends AbstractContactHandler<Contact> {
             String[] set = chatSet.split(",");
             for (int i = 0; i < set.length; i++) {
                 Contact c = find(set[i], this.allList);
+                if (c == null) {
+                    c = find(set[i], specials);
+                }
                 if (c != null && !recentList.contains(c)) {
                     recentList.add(c);
                 }
@@ -129,8 +132,7 @@ public class WechatContactHandler extends AbstractContactHandler<Contact> {
     }
     
     public Contact find(String uin, List<Contact> list) {
-        if (!StringUtils.isEmpty(uin)
-                && !StringUtils.isEmpty(list)) {
+        if (!StringUtils.isEmpty(uin) && !StringUtils.isEmpty(list)) {
             for (Contact c : list) {
                 if (c.UserName.equals(uin)) {
                     return c;

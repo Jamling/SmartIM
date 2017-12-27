@@ -142,17 +142,18 @@ public class WechatClient extends AbstractSmartClient {
             return;
         }
         contactHandler.handleContacts(response, getAccount());
-        this.groupList = contactHandler.getGroupList();
-        this.memberList = contactHandler.getMemberList();
-        this.publicUsersList = contactHandler.getPublicUsersList();
-        this.specialUsersList = contactHandler.getSpecialUsersList();
-        this.allList = contactHandler.getAllList();
-        this.recentList = contactHandler.handleRecents(api.chatSet);
-        
         JsonArray array = api.batchGetContact(
                 Arrays.asList(Const.API_SPECIAL_USER.toArray(new String[] {})));
         List<Contact> special = contactHandler.handle(array);
         this.specialUsersList = special;
+        
+        this.groupList = contactHandler.getGroupList();
+        this.memberList = contactHandler.getMemberList();
+        this.publicUsersList = contactHandler.getPublicUsersList();
+        List<Contact> special2 = contactHandler.getSpecialUsersList();
+        this.specialUsersList.addAll(special2);
+        this.allList = contactHandler.getAllList();
+        this.recentList = contactHandler.handleRecents(api.chatSet, this.specialUsersList);
         
         log.info(Const.LOG_MSG_CONTACT_COUNT, memberCount, memberList.size());
         log.info(Const.LOG_MSG_OTHER_CONTACT_COUNT, groupList.size(),
@@ -174,8 +175,8 @@ public class WechatClient extends AbstractSmartClient {
                             int[] checkResponse = api.synccheck();
                             int retcode = checkResponse[0];
                             int selector = checkResponse[1];
-                            log.debug("retcode: {}, selector: {}", retcode,
-                                    selector);
+                            // log.debug("retcode: {}, selector: {}", retcode,
+                            // selector);
                             switch (retcode) {
                                 case 1100:
                                 case 1101:
@@ -415,7 +416,7 @@ public class WechatClient extends AbstractSmartClient {
                     && !StringUtils.isEmpty(msg.StatusNotifyUserName)) {
                 // String r = new InitMsgXmlHandler(msg.Content).getRecents();
                 this.recentList = contactHandler
-                        .handleRecents(msg.StatusNotifyUserName);
+                        .handleRecents(msg.StatusNotifyUserName, this.specialUsersList);
                 if (modificationCallback != null) {
                     modificationCallback.onContactChanged((IContact) null);
                 }
