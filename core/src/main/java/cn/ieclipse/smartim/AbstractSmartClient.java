@@ -30,6 +30,7 @@ import cn.ieclipse.smartim.callback.LoginCallback;
 import cn.ieclipse.smartim.callback.ModificationCallback;
 import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.callback.SendCallback;
+import cn.ieclipse.smartim.exception.LogicException;
 import cn.ieclipse.smartim.handler.MessageInterceptor;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
