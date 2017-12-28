@@ -851,6 +851,18 @@ public class SmartQQClient extends AbstractSmartClient {
         }
     }
     
+    @Override
+    protected void notifySend(int type, String targetId, CharSequence message,
+            Exception e) {
+        Exception ex = e;
+        if (e instanceof LogicException) {
+            if (((LogicException) e).getCode() == 1202) {
+                ex = null;
+            }
+        }
+        super.notifySend(type, targetId, message, ex);
+    }
+    
     public QQMessage createMessage(String msg, IContact target) {
         long uin = Long.parseLong(target.getUin());
         if (target instanceof Friend || target instanceof UserInfo) {
