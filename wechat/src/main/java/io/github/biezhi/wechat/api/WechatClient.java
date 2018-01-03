@@ -429,9 +429,7 @@ public class WechatClient extends AbstractSmartClient {
                         getRecentList().add(0, (Contact) from.getContact());
                     }
                 }
-                if (receiveCallback != null) {
-                    receiveCallback.onReceiveMessage(msg, from);
-                }
+                notifyReceive(msg, from);
             }
             else {
                 log.info("intercept msg : " + msg);
