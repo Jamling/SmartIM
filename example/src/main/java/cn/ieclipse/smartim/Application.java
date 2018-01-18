@@ -1,5 +1,6 @@
 package cn.ieclipse.smartim;
 
+import java.awt.BorderLayout;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -9,12 +10,6 @@ import cn.ieclipse.smartqq.SmartQQPanel;
 import cn.ieclipse.wechat.WechatPanel;
 import icons.SmartIcons;
 import io.github.biezhi.wechat.api.WechatClient;
-
-import java.awt.BorderLayout;
-import javax.swing.JMenuBar;
-import javax.swing.JMenuItem;
-import javax.swing.JMenu;
-import javax.swing.JPanel;
 
 public class Application {
     

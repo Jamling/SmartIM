@@ -1,16 +1,15 @@
 package cn.ieclipse.smartim.views;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
@@ -19,6 +18,10 @@ import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
 import cn.ieclipse.smartim.SmartClient;
+import cn.ieclipse.smartim.actions.DisconnectAction;
+import cn.ieclipse.smartim.actions.LoginAction;
+import cn.ieclipse.smartim.actions.SettingsAction;
+import cn.ieclipse.smartim.actions.TestAction;
 import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
 import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.console.ClosableTabHost;
@@ -26,12 +29,10 @@ import cn.ieclipse.smartim.console.IMChatConsole;
 import cn.ieclipse.smartim.model.IContact;
 import icons.SmartIcons;
 
-import javax.swing.ImageIcon;
-
 /**
  * Created by Jamling on 2017/7/11.
  */
-public abstract class IMPanel extends JSplitPane {
+public abstract class IMPanel extends JSplitPane implements ClosableTabHost.Callback {
     
     protected JTabbedPane tabbedChat;
     protected IMContactView left;
@@ -59,7 +60,7 @@ public abstract class IMPanel extends JSplitPane {
         JPanel pRight = new JPanel();
         pRight.setLayout(new BorderLayout(0, 0));
         
-        tabbedChat = new ClosableTabHost();
+        tabbedChat = new ClosableTabHost(this);
         pRight.add(tabbedChat, BorderLayout.CENTER);
         
         setRightComponent(pRight);
@@ -69,54 +70,10 @@ public abstract class IMPanel extends JSplitPane {
     }
     
     protected void initToolBar1(JToolBar toolBar) {
-        JButton btnLogin = new JButton();
-        btnLogin.setToolTipText("登录");
-        btnLogin.setIcon(SmartIcons.signin);
-        btnLogin.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                final SmartClient client = getClient();
-                boolean ok = true;
-                if (client.isLogin()) {
-                    ok = JOptionPane.showConfirmDialog(null,
-                            "您已处于登录状态，确定要重新登录吗？") == 0;
-                }
-                if (ok) {
-                    client.setLoginCallback(new DefaultLoginCallback() {
-                        protected void onLoginFinish(boolean success,
-                                Exception e) {
-                            if (success) {
-                                initContacts();
-                            }
-                            else {
-                                LOG.error("登录失败", e);
-                            }
-                        };
-                    });
-                    new Thread() {
-                        @Override
-                        public void run() {
-                            client.login();
-                        }
-                    }.start();
-                }
-                else {
-                    initContacts();
-                }
-            }
-        });
-        toolBar.add(btnLogin);
-        
-        JButton btnClose = new JButton();
-        btnClose.setToolTipText("关闭");
-        btnClose.setIcon(SmartIcons.close);
-        btnClose.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                close();
-            }
-        });
-        toolBar.add(btnClose);
+        toolBar.add(new LoginAction(this));
+        toolBar.add(new DisconnectAction(this));
+        toolBar.add(new SettingsAction(this));
+        // toolBar.add(new TestAction(this));
     }
     
     public boolean isLeftHidden() {
@@ -174,7 +131,7 @@ public abstract class IMPanel extends JSplitPane {
     
     public void onDoubleClick(Object obj) {
         SmartClient client = getClient();
-        if (client.isClose()) {
+        if (client.isClose() || !client.isLogin()) {
             LOG.sendNotification("错误", "连接已断开，请重新登录");
             return;
         }
@@ -187,10 +144,17 @@ public abstract class IMPanel extends JSplitPane {
         IMChatConsole console = findConsoleById(contact.getUin(), true);
         if (console == null) {
             console = createConsoleUI(contact);
+            console.setName(contact.getName());
             tabbedChat.addTab(contact.getName(), console);
             consoles.put(console.getUin(), console);
             tabbedChat.setSelectedComponent(console);
         }
+    }
+    
+    public void addConsole(IMChatConsole console) {
+        tabbedChat.addTab(console.getName(), console);
+        consoles.put(console.getUin(), console);
+        tabbedChat.setSelectedComponent(console);
     }
     
     public void close() {
@@ -205,6 +169,31 @@ public abstract class IMPanel extends JSplitPane {
             tabbedChat.remove(0);
         }
         consoles.clear();
+    }
+    
+    @Override
+    public void removeTabAt(int index) {
+        IMChatConsole console = null;
+        Component comp = tabbedChat.getComponentAt(index);
+        if (comp instanceof IMChatConsole) {
+            console = (IMChatConsole) comp;
+            consoles.remove(console.getUin());
+        }
+        tabbedChat.removeTabAt(index);
+    }
+
+    public java.util.List<IMChatConsole> getConsoleList() {
+        java.util.List<IMChatConsole> list = new ArrayList<>();
+        if (tabbedChat != null) {
+            int count = tabbedChat.getTabCount();
+            for (int i = 0; i < count; i++) {
+                if (tabbedChat.getComponentAt(i) instanceof IMChatConsole) {
+                    IMChatConsole t = (IMChatConsole) tabbedChat.getComponentAt(i);
+                    list.add(t);
+                }
+            }
+        }
+        return list;
     }
     
     public void initContacts() {

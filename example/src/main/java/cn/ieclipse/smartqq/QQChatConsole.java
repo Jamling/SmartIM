@@ -11,9 +11,9 @@ import com.scienjus.smartqq.client.SmartQQClient;
 import com.scienjus.smartqq.handler.msg.DiscussMessageHandler;
 import com.scienjus.smartqq.handler.msg.FriendMessageHandler;
 import com.scienjus.smartqq.handler.msg.GroupMessageHandler;
+import com.scienjus.smartqq.model.Friend;
 import com.scienjus.smartqq.model.QQMessage;
 
-import cn.ieclipse.smartim.IMClientFactory;
 import cn.ieclipse.smartim.common.IMUtils;
 import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.console.IMChatConsole;
@@ -24,7 +24,6 @@ import cn.ieclipse.smartim.model.impl.AbstractFrom;
  * Created by Jamling on 2017/7/1.
  */
 public class QQChatConsole extends IMChatConsole {
-    
     public QQChatConsole(IContact target, SmartQQPanel imPanel) {
         super(target, imPanel);
     }
@@ -33,6 +32,7 @@ public class QQChatConsole extends IMChatConsole {
         final File f = new File(file);
         new Thread() {
             public void run() {
+                uploadLock = true;
                 try {
                     QNUploader uploader = new QNUploader();
                     String ak = "";
@@ -65,6 +65,7 @@ public class QQChatConsole extends IMChatConsole {
                     LOG.sendNotification("发送文件失败",
                             String.format("文件：%s(%s)", file, e.getMessage()));
                 }
+                uploadLock = false;
             }
         }.start();
     }
@@ -94,7 +95,7 @@ public class QQChatConsole extends IMChatConsole {
         
         AbstractFrom from = getClient().parseFrom(m);
         String name = from == null ? "未知用户" : from.getName();
-        String msg = IMUtils.formatMsg(m.getTime(), name, m.getContent());
+        String msg = IMUtils.formatHtmlMsg(m.getTime(), name, m.getContent());
         write(msg);
     }
     
@@ -114,14 +115,17 @@ public class QQChatConsole extends IMChatConsole {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                try {
-                    historyWidget.getDocument().insertString(
-                            historyWidget.getDocument().getLength(),
-                            trimMsg(msg), null);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                insertDocument(msg);
             }
         });
+    }
+    
+    @Override
+    public boolean hideMyInput() {
+        if (contact instanceof Friend) {
+            return false;
+        }
+        return true;
+        //return SmartIMSettings.getInstance().getState().HIDE_MY_INPUT;
     }
 }

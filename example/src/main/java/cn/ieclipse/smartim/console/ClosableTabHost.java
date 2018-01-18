@@ -30,10 +30,20 @@ import javax.swing.plaf.basic.BasicButtonUI;
  */
 public class ClosableTabHost extends JTabbedPane implements ChangeListener {
     private Insets insets = new Insets(0, 0, 0, 0);
+    private Callback callback;
     
     public ClosableTabHost() {
         super(JTabbedPane.TOP);
         addChangeListener(this);
+    }
+    
+    public ClosableTabHost(Callback callback) {
+        this();
+        setCallback(callback);
+    }
+
+    public void setCallback(Callback callback) {
+        this.callback = callback;
     }
     
     @Override
@@ -153,7 +163,11 @@ public class ClosableTabHost extends JTabbedPane implements ChangeListener {
         public void actionPerformed(ActionEvent e) {
             int i = indexOfTabComponent(getParent());
             if (i != -1) {
-                removeTabAt(i);
+                if (callback != null) {
+                    callback.removeTabAt(i);
+                } else {
+                    removeTabAt(i);
+                }
             }
         }
         
@@ -179,5 +193,9 @@ public class ClosableTabHost extends JTabbedPane implements ChangeListener {
             g2.drawLine(getWidth() - delta, delta, delta, getHeight() - delta);
             g2.dispose();
         }
+    }
+    
+    public interface Callback {
+        void removeTabAt(int index);
     }
 }

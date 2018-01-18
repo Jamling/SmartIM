@@ -46,21 +46,21 @@ public class WXReceiveCallback implements ReceiveCallback {
     @Override
     public void onReceiveMessage(AbstractMessage message, AbstractFrom from) {
         if (from != null && from.getContact() != null) {
-            boolean unkown = false;
+            boolean unknown = false;
             boolean notify = true;
             String uin = from.getContact().getUin();
             Contact contact = (Contact) from.getContact();
             contact.setLastMessage(message);
             if (from instanceof GroupFrom) {
                 GroupFrom gf = (GroupFrom) from;
-                unkown = gf.getMember() == null || gf.getMember().isUnknown();
+                unknown = gf.getMember() == null || gf.getMember().isUnknown();
                 notify = true;
             }
             else {
-                unkown = from.getMember() == null;
+                unknown = from.getMember() == null;
             }
             WechatClient client = fContactView.getClient();
-            if (!unkown) {
+            if (!unknown) {
                 IMHistoryManager.getInstance().save(client, uin,
                         message.getRaw());
             }
@@ -69,11 +69,21 @@ public class WXReceiveCallback implements ReceiveCallback {
             // message.getRaw());
             
             if (notify) {
-                CharSequence content = (from instanceof UserFrom)
-                        ? message.getText()
-                        : from.getName() + ":" + message.getText();
-                Notifications.notify(fContactView, from.getContact(),
-                        from.getContact().getName(), content);
+                boolean hide = unknown;
+                try {
+                    hide = hide || from.getMember().getUin().equals(
+                            fContactView.getClient().getAccount().getUin());
+                } catch (Exception e) {
+                }
+                if (hide) {
+                    //don't notify
+                } else {
+                    CharSequence content = (from instanceof UserFrom)
+                            ? message.getText()
+                            : from.getName() + ":" + message.getText();
+                    Notifications.notify(fContactView, from.getContact(),
+                            from.getContact().getName(), content);
+                }
             }
             
             WXChatConsole console = (cn.ieclipse.wechat.WXChatConsole) fContactView
@@ -84,7 +94,7 @@ public class WXReceiveCallback implements ReceiveCallback {
                 String msg = null;
                 if (message instanceof WechatMessage) {
                     WechatMessage m = (WechatMessage) message;
-                    msg = IMUtils.formatMsg(m.CreateTime, name, m.getText());
+                    msg = IMUtils.formatHtmlMsg(m.CreateTime, name, m.getText());
                 }
                 console.write(msg);
                 fContactView.highlight(console);

@@ -47,6 +47,8 @@ public class SmartIcons {
     public static Icon discuss = IconLoader.getIcon("/icons/user-o.png");
     
     public static Icon file = IconLoader.getIcon("/icons/File.png");
+    public static Icon lock = IconLoader.getIcon("/icons/lock_co.png");
+    public static Icon settings = IconLoader.getIcon("/icons/settings.png");
     
     public static void main(String[] args) {
         System.out.println(group);
