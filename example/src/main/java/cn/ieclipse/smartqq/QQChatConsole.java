@@ -19,6 +19,7 @@ import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.console.IMChatConsole;
 import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
+import cn.ieclipse.smartim.settings.SmartIMSettings;
 
 /**
  * Created by Jamling on 2017/7/1.
@@ -125,7 +126,6 @@ public class QQChatConsole extends IMChatConsole {
         if (contact instanceof Friend) {
             return false;
         }
-        return true;
-        //return SmartIMSettings.getInstance().getState().HIDE_MY_INPUT;
+        return SmartIMSettings.getInstance().getState().HIDE_MY_INPUT;
     }
 }

@@ -15,8 +15,6 @@
  */
 package cn.ieclipse.smartqq;
 
-import cn.ieclipse.smartim.common.LOG;
-import cn.ieclipse.smartim.common.Notifications;
 import com.scienjus.smartqq.client.SmartQQClient;
 import com.scienjus.smartqq.model.DiscussFrom;
 import com.scienjus.smartqq.model.FriendFrom;
@@ -28,8 +26,11 @@ import cn.ieclipse.smartim.IMClientFactory;
 import cn.ieclipse.smartim.IMHistoryManager;
 import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.common.IMUtils;
+import cn.ieclipse.smartim.common.LOG;
+import cn.ieclipse.smartim.common.Notifications;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
+import cn.ieclipse.smartim.settings.SmartIMSettings;
 
 /**
  * 类/接口描述
@@ -49,7 +50,7 @@ public class QQReceiveCallback implements ReceiveCallback {
     public void onReceiveMessage(AbstractMessage message, AbstractFrom from) {
         if (from != null && from.getContact() != null) {
             boolean unknown = false;
-            boolean notify = true;
+            boolean notify = SmartIMSettings.getInstance().getState().NOTIFY_MSG;
             String uin = from.getContact().getUin();
             QQContact qqContact = null;
             if (from instanceof GroupFrom) {
@@ -57,7 +58,7 @@ public class QQReceiveCallback implements ReceiveCallback {
                 unknown = (gf.getGroupUser() == null
                         || gf.getGroupUser().isUnknown());
                 uin = gf.getGroup().getUin();
-                notify = true;
+                notify = SmartIMSettings.getInstance().getState().NOTIFY_GROUP_MSG;
                 qqContact = fContactView.getClient()
                         .getGroup(gf.getGroup().getId());
             } else if (from instanceof DiscussFrom) {
@@ -65,7 +66,7 @@ public class QQReceiveCallback implements ReceiveCallback {
                 unknown = (gf.getDiscussUser() == null
                         || gf.getDiscussUser().isUnknown());
                 uin = gf.getDiscuss().getUin();
-                notify = true;
+                notify = SmartIMSettings.getInstance().getState().NOTIFY_GROUP_MSG;
                 qqContact = fContactView.getClient()
                         .getGroup(gf.getDiscuss().getId());
             }
@@ -76,7 +77,7 @@ public class QQReceiveCallback implements ReceiveCallback {
                         message.getRaw());
             }
             if (notify) {
-                boolean hide = unknown ;
+                boolean hide = unknown && !SmartIMSettings.getInstance().getState().NOTIFY_UNKNOWN;
                 try {
                     hide = hide || from.getMember().getUin().equals(
                             fContactView.getClient().getAccount().getUin());

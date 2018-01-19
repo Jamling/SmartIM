@@ -20,4 +20,5 @@
   <security>
     <all-permissions/>
  </security>
+ <version>2.1.2</version>
 </jnlp> 

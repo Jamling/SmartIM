@@ -35,6 +35,7 @@ import cn.ieclipse.smartim.SmartClient;
 import cn.ieclipse.smartim.common.IMUtils;
 import cn.ieclipse.smartim.common.WrapHTMLFactory;
 import cn.ieclipse.smartim.model.IContact;
+import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.smartim.views.IMPanel;
 import cn.ieclipse.util.BareBonesBrowserLaunch;
 import cn.ieclipse.util.StringUtils;
@@ -116,8 +117,7 @@ public abstract class IMChatConsole extends JPanel {
         String name = getClient().getAccount().getName();
         String msg = IMUtils.formatHtmlMyMsg(System.currentTimeMillis(), name,
                 input);
-        // if (contact instanceof Friend)
-        {
+        if (!hideMyInput()) {
             insertDocument(msg);
         }
         new Thread() {
@@ -181,7 +181,7 @@ public abstract class IMChatConsole extends JPanel {
         historyWidget = top.getEditorPane();
         inputWidget = bottom.getTextPane();
         btnSend = bottom.getBtnSend();
-        btnSend.setVisible(true);
+        btnSend.setVisible(SmartIMSettings.getInstance().getState().SHOW_SEND);
         btnSend.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
