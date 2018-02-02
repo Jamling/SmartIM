@@ -176,6 +176,6 @@ public class StringUtils {
         // &apos; -> '
         // &quot; -> "
         return src.replaceAll("&lt;", "<").replaceAll("&gt;", ">")
-                .replaceAll("&amp", "&");
+                .replaceAll("&amp;", "&");
     }
 }
