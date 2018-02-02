@@ -160,4 +160,22 @@ public class StringUtils {
     public static boolean isEmpty(Collection<?> list) {
         return list == null || list.isEmpty();
     }
+    
+    public static String encodeXml(String src) {
+        if (src == null) {
+            return src;
+        }
+        return src.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
+                .replaceAll("&", "&amp;");
+    }
+    
+    public static String decodeXml(String src) {
+        if (src == null) {
+            return src;
+        }
+        // &apos; -> '
+        // &quot; -> "
+        return src.replaceAll("&lt;", "<").replaceAll("&gt;", ">")
+                .replaceAll("&amp", "&");
+    }
 }

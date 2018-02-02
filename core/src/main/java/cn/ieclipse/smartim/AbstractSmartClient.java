@@ -25,16 +25,13 @@ import org.slf4j.LoggerFactory;
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
-import ch.qos.logback.core.util.FileUtil;
 import cn.ieclipse.smartim.callback.LoginCallback;
 import cn.ieclipse.smartim.callback.ModificationCallback;
 import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.callback.SendCallback;
-import cn.ieclipse.smartim.exception.LogicException;
 import cn.ieclipse.smartim.handler.MessageInterceptor;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
-import cn.ieclipse.util.FileUtils;
 
 /**
  * 类/接口描述
