@@ -6,24 +6,21 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
 
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
+import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.event.HyperlinkEvent;
 import javax.swing.event.HyperlinkListener;
-import javax.swing.text.Element;
 import javax.swing.text.ViewFactory;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
@@ -32,6 +29,9 @@ import javax.swing.text.html.StyleSheet;
 import cn.ieclipse.smartim.AbstractSmartClient;
 import cn.ieclipse.smartim.IMHistoryManager;
 import cn.ieclipse.smartim.SmartClient;
+import cn.ieclipse.smartim.actions.ScrollLockAction;
+import cn.ieclipse.smartim.actions.SendFileAction;
+import cn.ieclipse.smartim.actions.SendImageAction;
 import cn.ieclipse.smartim.common.IMUtils;
 import cn.ieclipse.smartim.common.WrapHTMLFactory;
 import cn.ieclipse.smartim.model.IContact;
@@ -40,7 +40,6 @@ import cn.ieclipse.smartim.views.IMPanel;
 import cn.ieclipse.util.BareBonesBrowserLaunch;
 import cn.ieclipse.util.StringUtils;
 import icons.SmartIcons;
-import javax.swing.JToggleButton;
 
 /**
  * Created by Jamling on 2017/7/1.
@@ -114,7 +113,7 @@ public abstract class IMChatConsole extends JPanel {
             error("连接已关闭，请重新登录");
             return;
         }
-        String name = getClient().getAccount().getName();
+        String name = client.getAccount().getName();
         String msg = IMUtils.formatHtmlMyMsg(System.currentTimeMillis(), name,
                 input);
         if (!hideMyInput()) {
@@ -139,7 +138,8 @@ public abstract class IMChatConsole extends JPanel {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                insertDocument(String.format("<div class=\"error\">%s</div>", msg));
+                insertDocument(
+                        String.format("<div class=\"error\">%s</div>", msg));
             }
         });
     }
@@ -217,44 +217,20 @@ public abstract class IMChatConsole extends JPanel {
     }
     
     protected void initToolBar(JToolBar toolBar) {
-        JButton btnFile = new JButton();
-        btnFile.setToolTipText("发送文件");
-        btnFile.setIcon(SmartIcons.file);
-        btnFile.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                if (!enableUpload()) {
-                    return;
-                }
-                JFileChooser chooser = new JFileChooser();
-                chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-                chooser.showDialog(new JLabel(), "选择要发送的文件");
-                File f = chooser.getSelectedFile();
-                if (f != null) {
-                    sendFile(f.getAbsolutePath());
-                }
-            }
-        });
-        toolBar.add(btnFile);
-        
-        final JToggleButton btnLock = new JToggleButton();
-        btnLock.setToolTipText("禁止滚动");
-        btnLock.setIcon(SmartIcons.lock);
-        btnLock.addActionListener(new ActionListener() {
-            
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                scrollLock = btnLock.isSelected();
-            }
-        });
-        toolBar.add(btnLock);
+        toolBar.add(new SendFileAction(this));
+        toolBar.add(new SendImageAction(this));
+        toolBar.add(new ScrollLockAction(this));
     }
     
     protected boolean scrollLock = false;
     protected boolean uploadLock = false;
-    private JToggleButton btnLock;
     
-    protected boolean enableUpload() {
+    public boolean enableUpload() {
         return !uploadLock;
+    }
+    
+    public void setScrollLock(boolean scrollLock) {
+        this.scrollLock = scrollLock;
     }
     
     protected void initHistoryWidget() {
@@ -301,11 +277,13 @@ public abstract class IMChatConsole extends JPanel {
         if (desc.startsWith("user://")) {
             String user = desc.substring(7);
             try {
-                inputWidget.getDocument().insertString(inputWidget.getCaretPosition(), "@" + user + " ", null);
+                inputWidget.getDocument().insertString(
+                        inputWidget.getCaretPosition(), "@" + user + " ", null);
             } catch (Exception e) {
-
+            
             }
-        } else if (desc.startsWith("code://")) {
+        }
+        else if (desc.startsWith("code://")) {
             String code = desc.substring(7);
             int pos = code.lastIndexOf(':');
             String file = code.substring(0, pos);
@@ -314,7 +292,8 @@ public abstract class IMChatConsole extends JPanel {
                 line--;
             }
             // TODO open file in editor and located to line
-        } else {
+        }
+        else {
             BareBonesBrowserLaunch.openURL(desc);
         }
         return false;
