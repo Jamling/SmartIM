@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 ieclipse.cn.
+ * Copyright 2014-2018 SmartIM.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,33 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package io.github.biezhi.wechat.handler.msg;
-
-import org.dom4j.Node;
+package io.github.biezhi.wechat.model.xml;
 
 /**
- * msg type = 51
+ * 类/接口描述
  * 
  * @author Jamling
- * @date 2017年12月22日
+ * @date 2018年2月2日
  *       
  */
-public class InitMsgXmlHandler extends AbstractMsgXmlHandler {
+public class AppMsgInfo implements java.io.Serializable {
+    public String appId;
+    public String title;
+    public String desc;
+    public String url;
+    public String appName;
+    public int msgType;
+    public int showType;
     
-    public InitMsgXmlHandler() {
-        super();
-    }
-    
-    public InitMsgXmlHandler(String content) {
-        super(content);
-    }
-    
-    public String getRecents() {
-        try {
-            Node node = root.element("op").element("username");
-            return node.getText().trim();
-        } catch (Exception e) {
-            return null;
-        }
+    @Override
+    public String toString() {
+        return String.format(
+                "appId:%s\nappName:%s\ntitle:%s\ndesc:%s\ntype:%s\nshowType:%s\nurl:%s",
+                appId, appName, title, desc, msgType, showType, url);
     }
 }

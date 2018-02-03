@@ -2,6 +2,7 @@ package io.github.biezhi.wechat.handler;
 
 import cn.ieclipse.smartim.handler.MessageInterceptor;
 import cn.ieclipse.smartim.model.IMessage;
+import io.github.biezhi.wechat.model.Const;
 import io.github.biezhi.wechat.model.WechatMessage;
 
 public class GroupMessageInterceptor implements MessageInterceptor {
@@ -24,6 +25,9 @@ public class GroupMessageInterceptor implements MessageInterceptor {
                 // to group msg
                 wxMsg.src = wxMsg.FromUserName;
                 wxMsg.groupId = wxMsg.ToUserName;
+            }
+            else if (Const.API_SPECIAL_USER.contains(wxMsg.ToUserName)) {
+                wxMsg.src = wxMsg.ToUserName;
             }
             else {
                 wxMsg.src = wxMsg.FromUserName;

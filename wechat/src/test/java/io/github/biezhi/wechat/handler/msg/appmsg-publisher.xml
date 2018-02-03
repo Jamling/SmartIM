@@ -1,0 +1,153 @@
+<msg>
+	<br />
+	<appmsg appid="" sdkver="0">
+		<br />
+		<title><![CDATA[免费云真机测试 | 让您的应用完美适配 Android Oreo]]></title>
+		<br />
+		<des><![CDATA[多做测试，让我们一起确保用户们获得良好体验。]]></des>
+		<br />
+		<action></action>
+		<br />
+		<type>5</type>
+		<br />
+		<showtype>1</showtype>
+		<br />
+		<content><![CDATA[]]>
+		</content>
+		<br />
+		<contentattr>0</contentattr>
+		<br />
+		<url><![CDATA[http://mp.weixin.qq.com/s?__biz=MzAwODY4OTk2Mg==&amp;mid=2652045715&amp;idx=1&amp;sn=36592838931642238e1a8fe790e80eb0&amp;chksm=808ca1d6b7fb28c03aab6d7a874e5ff0299c6a180ad00c9905c14e3ec9528793bf4430783818&amp;scene=0#rd]]></url>
+		<br />
+		<lowurl><![CDATA[]]>
+		</lowurl>
+		<br />
+		<appattach>
+			<br />
+			<totallen>0</totallen>
+			<br />
+			<attachid></attachid>
+			<br />
+			<fileext></fileext>
+			<br />
+		</appattach>
+		<br />
+		<extinfo></extinfo>
+		<br />
+		<mmreader>
+			<br />
+			<category type="20" count="1">
+				<br />
+				<name><![CDATA[谷歌开发者]]></name>
+				<br />
+				<topnew>
+					<br />
+					<cover><![CDATA[http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtwO3ibbpaic2W6yTfDSarer7DQGm0knuGS653owg0kukbq7JuGWRfAtVrSlLOkoJRssoxJdNm6vS4VA/640?wxtype=jpeg&amp;wxfrom=0]]></cover>
+					<br />
+					<width>0</width>
+					<br />
+					<height>0</height>
+					<br />
+					<digest><![CDATA[]]>
+					</digest>
+					<br />
+				</topnew>
+				<br />
+				<br />
+				<item>
+					<br />
+					<itemshowtype>0</itemshowtype>
+					<br />
+					<title><![CDATA[免费云真机测试 | 让您的应用完美适配 Android Oreo]]></title>
+					<br />
+					<url><![CDATA[http://mp.weixin.qq.com/s?__biz=MzAwODY4OTk2Mg==&amp;mid=2652045715&amp;idx=1&amp;sn=36592838931642238e1a8fe790e80eb0&amp;chksm=808ca1d6b7fb28c03aab6d7a874e5ff0299c6a180ad00c9905c14e3ec9528793bf4430783818&amp;scene=0#rd]]></url>
+					<br />
+					<shorturl><![CDATA[]]>
+					</shorturl>
+					<br />
+					<longurl><![CDATA[]]>
+					</longurl>
+					<br />
+					<pub_time>1517464800</pub_time>
+					<br />
+					<cover><![CDATA[http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtwO3ibbpaic2W6yTfDSarer7DQGm0knuGS653owg0kukbq7JuGWRfAtVrSlLOkoJRssoxJdNm6vS4VA/640?wxtype=jpeg&amp;wxfrom=0]]></cover>
+					<br />
+					<tweetid></tweetid>
+					<br />
+					<digest><![CDATA[多做测试，让我们一起确保用户们获得良好体验。]]></digest>
+					<br />
+					<fileid>504562066</fileid>
+					<br />
+					<sources>
+						<br />
+						<source>
+							<br />
+							<name><![CDATA[谷歌开发者]]></name>
+							<br />
+						</source>
+						<br />
+					</sources>
+					<br />
+					<styles></styles>
+					<br />
+					<native_url></native_url>
+					<br />
+					<del_flag>0</del_flag>
+					<br />
+					<contentattr>0</contentattr>
+					<br />
+					<play_length>0</play_length>
+					<br />
+					<play_url><![CDATA[]]>
+					</play_url>
+					<br />
+					<player></player>
+					<br />
+					<music_source></music_source>
+					<br />
+					<pic_num></pic_num>
+					<br />
+				</item>
+				<br />
+				<br />
+			</category>
+			<br />
+			<publisher>
+				<br />
+				<username></username>
+				<br />
+				<nickname><![CDATA[谷歌开发者]]></nickname>
+				<br />
+			</publisher>
+			<br />
+			<template_header></template_header>
+			<br />
+			<template_detail></template_detail>
+			<br />
+			<forbid_forward>0</forbid_forward>
+			<br />
+		</mmreader>
+		<br />
+		<thumburl><![CDATA[http://mmbiz.qpic.cn/mmbiz_jpg/rFWVXwibLGtwO3ibbpaic2W6yTfDSarer7DQGm0knuGS653owg0kukbq7JuGWRfAtVrSlLOkoJRssoxJdNm6vS4VA/640?wxtype=jpeg&amp;wxfrom=0]]></thumburl>
+		<br />
+	</appmsg>
+	<br />
+	<fromusername></fromusername>
+	<br />
+	<appinfo>
+		<br />
+		<version></version>
+		<br />
+		<appname><![CDATA[谷歌开发者]]></appname>
+		<br />
+		<isforceupdate>1</isforceupdate>
+		<br />
+	</appinfo>
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+	<br />
+</msg>

@@ -2,12 +2,15 @@ package io.github.biezhi.wechat.api;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.Proxy;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Set;
 import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.HostnameVerifier;
@@ -16,20 +19,26 @@ import javax.net.ssl.SSLSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import cn.ieclipse.smartim.exception.LogicException;
+import cn.ieclipse.util.FileUtils;
+import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.Utils;
 import io.github.biezhi.wechat.model.Const;
 import io.github.biezhi.wechat.model.Environment;
 import io.github.biezhi.wechat.model.Session;
+import io.github.biezhi.wechat.model.UploadInfo;
 import io.github.biezhi.wechat.model.WechatMessage;
+import okhttp3.Cookie;
 import okhttp3.FormBody;
 import okhttp3.Headers;
 import okhttp3.MediaType;
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -51,7 +60,7 @@ public class WechatApi {
     protected String wxHost;
     
     // 微信配置信息
-    protected Map<String, String> conf = new HashMap<String, String>();
+    // protected Map<String, String> conf = new HashMap<String, String>();
     
     protected String wxFileHost;
     protected String redirectUri;
@@ -79,13 +88,16 @@ public class WechatApi {
     // 读取、连接、发送超时时长，单位/秒
     private int readTimeout, connTimeout, writeTimeout;
     
-    public WechatApi(Environment environment) {
+    private int mediaIndex = 0;
+    
+    public WechatApi(Environment environment, Proxy proxy) {
         this.wxHost = environment.get("wxHost", "wx.qq.com");
         this.connTimeout = environment.getInt("http.conn-time-out", 10);
-        this.readTimeout = environment.getInt("http.read-time-out", 10);
-        this.writeTimeout = environment.getInt("http.write-time-out", 10);
-        this.conf_factory();
-        this.client = new OkHttpClient.Builder()
+        this.readTimeout = environment.getInt("http.read-time-out", 60);
+        this.writeTimeout = environment.getInt("http.write-time-out", 60);
+        URLConst.init(this.wxHost);
+        OkHttpClient.Builder builder = new OkHttpClient.Builder()
+                .cookieJar(cookieJar)
                 .connectTimeout(connTimeout, TimeUnit.SECONDS)
                 .writeTimeout(writeTimeout, TimeUnit.SECONDS)
                 .readTimeout(readTimeout, TimeUnit.SECONDS)
@@ -94,162 +106,11 @@ public class WechatApi {
                     public boolean verify(String arg0, SSLSession arg1) {
                         return true;
                     }
-                }).build();
-    }
-    
-    private void conf_factory() {
-        // wx.qq.com
-        String e = this.wxHost;
-        String t = "login.weixin.qq.com";
-        String o = "file.wx.qq.com";
-        String n = "webpush.weixin.qq.com";
-        
-        if (e.indexOf("wx2.qq.com") > -1) {
-            t = "login.wx2.qq.com";
-            o = "file.wx2.qq.com";
-            n = "webpush.wx2.qq.com";
+                });
+        if (proxy != null) {
+            builder.proxy(proxy);
         }
-        else if (e.indexOf("wx8.qq.com") > -1) {
-            t = "login.wx8.qq.com";
-            o = "file.wx8.qq.com";
-            n = "webpush.wx8.qq.com";
-        }
-        else if (e.indexOf("qq.com") > -1) {
-            t = "login.wx.qq.com";
-            o = "file.wx.qq.com";
-            n = "webpush.wx.qq.com";
-        }
-        else if (e.indexOf("web2.wechat.com") > -1) {
-            t = "login.web2.wechat.com";
-            o = "file.web2.wechat.com";
-            n = "webpush.web2.wechat.com";
-        }
-        else if (e.indexOf("wechat.com") > -1) {
-            t = "login.web.wechat.com";
-            o = "file.web.wechat.com";
-            n = "webpush.web.wechat.com";
-        }
-        conf.put("LANG", "zh_CN");
-        conf.put("API_jsLogin", "https://login.weixin.qq.com/jslogin");
-        conf.put("API_qrcode", "https://login.weixin.qq.com/l/");
-        conf.put("API_qrcode_img", "https://login.weixin.qq.com/qrcode/");
-        
-        conf.put("API_login", "https://" + e + "/cgi-bin/mmwebwx-bin/login");
-        conf.put("API_synccheck",
-                "https://" + n + "/cgi-bin/mmwebwx-bin/synccheck");
-        conf.put("API_webwxdownloadmedia",
-                "https://" + o + "/cgi-bin/mmwebwx-bin/webwxgetmedia");
-        conf.put("API_webwxuploadmedia",
-                "https://" + o + "/cgi-bin/mmwebwx-bin/webwxuploadmedia");
-        conf.put("API_webwxpreview",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxpreview");
-        conf.put("API_webwxinit",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxinit");
-        conf.put("API_webwxgetcontact",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxgetcontact");
-        conf.put("API_webwxsync",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxsync");
-        conf.put("API_webwxbatchgetcontact",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxbatchgetcontact");
-        conf.put("API_webwxgeticon",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxgeticon");
-        conf.put("API_webwxsendmsg",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxsendmsg");
-        conf.put("API_webwxsendmsgimg",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxsendmsgimg");
-        conf.put("API_webwxsendmsgvedio",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxsendvideomsg");
-        conf.put("API_webwxsendemoticon",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxsendemoticon");
-        conf.put("API_webwxsendappmsg",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxsendappmsg");
-        conf.put("API_webwxgetheadimg",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxgetheadimg");
-        conf.put("API_webwxgetmsgimg",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxgetmsgimg");
-        conf.put("API_webwxgetmedia",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxgetmedia");
-        conf.put("API_webwxgetvideo",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxgetvideo");
-        conf.put("API_webwxlogout",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxlogout");
-        conf.put("API_webwxgetvoice",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxgetvoice");
-        conf.put("API_webwxupdatechatroom",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxupdatechatroom");
-        conf.put("API_webwxcreatechatroom",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxcreatechatroom");
-        conf.put("API_webwxstatusnotify",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxstatusnotify");
-        conf.put("API_webwxcheckurl",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxcheckurl");
-        conf.put("API_webwxverifyuser",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxverifyuser");
-        conf.put("API_webwxfeedback",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxsendfeedback");
-        conf.put("API_webwxreport",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxstatreport");
-        conf.put("API_webwxsearch",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxsearchcontact");
-        conf.put("API_webwxoplog",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxoplog");
-        conf.put("API_checkupload",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxcheckupload");
-        conf.put("API_webwxrevokemsg",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxrevokemsg");
-        conf.put("API_webwxpushloginurl",
-                "https://" + e + "/cgi-bin/mmwebwx-bin/webwxpushloginurl");
-                
-        conf.put("CONTACTFLAG_CONTACT", "1");
-        conf.put("CONTACTFLAG_CHATCONTACT", "2");
-        conf.put("CONTACTFLAG_CHATROOMCONTACT", "4");
-        conf.put("CONTACTFLAG_BLACKLISTCONTACT", "8");
-        conf.put("CONTACTFLAG_DOMAINCONTACT", "16");
-        conf.put("CONTACTFLAG_HIDECONTACT", "32");
-        conf.put("CONTACTFLAG_FAVOURCONTACT", "64");
-        conf.put("CONTACTFLAG_3RDAPPCONTACT", "128");
-        conf.put("CONTACTFLAG_SNSBLACKLISTCONTACT", "256");
-        conf.put("CONTACTFLAG_NOTIFYCLOSECONTACT", "512");
-        conf.put("CONTACTFLAG_TOPCONTACT", "2048");
-        conf.put("MSGTYPE_TEXT", "1");
-        conf.put("MSGTYPE_IMAGE", "3");
-        conf.put("MSGTYPE_VOICE", "34");
-        conf.put("MSGTYPE_VIDEO", "43");
-        conf.put("MSGTYPE_MICROVIDEO", "62");
-        conf.put("MSGTYPE_EMOTICON", "47");
-        conf.put("MSGTYPE_APP", "49");
-        conf.put("MSGTYPE_VOIPMSG", "50");
-        conf.put("MSGTYPE_VOIPNOTIFY", "52");
-        conf.put("MSGTYPE_VOIPINVITE", "53");
-        conf.put("MSGTYPE_LOCATION", "48");
-        conf.put("MSGTYPE_STATUSNOTIFY", "51");
-        conf.put("MSGTYPE_SYSNOTICE", "9999");
-        conf.put("MSGTYPE_POSSIBLEFRIEND_MSG", "40");
-        conf.put("MSGTYPE_VERIFYMSG", "37");
-        conf.put("MSGTYPE_SHARECARD", "42");
-        conf.put("MSGTYPE_SYS", "10000");
-        conf.put("MSGTYPE_RECALLED", "10002");
-        conf.put("APPMSGTYPE_TEXT", "1");
-        conf.put("APPMSGTYPE_IMG", "2");
-        conf.put("APPMSGTYPE_AUDIO", "3");
-        conf.put("APPMSGTYPE_VIDEO", "4");
-        conf.put("APPMSGTYPE_URL", "5");
-        conf.put("APPMSGTYPE_ATTACH", "6");
-        conf.put("APPMSGTYPE_OPEN", "7");
-        conf.put("APPMSGTYPE_EMOJI", "8");
-        conf.put("APPMSGTYPE_VOICE_REMIND", "9");
-        conf.put("APPMSGTYPE_SCAN_GOOD", "10");
-        conf.put("APPMSGTYPE_GOOD", "13");
-        conf.put("APPMSGTYPE_EMOTION", "15");
-        conf.put("APPMSGTYPE_CARD_TICKET", "16");
-        conf.put("APPMSGTYPE_REALTIME_SHARE_LOCATION", "17");
-        conf.put("APPMSGTYPE_TRANSFERS", "2e3");
-        conf.put("APPMSGTYPE_RED_ENVELOPES", "2001");
-        conf.put("APPMSGTYPE_READER_TYPE", "100001");
-        conf.put("UPLOAD_MEDIA_TYPE_IMAGE", "1");
-        conf.put("UPLOAD_MEDIA_TYPE_VIDEO", "2");
-        conf.put("UPLOAD_MEDIA_TYPE_AUDIO", "3");
-        conf.put("UPLOAD_MEDIA_TYPE_ATTACHMENT", "4");
+        this.client = builder.build();
     }
     
     /**
@@ -258,11 +119,11 @@ public class WechatApi {
      * @return
      */
     public boolean getUUID() {
-        String url = conf.get("API_jsLogin");
+        String url = URLConst.Login.uuid;
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("appid", appid);
         params.put("fun", "new");
-        params.put("lang", conf.get("LANG"));
+        params.put("lang", "zh_CN");
         params.put("_", System.currentTimeMillis() + "");
         try {
             String response = doGet(url, params);
@@ -293,7 +154,7 @@ public class WechatApi {
      * @return 返回二维码的图片路径
      */
     public String genqrcode() {
-        String url = conf.get("API_qrcode_img") + session.getUuid();
+        String url = URLConst.Login.qrcode2 + session.getUuid();
         final File output = new File(workDir, "wechat.jpg");
         if (output.getParentFile() != null
                 && !output.getParentFile().exists()) {
@@ -326,13 +187,13 @@ public class WechatApi {
      */
     public boolean waitforlogin(int tip) {
         Utils.sleep(tip);
-        String url = conf.get("API_login") + "?tip=%d&uuid=%s&_%s";
+        String url = URLConst.API.LOGIN + "?tip=%d&uuid=%s&_%s";
         url = String.format(url, tip, session.getUuid(),
                 System.currentTimeMillis());
                 
         String response = null;
         try {
-            response = doGet(url);
+            response = doGet(url, null);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -357,7 +218,7 @@ public class WechatApi {
             String r_uri = pm + "&fun=new";
             this.redirectUri = r_uri;
             this.wxHost = r_uri.split("://")[1].split("/")[0];
-            this.conf_factory();
+            URLConst.init(this.wxHost);
             return true;
         }
         if (code.equals("408")) {
@@ -423,7 +284,7 @@ public class WechatApi {
             return false;
         }
         
-        String url = conf.get("API_webwxinit") + "?pass_ticket=%s&skey=%s&r=%s";
+        String url = URLConst.API.INIT + "?pass_ticket=%s&skey=%s&r=%s";
         url = String.format(url, session.getPassTicket(), session.getSkey(),
                 System.currentTimeMillis());
                 
@@ -463,9 +324,8 @@ public class WechatApi {
      * @return
      */
     public boolean openStatusNotify() throws Exception {
-        String url = conf.get("API_webwxstatusnotify")
-                + "?lang=%s&pass_ticket=%s";
-        url = String.format(url, conf.get("LANG"), session.getPassTicket());
+        String url = URLConst.API.STATUS_NOTIFY + "?lang=%s&pass_ticket=%s";
+        url = String.format(url, "zh_CN", session.getPassTicket());
         
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("BaseRequest", this.baseRequest);
@@ -483,8 +343,7 @@ public class WechatApi {
     }
     
     public JsonObject wxGetContact() throws Exception {
-        String url = conf.get("API_webwxgetcontact")
-                + "?pass_ticket=%s&skey=%s&r=%s";
+        String url = URLConst.API.GET_CONTACT + "?pass_ticket=%s&skey=%s&r=%s";
         url = String.format(url, session.getPassTicket(), session.getSkey(),
                 System.currentTimeMillis());
         JsonObject response = doPost(url, null).getAsJsonObject();
@@ -498,7 +357,7 @@ public class WechatApi {
      * @return
      */
     public JsonArray batchGetContact(List<String> groupIds) {
-        String url = conf.get("API_webwxbatchgetcontact")
+        String url = URLConst.API.GET_CONTACT_BATCH
                 + "?type=ex&r=%s&pass_ticket=%s";
         url = String.format(url, System.currentTimeMillis(),
                 session.getPassTicket());
@@ -528,8 +387,7 @@ public class WechatApi {
      * @return
      */
     public JsonObject wxSync() throws Exception {
-        String url = conf.get("API_webwxsync")
-                + "?sid=%s&skey=%s&pass_ticket=%s";
+        String url = URLConst.API.SYNC + "?sid=%s&skey=%s&pass_ticket=%s";
         url = String.format(url, session.getSid(), session.getSkey(),
                 session.getPassTicket());
                 
@@ -565,7 +423,7 @@ public class WechatApi {
      * @return
      */
     public int[] synccheck() throws Exception {
-        String url = conf.get("API_synccheck");
+        String url = URLConst.SYNC_CHECK;
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("r", System.currentTimeMillis() + Utils.getRandomNumber(5));
         params.put("sid", session.getSid());
@@ -600,7 +458,7 @@ public class WechatApi {
      */
     public JsonObject wxSendMessage(String msg, String to) throws Exception {
         
-        String url = conf.get("API_webwxsendmsg") + "?pass_ticket=%s";
+        String url = URLConst.API.SEND_MSG + "?pass_ticket=%s";
         url = String.format(url, session.getPassTicket());
         
         String clientMsgId = System.currentTimeMillis()
@@ -624,7 +482,7 @@ public class WechatApi {
     }
     
     public JsonObject wxSendMessage(Map<String, Object> Msg) throws Exception {
-        String url = conf.get("API_webwxsendmsg") + "?pass_ticket=%s";
+        String url = URLConst.API.SEND_MSG + "?pass_ticket=%s";
         url = String.format(url, session.getPassTicket());
         
         String clientMsgId = System.currentTimeMillis()
@@ -633,12 +491,28 @@ public class WechatApi {
         params.put("BaseRequest", this.baseRequest);
         int type = (Integer) Msg.get("Type");
         if (type == WechatMessage.MSGTYPE_TEXT) {
-            if (Msg.get("LocalID") == null) {
-                Msg.put("LocalID", clientMsgId);
+        
+        }
+        else if (type == WechatMessage.MSGTYPE_IMAGE) {
+            url = URLConst.API.SEND_IMG + "?fun=async&f=json&pass_ticket="
+                    + this.session.getPassTicket();
+        }
+        else if (type == WechatMessage.MSGTYPE_EMOTICON) {
+            url = URLConst.API.SEND_EMOTION + "?fun=sys&f=json&pass_ticket="
+                    + this.session.getPassTicket();
+            if (Msg.get("EmojiFlag") == null) {
+                Msg.put("EmojiFlag", 2);
             }
-            if (Msg.get("ClientMsgId") == null) {
-                Msg.put("ClientMsgId", clientMsgId);
-            }
+        }
+        else if (type == WechatMessage.MSGTYPE_FILE) {
+            url = URLConst.API.SEND_FILE + "?fun=async&f=json&pass_ticket="
+                    + this.session.getPassTicket();
+        }
+        if (Msg.get("LocalID") == null) {
+            Msg.put("LocalID", clientMsgId);
+        }
+        if (Msg.get("ClientMsgId") == null) {
+            Msg.put("ClientMsgId", clientMsgId);
         }
         params.put("Msg", Msg);
         
@@ -647,6 +521,141 @@ public class WechatApi {
             return null;
         }
         return response.getAsJsonObject();
+    }
+    
+    public UploadInfo wxUploadMedia(boolean enableLog, File file, String mime,
+            String media) throws Exception {
+        String url = URLConst.MEDIA_UPLOAD;
+        Cookie c = cookieJar.getFirstCookie("webwx_data_ticket");
+        String webwx_data_ticket = "";
+        if (c != null) {
+            webwx_data_ticket = c.value();
+        }
+        
+        long len = file.length();
+        
+        String ext = FileUtils.getExtension(file.getName()).toLowerCase();
+        String mimeType = StringUtils.isEmpty(mime) ? "application/octet-stream"
+                : mime;
+        String mediaType = media;
+        if (mediaType == null) {
+            mediaType = "doc";
+            if (Arrays.asList("png", "jpg", "jpeg", "bmp").contains(ext)) {
+                mimeType = "image/" + ext;
+                mediaType = "pic";
+            }
+        }
+        
+        Map<String, Object> req = new HashMap<String, Object>();
+        req.put("BaseRequest", this.baseRequest);
+        req.put("ClientMediaId",
+                System.currentTimeMillis() + Utils.getRandomNumber(5));
+        req.put("TotalLen", len);
+        req.put("StartPos", 0);
+        req.put("DataLen", len);
+        req.put("MediaType", 4);
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("f", "json");
+        params.put("id", "WU_FILE_" + this.mediaIndex++);
+        params.put("type", mimeType);
+        params.put("lastModifiedDate",
+                new Date(file.lastModified()).toString());
+        params.put("size", String.valueOf(len));
+        params.put("mediatype", mediaType);
+        params.put("uploadmediarequest", new Gson().toJson(req));
+        params.put("webwx_data_ticket", webwx_data_ticket);
+        params.put("pass_ticket", session.getPassTicket());
+        
+        Request.Builder requestBuilder = new Request.Builder().url(url);
+        MultipartBody.Builder builder = new MultipartBody.Builder();
+        // if (null != cookie) {
+        // builder.addHeader("Cookie", this.cookie);
+        // }
+        // 设置类型
+        builder.setType(MultipartBody.FORM);
+        // 追加参数
+        for (String key : params.keySet()) {
+            Object object = params.get(key);
+            // if (!(object instanceof File))
+            {
+                builder.addFormDataPart(key, object.toString());
+            }
+        }
+        RequestBody fileBody = RequestBody.create(MediaType.parse(mimeType),
+                file);
+        builder.addFormDataPart("filename", file.getName(), fileBody);
+        // 创建RequestBody
+        RequestBody body = builder.build();
+        Request request = requestBuilder.post(body).build();
+        if (enableLog) {
+            log.debug("[*] 请求 => {}\n", request);
+        }
+        
+        Response response = client.newCall(request).execute();
+        String result = response.body().string();
+        if (enableLog) {
+            log.debug("[*] 响应 => {}", body);
+        }
+        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        if (obj.getAsJsonObject("BaseResponse").get("Ret").getAsInt() == 0) {
+            UploadInfo info = new UploadInfo();
+            info.MediaId = obj.get("MediaId").getAsString();
+            return info;
+        }
+        return null;
+    }
+    
+    public String wxGetIcon(String username, File file) throws Exception {
+        String url = URLConst.API.GET_ICON + "?username=" + username + "&skey="
+                + this.session.getSkey();
+        if (file == null) {
+            return url;
+        }
+        return doDown(false, url, this.cookie, file, null);
+    }
+    
+    public String wxGetHead(String username, File file) throws Exception {
+        String url = URLConst.API.GET_HEAD + "?username=" + username + "&skey="
+                + this.session.getSkey();
+        if (file == null) {
+            return url;
+        }
+        return doDown(false, url, this.cookie, file, null);
+    }
+    
+    public String wxGetMsgImg(String msgId, File file) throws Exception {
+        String url = URLConst.API.GET_IMG + "?type=slave&MsgID=" + msgId
+                + "&skey=" + this.session.getSkey();
+        if (file == null) {
+            return url;
+        }
+        return doDown(false, url, this.cookie, file, null);
+    }
+    
+    public String wxGetMsgMedia(WechatMessage m, File file) throws Exception {
+        Cookie c = cookieJar.getFirstCookie("webwx_data_ticket");
+        String dt = null;
+        if (c != null) {
+            dt = c.value();
+        }
+        String skey = "";
+        String pt = "";
+        if (this.session != null) {
+            skey = this.session.getSkey();
+            pt = this.session.getPassTicket();
+        }
+        
+        String url = String.format(
+                URLConst.MEDIA_GET
+                        + "?MsgID=%s&skey=%s&sender=%s&mediaid=%s&encryfilename=%s&pass_ticket=%s&webwx_data_ticket=%s",
+                m.MsgId, skey, m.FromUserName, m.MediaId, m.EncryFileName, pt,
+                dt);
+        if (file == null) {
+            return url;
+        }
+        Map<String, Object> params = new HashMap<>();
+        // params.put("fromuser", null);
+        return doDown(false, url, this.cookie, file, params);
     }
     
     /**
@@ -660,32 +669,46 @@ public class WechatApi {
         this.wxSendMessage(msg, uid);
     }
     
+    public void logout() {
+        if (this.session == null) {
+            return;
+        }
+        String url = URLConst.API.LOGOUT + "?redirect=0&type=1&skey="
+                + this.session.getSkey();
+        Map<String, Object> params = new HashMap<>();
+        params.put("sid", this.session.getSid());
+        params.put("uin", this.session.getUin());
+        try {
+            doPost(url, params);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+    }
+    
     public static final MediaType JSON = MediaType
             .parse("application/json; charset=utf-8");
             
     private OkHttpClient client;
+    // Cookie 管理
+    private CookieManager cookieJar = new CookieManager();
     
-    private String doGet(String url, Map<String, Object>... params)
+    private String doGet(String url, Map<String, Object> params)
             throws Exception {
         return doGet(true, url, null, params);
     }
     
     private String doGet(boolean enableLog, String url, String cookie,
-            Map<String, Object>... params) throws Exception {
-        if (null != params && params.length > 0) {
-            Map<String, Object> param = params[0];
-            Set<String> keys = param.keySet();
-            StringBuilder sbuf = new StringBuilder(url);
+            Map<String, Object> params) throws Exception {
+        String query = params == null ? null
+                : StringUtils.getMapBody(params, null, true);
+        if (!StringUtils.isEmpty(query)) {
             if (url.contains("=")) {
-                sbuf.append("&");
+                url = url + "&" + query;
             }
             else {
-                sbuf.append("?");
+                url = url + "?" + query;
             }
-            for (String key : keys) {
-                sbuf.append(key).append('=').append(param.get(key)).append('&');
-            }
-            url = sbuf.substring(0, sbuf.length() - 1);
         }
         Request.Builder requestBuilder = new Request.Builder().url(url);
         
@@ -732,6 +755,50 @@ public class WechatApi {
         
     }
     
+    private String doDown(boolean enableLog, String url, String cookie,
+            File file, Map<String, Object> params) throws Exception {
+        String query = params == null ? null
+                : StringUtils.getMapBody(params, null, true);
+        if (!StringUtils.isEmpty(query)) {
+            if (url.contains("=")) {
+                url = url + "&" + query;
+            }
+            else {
+                url = url + "?" + query;
+            }
+        }
+        Request.Builder requestBuilder = new Request.Builder().url(url);
+        
+        if (null != cookie) {
+            requestBuilder.addHeader("Cookie", this.cookie);
+        }
+        
+        Request request = requestBuilder.build();
+        if (enableLog) {
+            log.debug("[*] 请求 => {}\n", request);
+        }
+        
+        Response response = client.newCall(request).execute();
+        if (file.getParentFile() != null && !file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+        if (response.isSuccessful()) {
+            InputStream is = response.body().byteStream();
+            FileOutputStream fos = new FileOutputStream(file);
+            byte[] buffer = new byte[8192];
+            int len;
+            while ((len = is.read(buffer)) != -1) {
+                fos.write(buffer, 0, len);
+            }
+            is.close();
+            fos.close();
+            String prefix = file.getAbsolutePath().startsWith("/") ? "file://"
+                    : "file:///";
+            return prefix + file.getAbsolutePath().replaceAll("\\\\", "/");
+        }
+        return null;
+    }
+    
     private File workDir;
     
     public void setWorkDir(File workDir) {
@@ -743,6 +810,7 @@ public class WechatApi {
         if (client != null) {
             client.dispatcher().cancelAll();
         }
+        logout();
     }
     
     public static class BaseRequest {

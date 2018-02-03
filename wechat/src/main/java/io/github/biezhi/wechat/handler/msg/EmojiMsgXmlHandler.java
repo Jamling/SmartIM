@@ -17,15 +17,16 @@ package io.github.biezhi.wechat.handler.msg;
 
 import org.dom4j.Element;
 
+import io.github.biezhi.wechat.model.WechatMessage;
+
 /**
- * msg type = 51
+ * msg type = {@value WechatMessage#MSGTYPE_EMOTICON}
  * 
  * @author Jamling
  * @date 2017年12月22日
  *       
  */
 public class EmojiMsgXmlHandler extends AbstractMsgXmlHandler {
-    private String recents;
     
     public EmojiMsgXmlHandler() {
         super();
@@ -35,15 +36,17 @@ public class EmojiMsgXmlHandler extends AbstractMsgXmlHandler {
         super(content);
     }
     
-    public String getHtml() {
+    public String getHtml(String link, WechatMessage m) {
+        if (link != null) {
+            return String.format("<img src=\"%s\" alt=\"emoji表情\"/>", link);
+        }
         try {
             Element node = root.element("emoji");
             String q = getQueryString();
             if (q == null) {
                 q = "";
             }
-            return String.format(
-                    "<img src=\"%s?%s\" alt=\"emoji表情\"/>",
+            return String.format("<img src=\"%s?%s\" alt=\"emoji表情\"/>",
                     node.attributeValue("cdnurl"), q);
         } catch (Exception e) {
             return "emoji表情，请在手机上查看";

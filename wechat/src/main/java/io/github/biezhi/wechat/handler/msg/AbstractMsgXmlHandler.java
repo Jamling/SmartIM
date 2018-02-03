@@ -24,7 +24,7 @@ import org.dom4j.Element;
 import io.github.biezhi.wechat.api.WechatClient;
 
 /**
- * 类/接口描述
+ * 处理xml消息
  * 
  * @author Jamling
  * @date 2017年12月22日
@@ -34,6 +34,7 @@ public class AbstractMsgXmlHandler {
     protected String content;
     protected Element root;
     protected Document document;
+    protected String rootTag = "msg";
     
     // public Document parse(String content) throws DocumentException {
     // SAXReader reader = new SAXReader();
@@ -43,7 +44,9 @@ public class AbstractMsgXmlHandler {
     // }
     
     public AbstractMsgXmlHandler(String content) {
-        this.content = Pattern.compile(".*(<msg>.*</msg>).*").matcher(content)
+        String regex = String.format(".*(<%s>.*</%s>).*", rootTag, rootTag);
+        this.content = Pattern.compile(regex, Pattern.MULTILINE)
+                .matcher(content.replaceAll("\\s*<br\\s?/>\\s*", ""))
                 .replaceAll("$1");
         try {
             this.document = DocumentHelper.parseText(this.content);
@@ -56,7 +59,7 @@ public class AbstractMsgXmlHandler {
     
     public AbstractMsgXmlHandler() {
         this.document = DocumentHelper.createDocument();
-        this.root = this.document.addElement("msg");
+        this.root = this.document.addElement(rootTag);
     }
     
     public String getQueryString() {

@@ -1,0 +1,189 @@
+<?xml version="1.0"?>
+<br />
+<msg>
+	<br />
+	<appmsg appid="wx4310bbd51be7d979" sdkver="0">
+		<br />
+		<title>南京abc.xlsx</title>
+		<br />
+		<des>9.8 KB</des>
+		<br />
+		<username />
+		<br />
+		<action>view</action>
+		<br />
+		<type>6</type>
+		<br />
+		<showtype>0</showtype>
+		<br />
+		<content />
+		<br />
+		<url />
+		<br />
+		<lowurl />
+		<br />
+		<dataurl />
+		<br />
+		<lowdataurl />
+		<br />
+		<contentattr>0</contentattr>
+		<br />
+		<streamvideo>
+			<br />
+			<streamvideourl />
+			<br />
+			<streamvideototaltime>0</streamvideototaltime>
+			<br />
+			<streamvideotitle />
+			<br />
+			<streamvideowording />
+			<br />
+			<streamvideoweburl />
+			<br />
+			<streamvideothumburl />
+			<br />
+			<streamvideoaduxinfo />
+			<br />
+			<streamvideopublishid />
+			<br />
+		</streamvideo>
+		<br />
+		<canvasPageItem>
+			<br />
+			<canvasPageXml><![CDATA[]]>
+			</canvasPageXml>
+			<br />
+		</canvasPageItem>
+		<br />
+		<appattach>
+			<br />
+			<attachid>@cdn_305902010004523050020100020470f588c902033d11fd020437dee26502045a72e28b042b6175706174746163685f616631366265333964373935366332625f313531373437383533333438315f32380204010400050201000400_c10a496a9b82416089e663dc23d967df_1</attachid>
+			<br />
+			<cdnattachurl>305902010004523050020100020470f588c902033d11fd020437dee26502045a72e28b042b6175706174746163685f616631366265333964373935366332625f313531373437383533333438315f32380204010400050201000400</cdnattachurl>
+			<br />
+			<totallen>10039</totallen>
+			<br />
+			<cdnthumburl>305902010004523050020100020470f588c902033d11fd020437dee26502045a72e28b042b6175706174746163685f616631366265333964373935366332625f313531373437383533333438315f32380204010400050201000400</cdnthumburl>
+			<br />
+			<cdnthumbmd5>cf3ee0299ed68e5d2a58e2d4af4cb033</cdnthumbmd5>
+			<br />
+			<cdnthumblength>10039</cdnthumblength>
+			<br />
+			<cdnthumbheight>-1</cdnthumbheight>
+			<br />
+			<cdnthumbwidth>-1</cdnthumbwidth>
+			<br />
+			<cdnthumbaeskey>c10a496a9b82416089e663dc23d967df</cdnthumbaeskey>
+			<br />
+			<aeskey>c10a496a9b82416089e663dc23d967df</aeskey>
+			<br />
+			<encryver>1</encryver>
+			<br />
+			<fileext>xlsx</fileext>
+			<br />
+			<islargefilemsg>0</islargefilemsg>
+			<br />
+		</appattach>
+		<br />
+		<extinfo />
+		<br />
+		<androidsource>2</androidsource>
+		<br />
+		<thumburl />
+		<br />
+		<mediatagname />
+		<br />
+		<messageaction><![CDATA[]]>
+		</messageaction>
+		<br />
+		<messageext><![CDATA[]]>
+		</messageext>
+		<br />
+		<emoticongift>
+			<br />
+			<packageflag>0</packageflag>
+			<br />
+			<packageid />
+			<br />
+		</emoticongift>
+		<br />
+		<emoticonshared>
+			<br />
+			<packageflag>0</packageflag>
+			<br />
+			<packageid />
+			<br />
+		</emoticonshared>
+		<br />
+		<designershared>
+			<br />
+			<designeruin>0</designeruin>
+			<br />
+			<designername>null</designername>
+			<br />
+			<designerrediretcturl>null</designerrediretcturl>
+			<br />
+		</designershared>
+		<br />
+		<emotionpageshared>
+			<br />
+			<tid>0</tid>
+			<br />
+			<title>null</title>
+			<br />
+			<desc>null</desc>
+			<br />
+			<iconUrl>null</iconUrl>
+			<br />
+			<secondUrl>null</secondUrl>
+			<br />
+			<pageType>0</pageType>
+			<br />
+		</emotionpageshared>
+		<br />
+		<webviewshared>
+			<br />
+			<shareUrlOriginal />
+			<br />
+			<shareUrlOpen />
+			<br />
+			<jsAppId />
+			<br />
+			<publisherId />
+			<br />
+		</webviewshared>
+		<br />
+		<template_id />
+		<br />
+		<md5>cf3ee0299ed68e5d2a58e2d4af4cb033</md5>
+		<br />
+		<weappinfo>
+			<br />
+			<username />
+			<br />
+			<appid />
+			<br />
+			<appservicetype>0</appservicetype>
+			<br />
+		</weappinfo>
+		<br />
+		<statextstr>GhQKEnd4NDMxMGJiZDUxYmU3ZDk3OQ==</statextstr>
+		<br />
+	</appmsg>
+	<br />
+	<fromusername></fromusername>
+	<br />
+	<scene>0</scene>
+	<br />
+	<appinfo>
+		<br />
+		<version>24</version>
+		<br />
+		<appname>weixinfile</appname>
+		<br />
+	</appinfo>
+	<br />
+	<commenturl></commenturl>
+	<br />
+</msg>
+<br />

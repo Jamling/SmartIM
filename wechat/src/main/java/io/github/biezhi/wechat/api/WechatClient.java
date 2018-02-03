@@ -2,6 +2,7 @@ package io.github.biezhi.wechat.api;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Proxy;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -31,11 +32,12 @@ import io.github.biezhi.wechat.handler.GroupMessageInterceptor;
 import io.github.biezhi.wechat.handler.TypeMessageInterceptor;
 import io.github.biezhi.wechat.handler.WechatContactHandler;
 import io.github.biezhi.wechat.handler.WechatMessageHandler;
-import io.github.biezhi.wechat.handler.msg.InitMsgXmlHandler;
+import io.github.biezhi.wechat.handler.msg.AppMsgXmlHandler;
 import io.github.biezhi.wechat.model.Const;
 import io.github.biezhi.wechat.model.Contact;
 import io.github.biezhi.wechat.model.Environment;
 import io.github.biezhi.wechat.model.GroupFrom;
+import io.github.biezhi.wechat.model.UploadInfo;
 import io.github.biezhi.wechat.model.UserFrom;
 import io.github.biezhi.wechat.model.WechatMessage;
 
@@ -64,9 +66,13 @@ public class WechatClient extends AbstractSmartClient {
     }
     
     public WechatClient() {
+        this(null);
+    }
+    
+    public WechatClient(Proxy proxy) {
         WechatClient.initSSL();
         Environment environment = Environment.of("classpath:config.properties");
-        api = new WechatApi(environment);
+        api = new WechatApi(environment, proxy);
         addMessageInterceptor(new TypeMessageInterceptor());
         addMessageInterceptor(new GroupMessageInterceptor());
         addMessageInterceptor(new DecodeMessageInterceptor());
@@ -153,8 +159,9 @@ public class WechatClient extends AbstractSmartClient {
         List<Contact> special2 = contactHandler.getSpecialUsersList();
         this.specialUsersList.addAll(special2);
         this.allList = contactHandler.getAllList();
-        this.recentList = contactHandler.handleRecents(api.chatSet, this.specialUsersList);
-        
+        this.recentList = contactHandler.handleRecents(api.chatSet,
+                this.specialUsersList);
+                
         log.info(Const.LOG_MSG_CONTACT_COUNT, memberCount, memberList.size());
         log.info(Const.LOG_MSG_OTHER_CONTACT_COUNT, groupList.size(),
                 memberList.size(), specialUsersList.size(),
@@ -415,8 +422,8 @@ public class WechatClient extends AbstractSmartClient {
                     && msg.StatusNotifyCode == 4
                     && !StringUtils.isEmpty(msg.StatusNotifyUserName)) {
                 // String r = new InitMsgXmlHandler(msg.Content).getRecents();
-                this.recentList = contactHandler
-                        .handleRecents(msg.StatusNotifyUserName, this.specialUsersList);
+                this.recentList = contactHandler.handleRecents(
+                        msg.StatusNotifyUserName, this.specialUsersList);
                 if (modificationCallback != null) {
                     modificationCallback.onContactChanged((IContact) null);
                 }
@@ -460,6 +467,7 @@ public class WechatClient extends AbstractSmartClient {
             body.put("Content", m.Content);
             body.put("FromUserName", m.FromUserName);
             body.put("ToUserName", m.ToUserName);
+            body.put("MediaId", m.MediaId);
             JsonObject ret = api.wxSendMessage(body);
             notifySend(0, uin, msg.getText(), null);
         } catch (Exception e) {
@@ -475,6 +483,48 @@ public class WechatClient extends AbstractSmartClient {
         m.FromUserName = getAccount().getUin();
         m.ToUserName = target.getUin();
         return m;
+    }
+    
+    /**
+     * 上传文件
+     * 
+     * @param file
+     *            文件
+     * @param mime
+     *            mime-type
+     * @param media
+     *            media type, 图片为pic，文档为doc，如果null，则根据文件后缀自动计算
+     * @return {@link UploadInfo}
+     */
+    public UploadInfo uploadMedia(File file, String mime, String media) {
+        try {
+            return api.wxUploadMedia(false, file, mime, media);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public String getMediaLink(WechatMessage m, File file) {
+        try {
+            int msgType = m.MsgType;
+            String msgId = m.MsgId;
+            if (WechatMessage.MSGTYPE_IMAGE == msgType
+                    || WechatMessage.MSGTYPE_EMOTICON == msgType) {
+                return api.wxGetMsgImg(msgId, file);
+            }
+            else if (WechatMessage.MSGTYPE_APP == msgType) {
+                return api.wxGetMsgMedia(m, file);
+            }
+            else {
+                return null;
+            }
+        } catch (Exception e) {
+            return null;
+        }
+    }
+    
+    public String createFileMsgContent(File file, String mediaId) {
+        return new AppMsgXmlHandler().encode(file, mediaId);
     }
     
     public int broadcast(String msg, Object... targets) {

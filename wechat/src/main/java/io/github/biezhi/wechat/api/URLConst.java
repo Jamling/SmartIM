@@ -1,5 +1,5 @@
 /*
- * Copyright 2014-2017 ieclipse.cn.
+ * Copyright 2014-2018 SmartIM
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,8 +15,6 @@
  */
 package io.github.biezhi.wechat.api;
 
-import cn.ieclipse.util.StringUtils;
-
 /**
  * 类/接口描述
  * 
@@ -25,7 +23,11 @@ import cn.ieclipse.util.StringUtils;
  *       
  */
 public final class URLConst {
-    public static String BASE = "https://wx.qq.com/cgi-bin/mmwebwx-bin/";
+    public static String SCHEMA = "https://";
+    public static String PATH = "/cgi-bin/mmwebwx-bin/";
+    public static String BASE = SCHEMA + "wx.qq.com" + PATH;
+    public static String BASE_O = "";
+    public static String BASE_N = "";
     
     public interface Login {
         /**
@@ -118,49 +120,87 @@ public final class URLConst {
         String confirm = "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage";
     }
     
-    public static class Url {
-        protected int method;
-        protected String url;
-        protected String query;
+    public interface API {
+        public String INIT = new BaseApi("webwxinit").get();
+        public String STATUS_NOTIFY = new BaseApi("webwxstatusnotify").get();
+        public String SEND_MSG = new BaseApi("webwxsendmsg").get();
+        public String SEND_FILE = new BaseApi("webwxsendappmsg").get();
+        public String SEND_EMOTION = new BaseApi("webwxsendemoticon").get();
+        public String SEND_IMG = new BaseApi("webwxsendmsgimg").get();
+        public String SEND_VIDEO = new BaseApi("webwxsendmsgvideo").get();
+        public String GET_ICON = new BaseApi("webwxgeticon").get();
+        public String GET_HEAD = new BaseApi("webwxgetheadimg").get();
+        public String GET_IMG = new BaseApi("webwxgetmsgimg").get();
+        public String GET_MEDIA = new BaseApi("webwxgetmedia").get();
+        public String GET_VIDEO = new BaseApi("webwxgetvideo").get();
+        public String GET_VOICE = new BaseApi("webwxgetvoice").get();
+        public String GET_CONTACT = new BaseApi("webwxgetcontact").get();
+        public String GET_CONTACT_BATCH = new BaseApi("webwxbatchgetcontact")
+                .get();
+        public String LOGOUT = new BaseApi("webwxlogout").get();
+        public String LOGIN = new BaseApi("login").get();
+        public String SYNC = new BaseApi("webwxsync").get();
         
-        public Url(String url) {
-            this.url = url;
+        public String PREVIEW = new BaseApi("webwxpreview").get();
+        public String UPDATE_CHATROOM = new BaseApi("webwxupdatechatroom")
+                .get();
+        public String CREATE_CHATROOM = new BaseApi("webwxcreatechatroom")
+                .get();
+        public String CHECK_URL = new BaseApi("webwxcheckurl").get();
+        public String VERIFY_USER = new BaseApi("webwxverifyuser").get();
+        public String REVOKE_MSG = new BaseApi("webwxrevokemsg").get();
+        public String SEARCH_CONTACT = new BaseApi("webwxsearchcontact").get();
+    }
+    
+    private static class BaseApi {
+        String url = null;
+        
+        BaseApi(String path) {
+            url = BASE + path;
         }
         
-        public String getUrl() {
-            return BASE + url + getQuery();
-        }
-        
-        public int getMethod() {
-            return method;
-        }
-        
-        protected String getQuery() {
-            if (StringUtils.isEmpty(query)) {
-                return "";
-            }
-            else if (url.indexOf("?") >= 0) {
-                return "&" + query;
-            }
-            else {
-                return "?" + query;
-            }
-        }
-        
-        public void setQuery(String query) {
-            this.query = query;
+        String get() {
+            return url;
         }
     }
     
-    public static class AbsoluteUrl extends Url {
-        
-        public AbsoluteUrl(String url) {
-            super(url);
+    public static String SYNC_CHECK = "https://webpush.weixin.qq.com/cgi-bin/mmwebwx-bin/synccheck";
+    public static String MEDIA_UPLOAD = "https://file.weixin.qq.com/cgi-bin/mmwebwx-bin/webwxuploadmedia";
+    public static String MEDIA_GET = "https://file.weixin.qq.com/cgi-bin/mmwebwx-bin/webwxgetmedia";
+    
+    public static void init(String e) {
+        String t = "login.weixin.qq.com";
+        String o = "file.wx.qq.com";
+        String n = "webpush.weixin.qq.com";
+        if (e.indexOf("wx2.qq.com") > -1) {
+            t = "login.wx2.qq.com";
+            o = "file.wx2.qq.com";
+            n = "webpush.wx2.qq.com";
+        }
+        else if (e.indexOf("wx8.qq.com") > -1) {
+            t = "login.wx8.qq.com";
+            o = "file.wx8.qq.com";
+            n = "webpush.wx8.qq.com";
+        }
+        else if (e.indexOf("qq.com") > -1) {
+            t = "login.wx.qq.com";
+            o = "file.wx.qq.com";
+            n = "webpush.wx.qq.com";
+        }
+        else if (e.indexOf("web2.wechat.com") > -1) {
+            t = "login.web2.wechat.com";
+            o = "file.web2.wechat.com";
+            n = "webpush.web2.wechat.com";
+        }
+        else if (e.indexOf("wechat.com") > -1) {
+            t = "login.web.wechat.com";
+            o = "file.web.wechat.com";
+            n = "webpush.web.wechat.com";
         }
         
-        @Override
-        public String getUrl() {
-            return url + getQuery();
-        }
+        BASE = SCHEMA + e + PATH;
+        SYNC_CHECK = SCHEMA + n + PATH + "synccheck";
+        MEDIA_GET = SCHEMA + o + PATH + "webwxgetmedia";
+        MEDIA_UPLOAD = SCHEMA + o + PATH + "webwxuploadmedia";
     }
 }
