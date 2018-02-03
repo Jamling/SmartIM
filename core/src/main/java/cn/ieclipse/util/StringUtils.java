@@ -178,4 +178,12 @@ public class StringUtils {
         return src.replaceAll("&lt;", "<").replaceAll("&gt;", ">")
                 .replaceAll("&amp;", "&");
     }
+    
+    public static String file2url(String path) {
+        if (path == null) {
+            return null;
+        }
+        String prefix = path.startsWith("/") ? "file://" : "file:///";
+        return prefix + path.replaceAll("\\\\", "/");
+    }
 }

@@ -792,9 +792,7 @@ public class WechatApi {
             }
             is.close();
             fos.close();
-            String prefix = file.getAbsolutePath().startsWith("/") ? "file://"
-                    : "file:///";
-            return prefix + file.getAbsolutePath().replaceAll("\\\\", "/");
+            return StringUtils.file2url(file.getAbsolutePath());
         }
         return null;
     }
