@@ -149,10 +149,12 @@ public abstract class AbstractSmartClient implements SmartClient {
         }
     }
     
+    @Override
     public String getName() {
         return name;
     }
     
+    @Override
     public File getWorkDir(String name) {
         if (name == null || name.trim().length() == 0) {
             return workDir;

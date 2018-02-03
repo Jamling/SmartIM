@@ -35,35 +35,39 @@ import cn.ieclipse.smartim.model.IMessage;
 public interface SmartClient {
     public static boolean DEBUG = true;
     
-    public abstract void setWorkDir(File path);
+    public String getName();
     
-    public abstract boolean isLogin();
+    public void setWorkDir(File path);
     
-    public abstract boolean isClose();
+    public File getWorkDir(String name);
     
-    public abstract void login();
+    public boolean isLogin();
     
-    public abstract void init() throws Exception;
+    public boolean isClose();
     
-    public abstract void start();
+    public void login();
     
-    public abstract void close();
+    public void init() throws Exception;
     
-    public abstract IContact getAccount();
+    public void start();
     
-    public abstract void setLoginCallback(LoginCallback callback);
+    public void close();
     
-    public abstract void setSendCallback(SendCallback callback);
+    public IContact getAccount();
     
-    public abstract void setReceiveCallback(ReceiveCallback callback);
+    public void setLoginCallback(LoginCallback callback);
     
-    public abstract void addReceiveCallback(ReceiveCallback callback);
+    public void setSendCallback(SendCallback callback);
     
-    public abstract int sendMessage(IMessage msg, IContact target)
+    public void setReceiveCallback(ReceiveCallback callback);
+    
+    public void addReceiveCallback(ReceiveCallback callback);
+    
+    public int sendMessage(IMessage msg, IContact target)
             throws Exception;
             
-    public abstract void addMessageInterceptor(MessageInterceptor interceptor);
+    public void addMessageInterceptor(MessageInterceptor interceptor);
     
-    public abstract void setModificationCallbacdk(
+    public void setModificationCallbacdk(
             ModificationCallback callback);
 }
