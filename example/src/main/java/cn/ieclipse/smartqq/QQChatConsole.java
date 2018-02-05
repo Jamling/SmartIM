@@ -18,6 +18,7 @@ import cn.ieclipse.smartim.common.IMUtils;
 import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.console.IMChatConsole;
 import cn.ieclipse.smartim.model.IContact;
+import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 
@@ -29,46 +30,33 @@ public class QQChatConsole extends IMChatConsole {
         super(target, imPanel);
     }
     
-    public void sendFile(final String file) {
+    @Override
+    protected void sendFileInternal(String file) throws Exception {
         final File f = new File(file);
-        new Thread() {
+        QNUploader uploader = new QNUploader();
+        String ak = "";
+        String sk = "";
+        String bucket = "";
+        String domain = "";
+        String qq = getClient().getAccount().getAccount();
+        boolean enable = false;
+        boolean ts = false;
+        if (!enable) {
+            ak = "";
+            sk = "";
+        }
+        QNUploader.UploadInfo info = uploader.upload(qq, f, ak, sk, bucket,
+                null);
+        String url = info.getUrl(domain, ts);
+        
+        final String msg = String.format("来自SmartQQ的文件: %s (大小%s), 点击链接 %s 查看",
+                IMUtils.getName(file), IMUtils.formatFileSize(info.fsize), url);
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
-                uploadLock = true;
-                try {
-                    QNUploader uploader = new QNUploader();
-                    String ak = "";
-                    String sk = "";
-                    String bucket = "";
-                    String domain = "";
-                    String qq = getClient().getAccount().getAccount();
-                    boolean enable = false;
-                    boolean ts = false;
-                    if (!enable) {
-                        ak = "";
-                        sk = "";
-                    }
-                    QNUploader.UploadInfo info = uploader.upload(qq, f, ak, sk,
-                            bucket, null);
-                    String url = info.getUrl(domain, ts);
-                    
-                    final String msg = String.format(
-                            "来自SmartQQ的文件: %s (大小%s), 点击链接 %s 查看",
-                            IMUtils.getName(file),
-                            IMUtils.formatFileSize(info.fsize), url);
-                    SwingUtilities.invokeLater(new Runnable() {
-                        @Override
-                        public void run() {
-                            send(msg);
-                        }
-                    });
-                } catch (Exception e) {
-                    LOG.error("发送文件失败 : " + e);
-                    LOG.sendNotification("发送文件失败",
-                            String.format("文件：%s(%s)", file, e.getMessage()));
-                }
-                uploadLock = false;
+                send(msg);
             }
-        }.start();
+        });
     }
     
     @Override

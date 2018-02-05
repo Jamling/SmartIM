@@ -31,56 +31,57 @@ import cn.ieclipse.smartim.views.IMPanel;
  * @date 2017年10月16日
  */
 public class IMSendCallback implements SendCallback {
-
+    
     protected IMPanel imPanel;
-
+    
     public IMSendCallback(IMPanel imPanel) {
         this.imPanel = imPanel;
     }
-
+    
     @Override
     public void onSendResult(int type, String targetId, CharSequence msg,
-                             boolean success, Throwable t) {
+            boolean success, Throwable t) {
         if (success) {
             onSuccess(type, targetId, msg);
-        } else {
+        }
+        else {
             onFailure(type, targetId, msg, t);
         }
     }
-
+    
     protected void onSuccess(int type, String targetId, CharSequence msg) {
-        SmartClient client = getIMPanel().getClient();
-        if (client instanceof AbstractSmartClient) {
-            String name = client.getAccount().getName();
-            IMHistoryManager.getInstance().save((AbstractSmartClient) client, targetId,
-                    IMUtils.formatHtmlMyMsg(System.currentTimeMillis(), name, msg));
-        }
+//        SmartClient client = getIMPanel().getClient();
+//        String name = client.getAccount().getName();
+//        IMHistoryManager.getInstance().save(client, targetId,
+//                IMUtils.formatHtmlMyMsg(System.currentTimeMillis(), name, msg));
     }
-
+    
     protected void onFailure(int type, String targetId, CharSequence msg,
-                             Throwable t) {
+            Throwable t) {
         String s = IMUtils.isEmpty(msg) ? ""
                 : (msg.length() > 20 ? msg.toString().substring(0, 20) + "..."
-                : msg.toString());
+                        : msg.toString());
         IMChatConsole console = getIMPanel().findConsoleById(targetId, true);
         String code = "";
         if (t != null) {
             if (t instanceof LogicException) {
                 code = String.format("api code=%d",
                         ((LogicException) t).getCode());
-            } else if (t instanceof HttpException) {
+            }
+            else if (t instanceof HttpException) {
                 code = String.format("http code=%d",
                         ((HttpException) t).getCode());
             }
         }
         if (console != null) {
             console.error(String.format("%s 发送失败！%s", msg, code));
-        } else {
+        }
+        else {
             LOG.error(String.format("发送到%s的信息（%s）", targetId, msg), t);
             Notifications.notify("发送失败", String.format("%s 发送失败！%s", s, code));
         }
     }
-
+    
     protected IMPanel getIMPanel() {
         return imPanel;
     }
