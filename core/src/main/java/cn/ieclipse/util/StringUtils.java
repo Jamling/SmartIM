@@ -18,8 +18,6 @@ package cn.ieclipse.util;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
-import java.security.MessageDigest;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -165,8 +163,8 @@ public class StringUtils {
         if (src == null) {
             return src;
         }
-        return src.replaceAll("<", "&lt;").replaceAll(">", "&gt;")
-                .replaceAll("&", "&amp;");
+        return src.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
+                .replaceAll(">", "&gt;");
     }
     
     public static String decodeXml(String src) {
