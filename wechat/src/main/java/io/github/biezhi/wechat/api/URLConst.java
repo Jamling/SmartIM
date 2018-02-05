@@ -28,6 +28,7 @@ public final class URLConst {
     public static String BASE = SCHEMA + "wx.qq.com" + PATH;
     public static String BASE_O = "";
     public static String BASE_N = "";
+    public static String HOST = "wx.qq.com";
     
     public interface Login {
         /**
@@ -198,6 +199,7 @@ public final class URLConst {
             n = "webpush.web.wechat.com";
         }
         
+        HOST = SCHEMA + e;
         BASE = SCHEMA + e + PATH;
         SYNC_CHECK = SCHEMA + n + PATH + "synccheck";
         MEDIA_GET = SCHEMA + o + PATH + "webwxgetmedia";

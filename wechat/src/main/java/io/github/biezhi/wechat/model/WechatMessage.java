@@ -102,15 +102,14 @@ public class WechatMessage extends AbstractMessage {
     }
     
     public void parseContent() {
-        String temp = StringUtils.decodeXml(Content);
         if (MsgType == WechatMessage.MSGTYPE_EMOTICON) {
-            text = new EmojiMsgXmlHandler(temp).getHtml(getMediaLink(), this);
+            text = new EmojiMsgXmlHandler(this).getHtml(getMediaLink());
         }
         else if (MsgType == WechatMessage.MSGTYPE_IMAGE) {
-            text = new ImageMsgXmlHandler(temp).getHtml(getMediaLink(), this);
+            text = new ImageMsgXmlHandler(this).getHtml(getMediaLink(), this);
         }
         else if (MsgType == WechatMessage.MSGTYPE_APP) {
-            text = new AppMsgXmlHandler(temp).getHtml(getMediaLink(), this);
+            text = new AppMsgXmlHandler(this).getHtml(getMediaLink());
         }
         // else if (MsgType == WechatMessage.MSGTYPE_FILE) {
         // text = new FileMsgXmlHandler(temp).getHtml(getMediaLink());
@@ -131,6 +130,7 @@ public class WechatMessage extends AbstractMessage {
             text = "视频邀请消息（请在手机上查看）";
         }
         else {
+            String temp = StringUtils.decodeXml(Content);
             text = temp;
         }
     }

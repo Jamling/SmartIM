@@ -23,6 +23,7 @@ import cn.ieclipse.smartim.exception.LogicException;
 import cn.ieclipse.smartim.handler.MessageInterceptor;
 import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.IMessage;
+import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
 import cn.ieclipse.util.StringUtils;
@@ -318,11 +319,20 @@ public class WechatClient extends AbstractSmartClient {
     
     public UserFrom getUserFrom(String uid) {
         UserFrom from = new UserFrom();
-        if (!StringUtils.isEmpty(memberList)) {
+        // if (!StringUtils.isEmpty(memberList))
+        {
             for (Contact t : memberList) {
                 if (uid != null && uid.equals(t.UserName)) {
                     from.setUser(t);
                     break;
+                }
+            }
+            if (from.getContact() == null) {
+                for (Contact t : publicUsersList) {
+                    if (uid != null && uid.equals(t.UserName)) {
+                        from.setUser(t);
+                        break;
+                    }
                 }
             }
             if (from.getContact() == null) {
@@ -331,7 +341,12 @@ public class WechatClient extends AbstractSmartClient {
                 if (!StringUtils.isEmpty(list)) {
                     Contact c = list.get(0);
                     from.setUser(c);
-                    memberList.add(c);
+                    if (c.isPublic()) {
+                        publicUsersList.add(c);
+                    }
+                    else {
+                        memberList.add(c);
+                    }
                     if (modificationCallback != null) {
                         modificationCallback.onContactChanged(c);
                     }
@@ -459,8 +474,12 @@ public class WechatClient extends AbstractSmartClient {
     
     @Override
     public int sendMessage(IMessage msg, IContact target) {
+        if (target instanceof AbstractContact) {
+            ((AbstractContact) target).setLastMessage(msg);
+        }
         String uin = target.getUin();
         WechatMessage m = (WechatMessage) msg;
+        String text = StringUtils.isEmpty(m.text) ? m.Content : m.text;
         try {
             Map<String, Object> body = new HashMap<>();
             body.put("Type", m.MsgType);
@@ -469,9 +488,9 @@ public class WechatClient extends AbstractSmartClient {
             body.put("ToUserName", m.ToUserName);
             body.put("MediaId", m.MediaId);
             JsonObject ret = api.wxSendMessage(body);
-            notifySend(0, uin, msg.getText(), null);
+            notifySend(0, uin, text, null);
         } catch (Exception e) {
-            notifySend(0, uin, msg.getText(), e);
+            notifySend(0, uin, text, e);
         }
         return 0;
     }

@@ -63,7 +63,7 @@ public class WechatContactHandler extends AbstractContactHandler<Contact> {
         if (allList != null) {
             Contact my = null;
             for (Contact contact : allList) {
-                if ((contact.VerifyFlag & 8) != 0) { // 公众号/服务号
+                if (contact.isPublic()) { // 公众号/服务号
                     this.publicUsersList.add(contact);
                 }
                 else if (Const.API_SPECIAL_USER.contains(contact.UserName)) { // 特殊账号

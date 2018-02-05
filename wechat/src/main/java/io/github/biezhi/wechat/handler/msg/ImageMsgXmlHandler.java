@@ -32,8 +32,18 @@ public class ImageMsgXmlHandler extends AbstractMsgXmlHandler {
         super();
     }
     
-    public ImageMsgXmlHandler(String content) {
-        super(content);
+    public ImageMsgXmlHandler(WechatMessage m) {
+        super(m);
+    }
+    
+    @Override
+    public boolean isParseXmlContent() {
+        return false;
+    }
+    
+    @Override
+    public boolean isUnescape() {
+        return false;
     }
     
     public String getHtml(String link, WechatMessage m) {

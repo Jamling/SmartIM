@@ -37,8 +37,8 @@ public class AppMsgXmlHandler extends AbstractMsgXmlHandler {
         super();
     }
     
-    public AppMsgXmlHandler(String content) {
-        super(content);
+    public AppMsgXmlHandler(WechatMessage m) {
+        super(m);
     }
     
     /**
@@ -102,16 +102,28 @@ public class AppMsgXmlHandler extends AbstractMsgXmlHandler {
         return info;
     }
     
-    public String getHtml(String link, WechatMessage m) {
+    public String getHtml(String link) {
         AppMsgInfo info = decode();
         if (info == null) {
             return this.content;
         }
-        if (info.msgType == WechatMessage.MSGTYPE_FILE && link != null) {
-            info.url = link;
+        String html = "";
+        if (info.msgType == WechatMessage.APPMSGTYPE_ATTACH) {
+            if (link != null) {
+                info.url = link;
+            }
+            String size = "";
+            if (!StringUtils.isEmpty(info.desc)) {
+                size = "(" + size + ")";
+            }
+            html = String.format("接收微信文件 %s%s保存于 <a href=\"%s\">%s</a>",
+                    info.title, size, info.url, info.url);
+            return html;
         }
-        String html = String.format("微信文件<a href=\"%s\">%s (%s)</a>", info.url,
-                info.title, info.desc);
+        else {
+            html = String.format("<a href=\"%s\">%s%s</a>", info.url,
+                    info.title, info.desc);
+        }
         return html;
     }
 }

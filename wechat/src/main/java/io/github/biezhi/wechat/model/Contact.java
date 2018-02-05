@@ -121,6 +121,10 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
         return ret;
     }
     
+    public boolean isPublic() {
+        return (VerifyFlag & 8) != 0;
+    }
+    
     @Override
     public boolean equals(Object obj) {
         if (obj instanceof Contact) {

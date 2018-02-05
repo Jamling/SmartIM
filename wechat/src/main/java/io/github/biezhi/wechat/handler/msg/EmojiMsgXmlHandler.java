@@ -32,16 +32,19 @@ public class EmojiMsgXmlHandler extends AbstractMsgXmlHandler {
         super();
     }
     
-    public EmojiMsgXmlHandler(String content) {
-        super(content);
+    public EmojiMsgXmlHandler(WechatMessage m) {
+        super(m);
     }
     
-    public String getHtml(String link, WechatMessage m) {
-        if (link != null) {
-            return String.format("<img src=\"%s\" alt=\"emoji表情\"/>", link);
-        }
+    public String getHtml(String link) {
+        // if (link != null) {
+        // return String.format("<img src=\"%s\" alt=\"emoji表情\"/>", link);
+        // }
         try {
             Element node = root.element("emoji");
+            String type = node.attributeValue("type");
+            String width = node.attributeValue("width");
+            String height = node.attributeValue("height");
             String q = getQueryString();
             if (q == null) {
                 q = "";

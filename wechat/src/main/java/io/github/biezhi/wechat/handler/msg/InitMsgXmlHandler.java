@@ -17,6 +17,8 @@ package io.github.biezhi.wechat.handler.msg;
 
 import org.dom4j.Node;
 
+import io.github.biezhi.wechat.model.WechatMessage;
+
 /**
  * msg type = 51
  * 
@@ -30,8 +32,8 @@ public class InitMsgXmlHandler extends AbstractMsgXmlHandler {
         super();
     }
     
-    public InitMsgXmlHandler(String content) {
-        super(content);
+    public InitMsgXmlHandler(WechatMessage m) {
+        super(m);
     }
     
     public String getRecents() {

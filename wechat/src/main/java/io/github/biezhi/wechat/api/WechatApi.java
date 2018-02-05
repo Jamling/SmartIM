@@ -496,10 +496,12 @@ public class WechatApi {
         else if (type == WechatMessage.MSGTYPE_IMAGE) {
             url = URLConst.API.SEND_IMG + "?fun=async&f=json&pass_ticket="
                     + this.session.getPassTicket();
+            params.put("Scene", 0);
         }
         else if (type == WechatMessage.MSGTYPE_EMOTICON) {
             url = URLConst.API.SEND_EMOTION + "?fun=sys&f=json&pass_ticket="
                     + this.session.getPassTicket();
+            params.put("Scene", 0);
             if (Msg.get("EmojiFlag") == null) {
                 Msg.put("EmojiFlag", 2);
             }
@@ -507,6 +509,7 @@ public class WechatApi {
         else if (type == WechatMessage.MSGTYPE_FILE) {
             url = URLConst.API.SEND_FILE + "?fun=async&f=json&pass_ticket="
                     + this.session.getPassTicket();
+            params.put("Scene", 0);
         }
         if (Msg.get("LocalID") == null) {
             Msg.put("LocalID", clientMsgId);
@@ -600,6 +603,18 @@ public class WechatApi {
         if (obj.getAsJsonObject("BaseResponse").get("Ret").getAsInt() == 0) {
             UploadInfo info = new UploadInfo();
             info.MediaId = obj.get("MediaId").getAsString();
+            try {
+                info.CDNThumbImgHeight = obj.get("CDNThumbImgHeight")
+                        .getAsInt();
+            } catch (Exception e) {
+            
+            }
+            try {
+                info.CDNThumbImgWidth = obj.get("CDNThumbImgWidth").getAsInt();
+            } catch (Exception e) {
+            
+            }
+            info.EncryFileName = obj.get("EncryFileName").getAsString();
             return info;
         }
         return null;

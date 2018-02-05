@@ -21,7 +21,9 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.api.WechatClient;
+import io.github.biezhi.wechat.model.WechatMessage;
 
 /**
  * 处理xml消息
@@ -35,25 +37,38 @@ public class AbstractMsgXmlHandler {
     protected Element root;
     protected Document document;
     protected String rootTag = "msg";
+    protected WechatMessage message;
+    protected boolean unescape = true;
+    protected boolean parseXmlContent = true;
     
-    // public Document parse(String content) throws DocumentException {
-    // SAXReader reader = new SAXReader();
-    // Document document = reader
-    // .read(new ByteArrayInputStream(content.getBytes()));
-    // return document;
-    // }
+    public String getRootTag() {
+        return rootTag;
+    }
     
-    public AbstractMsgXmlHandler(String content) {
-        String regex = String.format(".*(<%s>.*</%s>).*", rootTag, rootTag);
-        this.content = Pattern.compile(regex, Pattern.MULTILINE)
-                .matcher(content.replaceAll("\\s*<br\\s?/>\\s*", ""))
-                .replaceAll("$1");
-        try {
-            this.document = DocumentHelper.parseText(this.content);
-            this.root = this.document.getRootElement();
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.err.println("xml content: " + content);
+    public boolean isUnescape() {
+        return unescape;
+    }
+    
+    public boolean isParseXmlContent() {
+        return parseXmlContent;
+    }
+    
+    public AbstractMsgXmlHandler(WechatMessage message) {
+        this.message = message;
+        String content = isUnescape() ? StringUtils.decodeXml(message.Content)
+                : message.Content;
+        if (isParseXmlContent()) {
+            String regex = String.format(".*(<%s>.*</%s>).*", rootTag, rootTag);
+            this.content = Pattern.compile(regex, Pattern.MULTILINE)
+                    .matcher(content.replaceAll("\\s*<br\\s?/>\\s*", ""))
+                    .replaceAll("$1");
+            try {
+                this.document = DocumentHelper.parseText(this.content);
+                this.root = this.document.getRootElement();
+            } catch (Exception e) {
+                e.printStackTrace();
+                System.err.println("xml content: " + content);
+            }
         }
     }
     
