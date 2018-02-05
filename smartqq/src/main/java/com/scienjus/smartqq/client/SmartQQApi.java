@@ -9,6 +9,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.Proxy;
 import java.util.Arrays;
 import java.util.List;
 
@@ -86,7 +87,7 @@ public class SmartQQApi implements Closeable {
         this.workDir = dir;
     }
     
-    public SmartQQApi() {
+    public SmartQQApi(Proxy proxy) {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.cookieJar(cookieJar);
         builder.hostnameVerifier(new HostnameVerifier() {
@@ -95,7 +96,9 @@ public class SmartQQApi implements Closeable {
                 return true;
             }
         });
-        // builder.proxy(new Proxy(type, sa))
+        if (proxy != null) {
+            builder.proxy(proxy);
+        }
         this.client = builder.build();
     }
     

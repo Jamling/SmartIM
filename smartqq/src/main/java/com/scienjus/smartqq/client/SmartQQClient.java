@@ -2,6 +2,7 @@ package com.scienjus.smartqq.client;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.Proxy;
 import java.net.SocketTimeoutException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -52,6 +53,7 @@ import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.exception.LogicException;
 import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.IMessage;
+import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
 
@@ -86,9 +88,13 @@ public class SmartQQClient extends AbstractSmartClient {
     public Map<Long, DiscussInfo> dinfos;
     public UserInfo account;
     
-    public SmartQQClient() {
+    public SmartQQClient(Proxy proxy) {
         name = "SmartQQ";
-        api = new SmartQQApi();
+        api = new SmartQQApi(proxy);
+    }
+    
+    public SmartQQClient() {
+        this(null);
     }
     
     public void start() {
@@ -810,6 +816,9 @@ public class SmartQQClient extends AbstractSmartClient {
     
     @Override
     public int sendMessage(IMessage msg, IContact target) {
+        if (target instanceof AbstractContact) {
+            ((AbstractContact) target).setLastMessage(msg);
+        }
         Long uin = Long.parseLong(target.getUin());
         String content = ((QQMessage) msg).getContent();
         if (target instanceof Friend || target instanceof UserInfo) {
