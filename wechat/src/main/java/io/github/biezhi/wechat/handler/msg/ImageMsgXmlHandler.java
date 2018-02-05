@@ -52,9 +52,12 @@ public class ImageMsgXmlHandler extends AbstractMsgXmlHandler {
                 return "对方给您发了一张图片（请在手机上查看）";
             }
             if (link != null) {
-                return String.format(
+                String img = String.format(
                         "<img src=\"%s\" width=\"%s\" height=\"%s\" alt=\"图片\"/>",
                         link, m.ImgWidth, m.ImgHeight);
+                String html = String
+                        .format("<a href=\"%s\" title=\"点击查看大图\">%s</a>", link, img);
+                return html;
             }
             
             Element node = root.element("img");
@@ -65,9 +68,12 @@ public class ImageMsgXmlHandler extends AbstractMsgXmlHandler {
             String w = node.attributeValue("cdnthumbwidth");
             String h = node.attributeValue("cdnthumbheight");
             String url = node.attributeValue("cdnthumburl");
-            return String.format(
+            String img = String.format(
                     "<img src=\"%s\" width=\"%s\" height=\"%s\" alt=\"图片\"/>",
                     link, w, h);
+            String html = String
+                    .format("<a href=\"%s\" title=\"点击查看大图\">%s</a>", url, img);
+            return html;
         } catch (Exception e) {
             return "图片消息，请在手机上查看";
         }

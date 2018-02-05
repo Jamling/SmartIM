@@ -15,6 +15,7 @@ public class ScrollLockAction extends JToggleButton implements ActionListener {
         super(SmartIcons.lock);
         this.setToolTipText("禁止滚动");
         this.addActionListener(this);
+        this.console = console;
     }
     
     @Override

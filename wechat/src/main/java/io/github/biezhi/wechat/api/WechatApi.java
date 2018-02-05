@@ -639,12 +639,12 @@ public class WechatApi {
     }
     
     public String wxGetMsgImg(String msgId, File file) throws Exception {
-        String url = URLConst.API.GET_IMG + "?type=slave&MsgID=" + msgId
+        String url = URLConst.API.GET_IMG + "?MsgID=" + msgId
                 + "&skey=" + this.session.getSkey();
         if (file == null) {
             return url;
         }
-        return doDown(false, url, this.cookie, file, null);
+        return doDown(false, url + "&type=big", this.cookie, file, null);
     }
     
     public String wxGetMsgMedia(WechatMessage m, File file) throws Exception {
