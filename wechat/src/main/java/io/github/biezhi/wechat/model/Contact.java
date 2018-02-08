@@ -128,6 +128,10 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
         return (VerifyFlag & 8) != 0;
     }
     
+    public boolean is3rdApp() {
+        return (ContactFlag & Contact.CONTACTFLAG_3RDAPPCONTACT) != 0;
+    }
+    
     public boolean isGroup() {
         return MemberCount > 0;
     }
