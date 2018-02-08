@@ -48,7 +48,6 @@ public class WXReceiveCallback extends IMReceiveCallback {
                     .getState().NOTIFY_MSG;
             String uin = from.getContact().getUin();
             Contact contact = (Contact) from.getContact();
-            contact.setLastMessage(message);
             if (from instanceof GroupFrom) {
                 GroupFrom gf = (GroupFrom) from;
                 unknown = gf.getMember() == null || gf.getMember().isUnknown();

@@ -9,8 +9,6 @@ import javax.swing.JOptionPane;
 import cn.ieclipse.smartim.SmartClient;
 import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
 import cn.ieclipse.smartim.common.LOG;
-import cn.ieclipse.smartim.console.MockChatConsole;
-import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.views.IMPanel;
 import icons.SmartIcons;
 

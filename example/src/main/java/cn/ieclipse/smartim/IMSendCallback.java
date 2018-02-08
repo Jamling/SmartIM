@@ -54,6 +54,7 @@ public class IMSendCallback implements SendCallback {
 //        String name = client.getAccount().getName();
 //        IMHistoryManager.getInstance().save(client, targetId,
 //                IMUtils.formatHtmlMyMsg(System.currentTimeMillis(), name, msg));
+        imPanel.notifyUpdateContacts(0, true);
     }
     
     protected void onFailure(int type, String targetId, CharSequence msg,
