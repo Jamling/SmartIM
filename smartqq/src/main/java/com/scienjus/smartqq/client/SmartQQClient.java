@@ -877,7 +877,7 @@ public class SmartQQClient extends AbstractSmartClient {
         if (target instanceof Friend || target instanceof UserInfo) {
             QQMessage ret = new FriendMessage();
             ret.setContent(msg);
-            ret.setTime(System.currentTimeMillis());
+            ret.setTime(System.currentTimeMillis() / 1000);
             ret.setFont(Font.DEFAULT_FONT);
             ret.setUserId(getAccount().getId());
             return ret;

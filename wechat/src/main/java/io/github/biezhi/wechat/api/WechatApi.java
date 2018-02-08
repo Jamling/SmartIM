@@ -696,8 +696,7 @@ public class WechatApi {
         try {
             doPost(url, params);
         } catch (Exception e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            // ignore
         }
     }
     

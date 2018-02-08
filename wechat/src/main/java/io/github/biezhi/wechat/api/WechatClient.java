@@ -501,6 +501,7 @@ public class WechatClient extends AbstractSmartClient {
         m.Content = Utils.unicodeToUtf8(msg);
         m.FromUserName = getAccount().getUin();
         m.ToUserName = target.getUin();
+        m.CreateTime = System.currentTimeMillis() / 1000;
         return m;
     }
     
