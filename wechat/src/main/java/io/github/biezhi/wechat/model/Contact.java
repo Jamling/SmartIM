@@ -89,6 +89,9 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
         if (isTop()) {
             return -1;
         }
+        else if (that.isTop()) {
+            return 1;
+        }
         int ret = super.compareTo(that);
         
         return ret;
@@ -123,6 +126,10 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
     
     public boolean isPublic() {
         return (VerifyFlag & 8) != 0;
+    }
+    
+    public boolean isGroup() {
+        return MemberCount > 0;
     }
     
     @Override
