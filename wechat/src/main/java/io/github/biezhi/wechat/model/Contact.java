@@ -132,8 +132,13 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
         return (ContactFlag & Contact.CONTACTFLAG_3RDAPPCONTACT) != 0;
     }
     
+    public boolean isSpecial() {
+        return Const.API_SPECIAL_USER.contains(UserName);
+    }
+    
     public boolean isGroup() {
-        return MemberCount > 0;
+        return MemberCount > 0 || (!StringUtils.isEmpty(MemberList))
+                || UserName.startsWith("@@");
     }
     
     @Override
