@@ -15,6 +15,7 @@
  */
 package cn.ieclipse.util;
 
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.Field;
 import java.net.URLEncoder;
@@ -183,5 +184,53 @@ public class StringUtils {
         }
         String prefix = path.startsWith("/") ? "file://" : "file:///";
         return prefix + path.replaceAll("\\\\", "/");
+    }
+    
+    public static String file2string(Class<?> clazz, String name) {
+        try {
+            InputStream is = clazz.getResourceAsStream(name);
+            // FileInputStream fis = new FileInputStream(f);
+            byte[] buffer = new byte[is.available()];
+            is.read(buffer);
+            is.close();
+            
+            return new String(buffer);
+        } catch (Exception e) {
+        
+        }
+        return null;
+    }
+    
+    public static long getLong(String v, long dft) {
+        if (StringUtils.isEmpty(v)) {
+            return dft;
+        }
+        try {
+            return Long.parseLong(v);
+        } catch (Exception e) {
+            return dft;
+        }
+    }
+    
+    public static int getInt(String v, int dft) {
+        if (StringUtils.isEmpty(v)) {
+            return dft;
+        }
+        try {
+            return Integer.parseInt(v);
+        } catch (Exception e) {
+            return dft;
+        }
+    }
+    
+    public static boolean getBool(String v, boolean dft) {
+        if (StringUtils.isEmpty(v)) {
+            return dft;
+        }
+        try {
+            return Boolean.parseBoolean(v);
+        } catch (Exception e) {
+            return dft;
+        }
     }
 }
