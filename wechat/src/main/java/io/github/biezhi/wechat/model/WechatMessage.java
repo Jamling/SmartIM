@@ -11,6 +11,7 @@ import io.github.biezhi.wechat.api.WechatClient;
 import io.github.biezhi.wechat.handler.msg.AppMsgXmlHandler;
 import io.github.biezhi.wechat.handler.msg.EmojiMsgXmlHandler;
 import io.github.biezhi.wechat.handler.msg.ImageMsgXmlHandler;
+import io.github.biezhi.wechat.model.xml.AppMsgInfo;
 
 public class WechatMessage extends AbstractMessage {
     
@@ -92,6 +93,8 @@ public class WechatMessage extends AbstractMessage {
     public String EncryFileName;
     public int ImgHeight;
     public int ImgWidth;
+    @Expose(serialize = false, deserialize = false)
+    public AppMsgInfo AppMsgInfo;
     
     @Override
     public CharSequence getText() {
@@ -106,7 +109,7 @@ public class WechatMessage extends AbstractMessage {
             text = new EmojiMsgXmlHandler(this).getHtml(getMediaLink());
         }
         else if (MsgType == WechatMessage.MSGTYPE_IMAGE) {
-            text = new ImageMsgXmlHandler(this).getHtml(getMediaLink(), this);
+            text = new ImageMsgXmlHandler(this).getHtml(getMediaLink());
         }
         else if (MsgType == WechatMessage.MSGTYPE_APP) {
             text = new AppMsgXmlHandler(this).getHtml(getMediaLink());

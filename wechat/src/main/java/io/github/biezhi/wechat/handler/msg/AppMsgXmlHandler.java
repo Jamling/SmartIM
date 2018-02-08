@@ -82,12 +82,8 @@ public class AppMsgXmlHandler extends AbstractMsgXmlHandler {
             info.desc = node.elementTextTrim("des");
             String showType = node.elementTextTrim("showtype");
             String type = node.elementTextTrim("type");
-            if (!StringUtils.isEmpty(type)) {
-                info.msgType = Integer.parseInt(type);
-            }
-            if (!StringUtils.isEmpty(showType)) {
-                info.showType = Integer.parseInt(showType);
-            }
+            info.msgType = StringUtils.getInt(type, 0);
+            info.showType = StringUtils.getInt(showType, 0);
             info.url = node.elementTextTrim("url");
             if (info.url != null) {
                 info.url = StringUtils.decodeXml(info.url);
@@ -95,7 +91,9 @@ public class AppMsgXmlHandler extends AbstractMsgXmlHandler {
             
             node = root.element("appinfo");
             info.appName = node.elementTextTrim("appname");
-            
+            if (message != null) {
+                message.AppMsgInfo = info;
+            }
         } catch (Exception e) {
             return null;
         }

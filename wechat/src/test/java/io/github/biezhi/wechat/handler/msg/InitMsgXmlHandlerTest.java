@@ -9,16 +9,22 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.model.WechatMessage;
 
 public class InitMsgXmlHandlerTest {
     InitMsgXmlHandler handler;
     
-    @Before
-    public void setUp() throws Exception {
-        String content = File2String.read("init.xml");
+    WechatMessage from(String file) {
+        String content = StringUtils.file2string(getClass(), file);
         WechatMessage m = new WechatMessage();
         m.Content = content;
+        return m;
+    }
+    
+    @Before
+    public void setUp() throws Exception {
+        WechatMessage m = from("init.xml");
         handler = new InitMsgXmlHandler(m);
     }
     

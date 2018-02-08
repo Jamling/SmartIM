@@ -17,7 +17,9 @@ package io.github.biezhi.wechat.handler.msg;
 
 import org.dom4j.Element;
 
+import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.model.WechatMessage;
+import io.github.biezhi.wechat.model.xml.AppMsgInfo;
 
 /**
  * msg type = {@value WechatMessage#MSGTYPE_EMOTICON}
@@ -41,6 +43,10 @@ public class EmojiMsgXmlHandler extends AbstractMsgXmlHandler {
         // return String.format("<img src=\"%s\" alt=\"emoji表情\"/>", link);
         // }
         try {
+            AppMsgInfo info = new AppMsgInfo();
+            if (message != null) {
+                message.AppMsgInfo = info;
+            }
             Element node = root.element("emoji");
             String type = node.attributeValue("type");
             String width = node.attributeValue("width");
@@ -49,6 +55,8 @@ public class EmojiMsgXmlHandler extends AbstractMsgXmlHandler {
             if (q == null) {
                 q = "";
             }
+            info.msgType = StringUtils.getInt(type, 0);
+            info.url = node.attributeValue("cdnurl");
             return String.format("<img src=\"%s?%s\" alt=\"emoji表情\"/>",
                     node.attributeValue("cdnurl"), q);
         } catch (Exception e) {

@@ -18,6 +18,7 @@ package io.github.biezhi.wechat.handler.msg;
 import org.dom4j.Element;
 
 import io.github.biezhi.wechat.model.WechatMessage;
+import io.github.biezhi.wechat.model.xml.AppMsgInfo;
 
 /**
  * msg type = 3
@@ -46,20 +47,27 @@ public class ImageMsgXmlHandler extends AbstractMsgXmlHandler {
         return false;
     }
     
-    public String getHtml(String link, WechatMessage m) {
+    public String getHtml(String link) {
         try {
             if (link == null) {
                 return "对方给您发了一张图片（请在手机上查看）";
             }
             if (link != null) {
+                AppMsgInfo info = new AppMsgInfo();
+                if (message != null) {
+                    message.AppMsgInfo = info;
+                }
+                info.url = link;
                 String img = String.format(
                         "<img src=\"%s\" width=\"%s\" height=\"%s\" alt=\"图片\"/>",
-                        link, m.ImgWidth, m.ImgHeight);
-                String html = String
-                        .format("<a href=\"%s\" title=\"点击查看大图\">%s</a>", link, img);
+                        link, message.ImgWidth, message.ImgHeight);
+                String html = String.format(
+                        "<a href=\"%s\" title=\"点击查看大图\">%s</a>", link, img);
                 return html;
             }
             
+            AppMsgInfo info = new AppMsgInfo();
+            message.AppMsgInfo = info;
             Element node = root.element("img");
             String q = getQueryString();
             if (q == null) {
@@ -68,6 +76,7 @@ public class ImageMsgXmlHandler extends AbstractMsgXmlHandler {
             String w = node.attributeValue("cdnthumbwidth");
             String h = node.attributeValue("cdnthumbheight");
             String url = node.attributeValue("cdnthumburl");
+            info.url = url;
             String img = String.format(
                     "<img src=\"%s\" width=\"%s\" height=\"%s\" alt=\"图片\"/>",
                     link, w, h);
