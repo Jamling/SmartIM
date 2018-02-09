@@ -65,6 +65,19 @@ public class Contact extends AbstractContact implements Comparable<Contact> {
             return NickName;
         }
         
+        if (isGroup()) {
+            StringBuilder sb = new StringBuilder();
+            int max = 3;
+            for (int i = 0; i < 3 && i < MemberList.size(); i++) {
+                sb.append(MemberList.get(i).getName());
+                sb.append('、');
+            }
+            if (sb.length() > 0) {
+                sb.deleteCharAt(sb.length() - 1);
+                return sb.toString();
+            }
+        }
+        
         return UserName;
     }
     
