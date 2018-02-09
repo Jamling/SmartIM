@@ -164,8 +164,8 @@ public class StringUtils {
         if (src == null) {
             return src;
         }
-        return src.replaceAll("&", "&amp;").replaceAll("<", "&lt;")
-                .replaceAll(">", "&gt;");
+        return src.replace("&", "&amp;").replace("<", "&lt;").replace(">",
+                "&gt;");
     }
     
     public static String decodeXml(String src) {

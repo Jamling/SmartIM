@@ -41,7 +41,7 @@ public class QQMessage extends AbstractMessage {
             return content;
         }
         for (String at : getAts()) {
-            content = content.replaceAll(at, "");
+            content = content.replace(at, "");
         }
         return content;
     }
