@@ -27,6 +27,8 @@ import cn.ieclipse.smartim.model.IFrom;
  */
 public abstract class AbstractFrom implements IFrom {
     protected boolean newbie;
+    protected int direction = DIR_IN;
+    protected IContact target;
     
     public void setNewbie(boolean newbie) {
         this.newbie = newbie;
@@ -44,5 +46,22 @@ public abstract class AbstractFrom implements IFrom {
     public String getName() {
         IContact contact = getMember();
         return contact == null ? "未知用户" : contact.getName();
+    }
+    
+    @Override
+    public IContact getTarget() {
+        return target;
+    }
+    
+    public void setTarget(IContact target) {
+        this.target = target;
+    }
+    
+    public boolean isOut() {
+        return direction == DIR_OUT;
+    }
+    
+    public void setOut() {
+        this.direction = DIR_OUT;
     }
 }

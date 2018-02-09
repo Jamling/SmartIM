@@ -317,30 +317,29 @@ public class WechatClient extends AbstractSmartClient {
         return from;
     }
     
-    public UserFrom getUserFrom(String uid) {
-        UserFrom from = new UserFrom();
-        // if (!StringUtils.isEmpty(memberList))
-        {
+    public Contact getContact(String uid) {
+        Contact contact = null;
+        if (!uid.equals(getAccount().getUin())) {
             for (Contact t : memberList) {
                 if (uid != null && uid.equals(t.UserName)) {
-                    from.setUser(t);
+                    contact = t;
                     break;
                 }
             }
-            if (from.getContact() == null) {
+            if (contact == null) {
                 for (Contact t : publicUsersList) {
                     if (uid != null && uid.equals(t.UserName)) {
-                        from.setUser(t);
+                        contact = t;
                         break;
                     }
                 }
             }
-            if (from.getContact() == null) {
+            if (contact == null) {
                 JsonArray array = api.batchGetContact(Arrays.asList(uid));
                 List<Contact> list = contactHandler.handle(array);
                 if (!StringUtils.isEmpty(list)) {
                     Contact c = list.get(0);
-                    from.setUser(c);
+                    contact = c;
                     if (c.isPublic()) {
                         publicUsersList.add(c);
                     }
@@ -353,7 +352,7 @@ public class WechatClient extends AbstractSmartClient {
                 }
             }
         }
-        return from;
+        return contact;
     }
     
     public AbstractFrom getFrom(WechatMessage msg) {
@@ -363,7 +362,15 @@ public class WechatClient extends AbstractSmartClient {
                         msg.src == null ? "" : msg.src);
             }
             else {
-                UserFrom from = getUserFrom(msg.src);
+                UserFrom from = new UserFrom();
+                if (msg.src.equals(accout.UserName)) {
+                    from.setUser(getContact(msg.ToUserName));
+                    from.setTarget(accout);
+                    from.setOut();
+                }
+                else {
+                    from.setUser(getContact(msg.src));
+                }
                 return from;
             }
         } catch (Exception e) {
@@ -444,8 +451,8 @@ public class WechatClient extends AbstractSmartClient {
                 }
             }
             boolean handled = intercept(msg);
-            AbstractFrom from = getFrom(msg);
             if (!handled) {
+                AbstractFrom from = getFrom(msg);
                 if (from != null && from.getContact() != null) {
                     if (!getRecentList().contains(from.getContact())) {
                         getRecentList().add(0, (Contact) from.getContact());

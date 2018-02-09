@@ -26,9 +26,10 @@ public class GroupMessageInterceptor implements MessageInterceptor {
                 wxMsg.src = wxMsg.FromUserName;
                 wxMsg.groupId = wxMsg.ToUserName;
             }
-            else if (Const.API_SPECIAL_USER.contains(wxMsg.ToUserName)) {
-                wxMsg.src = wxMsg.ToUserName;
-            }
+            // comment for adding setOut in from
+//            else if (Const.API_SPECIAL_USER.contains(wxMsg.ToUserName)) {
+//                wxMsg.src = wxMsg.ToUserName;
+//            }
             else {
                 wxMsg.src = wxMsg.FromUserName;
             }

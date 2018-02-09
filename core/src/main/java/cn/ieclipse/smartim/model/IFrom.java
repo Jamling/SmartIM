@@ -36,4 +36,15 @@ public interface IFrom {
      * @return 群成员或null
      */
     IContact getMember();
+    
+    /**
+     * 发送给哪个联系人的
+     * 
+     * @return 目标联系人或null（自己）
+     */
+    IContact getTarget();
+    
+    int DIR_IN = 0;
+    int DIR_OUT = 1;
+    int DIR_UNKNOWN = -1;
 }
