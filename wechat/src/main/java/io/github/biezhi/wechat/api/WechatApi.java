@@ -235,42 +235,44 @@ public class WechatApi {
      *
      * @return
      */
-    public boolean login() {
+    public boolean login() throws Exception {
         
         Request.Builder requestBuilder = new Request.Builder()
                 .url(this.redirectUri);
         Request request = requestBuilder.build();
         
         log.debug("[*] 请求 => {}\n", request);
-        try {
-            Response response = client.newCall(request).execute();
-            Headers headers = response.headers();
-            List<String> cookies = headers.values("Set-Cookie");
-            this.cookie = Utils.getCookie(cookies);
-            log.info("[*] 设置cookie [{}]", this.cookie);
-            String body = response.body().string();
-            if (Utils.isBlank(body)) {
-                return false;
-            }
-            session.setSkey(Utils.match("<skey>(\\S+)</skey>", body));
-            session.setSid(Utils.match("<wxsid>(\\S+)</wxsid>", body));
-            session.setUin(Utils.match("<wxuin>(\\S+)</wxuin>", body));
-            session.setPassTicket(
-                    Utils.match("<pass_ticket>(\\S+)</pass_ticket>", body));
-                    
-            this.baseRequest = Utils.createMap("Uin",
-                    Long.valueOf(session.getUin()), "Sid", session.getSid(),
-                    "Skey", session.getSkey(), "DeviceID", this.deviceId);
-                    
-            File output = new File("temp.jpg");
-            if (output.exists()) {
-                output.delete();
-            }
-            return true;
-        } catch (Exception e) {
-            log.error("[*] 登录失败", e);
-            return false;
+        
+        Response response = client.newCall(request).execute();
+        String body = response.body().string();
+        Headers headers = response.headers();
+        List<String> cookies = headers.values("Set-Cookie");
+        this.cookie = Utils.getCookie(cookies);
+        log.info("[*] 设置cookie [{}]", this.cookie);
+        if (Utils.isBlank(body)) {
+            throw new LogicException(-1, "登录失败");
         }
+        String error = Utils.match("<error>(\\S+)</error>", body);
+        if (!StringUtils.isEmpty(error)) {
+            String code = Utils.match("<ret>(\\S+)</ret>", error);
+            String msg = Utils.match("<message>(\\S+)</message>", error);
+            throw new LogicException(Integer.parseInt(code), msg);
+        }
+        session.setSkey(Utils.match("<skey>(\\S+)</skey>", body));
+        session.setSid(Utils.match("<wxsid>(\\S+)</wxsid>", body));
+        session.setUin(Utils.match("<wxuin>(\\S+)</wxuin>", body));
+        session.setPassTicket(
+                Utils.match("<pass_ticket>(\\S+)</pass_ticket>", body));
+                
+        this.baseRequest = Utils.createMap("Uin",
+                Long.valueOf(session.getUin()), "Sid", session.getSid(), "Skey",
+                session.getSkey(), "DeviceID", this.deviceId);
+                
+        File output = new File("temp.jpg");
+        if (output.exists()) {
+            output.delete();
+        }
+        return true;
     }
     
     /**
@@ -639,8 +641,8 @@ public class WechatApi {
     }
     
     public String wxGetMsgImg(String msgId, File file) throws Exception {
-        String url = URLConst.API.GET_IMG + "?MsgID=" + msgId
-                + "&skey=" + this.session.getSkey();
+        String url = URLConst.API.GET_IMG + "?MsgID=" + msgId + "&skey="
+                + this.session.getSkey();
         if (file == null) {
             return url;
         }
