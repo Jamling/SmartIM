@@ -256,7 +256,9 @@ public class WechatApi {
         if (!StringUtils.isEmpty(error)) {
             String code = Utils.match("<ret>(\\S+)</ret>", error);
             String msg = Utils.match("<message>(\\S+)</message>", error);
-            throw new LogicException(Integer.parseInt(code), msg);
+            if (!"0".equals(code) && msg != null) {
+                throw new LogicException(Integer.parseInt(code), msg);
+            }
         }
         session.setSkey(Utils.match("<skey>(\\S+)</skey>", body));
         session.setSid(Utils.match("<wxsid>(\\S+)</wxsid>", body));
