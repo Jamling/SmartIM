@@ -8,7 +8,6 @@ import javax.swing.SwingUtilities;
 
 import cn.ieclipse.smartim.IMHistoryManager;
 import cn.ieclipse.smartim.common.IMUtils;
-import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.console.IMChatConsole;
 import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;

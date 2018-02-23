@@ -4,9 +4,6 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
 
-import com.scienjus.smartqq.client.SmartQQClient;
-
-import cn.ieclipse.smartim.IMClientFactory;
 import cn.ieclipse.smartim.IMSendCallback;
 import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.views.ContactTreeMode;

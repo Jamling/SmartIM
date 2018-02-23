@@ -2,15 +2,11 @@ package cn.ieclipse.smartim.views;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import javax.swing.JButton;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -21,13 +17,10 @@ import cn.ieclipse.smartim.SmartClient;
 import cn.ieclipse.smartim.actions.DisconnectAction;
 import cn.ieclipse.smartim.actions.LoginAction;
 import cn.ieclipse.smartim.actions.SettingsAction;
-import cn.ieclipse.smartim.actions.MockConsoleAction;
-import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
 import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.console.ClosableTabHost;
 import cn.ieclipse.smartim.console.IMChatConsole;
 import cn.ieclipse.smartim.model.IContact;
-import icons.SmartIcons;
 
 /**
  * Created by Jamling on 2017/7/11.

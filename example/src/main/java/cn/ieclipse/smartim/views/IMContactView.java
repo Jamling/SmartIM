@@ -1,12 +1,16 @@
 package cn.ieclipse.smartim.views;
 
+import java.awt.BorderLayout;
+
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+import javax.swing.JTree;
+import javax.swing.SwingUtilities;
+
 import cn.ieclipse.smartim.SmartClient;
 import cn.ieclipse.smartim.callback.ModificationCallback;
 import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.callback.SendCallback;
-
-import javax.swing.*;
-import java.awt.BorderLayout;
 
 /**
  * Created by Jamling on 2017/7/11.

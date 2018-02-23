@@ -15,10 +15,8 @@ import com.scienjus.smartqq.model.Friend;
 import com.scienjus.smartqq.model.QQMessage;
 
 import cn.ieclipse.smartim.common.IMUtils;
-import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.console.IMChatConsole;
 import cn.ieclipse.smartim.model.IContact;
-import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 

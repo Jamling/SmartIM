@@ -1,8 +1,9 @@
 package cn.ieclipse.smartqq;
 
+import com.scienjus.smartqq.model.QQContact;
+
 import cn.ieclipse.smartim.callback.ModificationCallback;
 import cn.ieclipse.smartim.model.IContact;
-import com.scienjus.smartqq.model.QQContact;
 
 /**
  * Created by Jamling on 2017/11/1.

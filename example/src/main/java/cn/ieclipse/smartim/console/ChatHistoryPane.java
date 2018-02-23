@@ -1,7 +1,11 @@
 package cn.ieclipse.smartim.console;
 
-import javax.swing.*;
 import java.awt.BorderLayout;
+
+import javax.swing.JEditorPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.ScrollPaneConstants;
 
 /**
  * Created by Jamling on 2017/7/14.

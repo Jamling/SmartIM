@@ -1,13 +1,19 @@
 package cn.ieclipse.smartqq;
 
-import cn.ieclipse.smartim.views.ContactTreeNode;
-import cn.ieclipse.smartim.views.IMPanel;
-import com.scienjus.smartqq.client.SmartQQClient;
-import com.scienjus.smartqq.model.*;
-
-import javax.swing.tree.DefaultMutableTreeNode;
 import java.util.Collections;
 import java.util.List;
+
+import javax.swing.tree.DefaultMutableTreeNode;
+
+import com.scienjus.smartqq.client.SmartQQClient;
+import com.scienjus.smartqq.model.Category;
+import com.scienjus.smartqq.model.Discuss;
+import com.scienjus.smartqq.model.Friend;
+import com.scienjus.smartqq.model.Group;
+import com.scienjus.smartqq.model.QQContact;
+
+import cn.ieclipse.smartim.views.ContactTreeNode;
+import cn.ieclipse.smartim.views.IMPanel;
 
 /**
  * Created by Jamling on 2017/11/1.

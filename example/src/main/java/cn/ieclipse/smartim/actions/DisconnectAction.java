@@ -5,8 +5,6 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
 
-import cn.ieclipse.smartim.console.MockChatConsole;
-import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.views.IMPanel;
 import icons.SmartIcons;
 

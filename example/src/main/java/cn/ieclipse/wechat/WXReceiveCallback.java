@@ -21,7 +21,6 @@ import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
-import cn.ieclipse.smartim.views.IMPanel;
 import io.github.biezhi.wechat.model.Contact;
 import io.github.biezhi.wechat.model.GroupFrom;
 import io.github.biezhi.wechat.model.UserFrom;
