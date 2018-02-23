@@ -15,7 +15,6 @@ import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JSplitPane;
 import javax.swing.JTextPane;
-import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
@@ -26,7 +25,6 @@ import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.StyleSheet;
 
-import cn.ieclipse.smartim.AbstractSmartClient;
 import cn.ieclipse.smartim.IMHistoryManager;
 import cn.ieclipse.smartim.SmartClient;
 import cn.ieclipse.smartim.actions.ScrollLockAction;
@@ -36,11 +34,11 @@ import cn.ieclipse.smartim.common.IMUtils;
 import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.common.WrapHTMLFactory;
 import cn.ieclipse.smartim.model.IContact;
+import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.smartim.views.IMPanel;
 import cn.ieclipse.util.BareBonesBrowserLaunch;
 import cn.ieclipse.util.StringUtils;
-import icons.SmartIcons;
 
 /**
  * Created by Jamling on 2017/7/1.
@@ -100,6 +98,17 @@ public abstract class IMChatConsole extends JPanel {
         }
     }
     
+    public void clearHistories() {
+        IMHistoryManager.getInstance().clear(getClient(), getHistoryFile());
+        //composite.clearHistory();
+    }
+    
+    public void clearUnread() {
+        if (contact != null && contact instanceof AbstractContact) {
+            ((AbstractContact) contact).clearUnRead();
+        }
+    }
+    
     public boolean hideMyInput() {
         return false;
     }
@@ -146,6 +155,7 @@ public abstract class IMChatConsole extends JPanel {
                     LOG.error("发送文件失败 : " + e);
                     LOG.sendNotification("发送文件失败",
                             String.format("文件：%s(%s)", file, e.getMessage()));
+                    error(String.format("发送文件失败：%s(%s)", file));
                 } finally {
                     uploadLock = false;
                 }
@@ -244,8 +254,8 @@ public abstract class IMChatConsole extends JPanel {
     }
     
     protected void initToolBar(JToolBar toolBar) {
-        toolBar.add(new SendFileAction(this));
         toolBar.add(new SendImageAction(this));
+        toolBar.add(new SendFileAction(this));
         toolBar.add(new ScrollLockAction(this));
     }
     
@@ -274,7 +284,7 @@ public abstract class IMChatConsole extends JPanel {
         styleSheet.addRule("img {max-width: 100%; display: block;}");
         try {
             styleSheet.importStyleSheet(
-                    new URL("http://192.168.133.15/test/smartim.css"));
+                    new URL("http://dl.ieclipse.cn/r/smartim-min.css"));
         } catch (MalformedURLException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();

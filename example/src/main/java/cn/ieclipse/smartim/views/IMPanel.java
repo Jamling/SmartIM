@@ -21,7 +21,7 @@ import cn.ieclipse.smartim.SmartClient;
 import cn.ieclipse.smartim.actions.DisconnectAction;
 import cn.ieclipse.smartim.actions.LoginAction;
 import cn.ieclipse.smartim.actions.SettingsAction;
-import cn.ieclipse.smartim.actions.TestAction;
+import cn.ieclipse.smartim.actions.MockConsoleAction;
 import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
 import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.console.ClosableTabHost;
@@ -73,7 +73,7 @@ public abstract class IMPanel extends JSplitPane implements ClosableTabHost.Call
         toolBar.add(new LoginAction(this));
         toolBar.add(new DisconnectAction(this));
         toolBar.add(new SettingsAction(this));
-        // toolBar.add(new TestAction(this));
+        // toolBar.add(new MockConsoleAction(this));
     }
     
     public boolean isLeftHidden() {

@@ -82,6 +82,11 @@ public class IMUtils {
         return String.format("%s %s: %s\n", s1, name, msg);
     }
     
+    public static boolean isMySendMsg(String raw) {
+        return raw.matches("^\\d{2}:\\d{2}:\\d{2} [.\\s\\S]*")
+                || raw.startsWith("<div");
+    }
+    
     public static String formatHtmlMsg(long time, String name,
             CharSequence msg) {
         return formatHtmlMsg(false, true, time, name, msg.toString());
@@ -100,11 +105,6 @@ public class IMUtils {
         return String.format(
                 "<div class=\"%s\"><span class=\"time\">%s</span> <a href=\"user://%s\">%s</a>: %s</div>",
                 clz, t, name, name, content);
-    }
-    
-    public static boolean isMySendMsg(String raw) {
-        return raw.matches("^\\d{2}:\\d{2}:\\d{2} [.\\s\\S]*")
-                || raw.startsWith("<div");
     }
     
     private static String autoReviewLink(String input) {

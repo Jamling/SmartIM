@@ -61,4 +61,10 @@ public class IMHistoryManager {
         ret = ret && fs.isPersistent() && fs.flush();
         return ret;
     }
+    
+    public boolean clear(SmartClient client, String uin) {
+        FileStorage fs = get(client, uin);
+        fs.release();
+        return true;
+    }
 }

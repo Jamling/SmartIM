@@ -40,7 +40,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
     private JLabel linkAbout;
     private SmartIMSettings settings;
     
-    private String version = "2.1.2";
+    private String version = "2.1.3";
     private String update_url = "http://api.ieclipse.cn/smartqq/index/notice?p=swing";
     private String about_url = "http://api.ieclipse.cn/smartqq/index/about";
     private final JPanel contentPanel = new JPanel();
