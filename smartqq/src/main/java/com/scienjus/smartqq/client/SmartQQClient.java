@@ -330,6 +330,7 @@ public class SmartQQClient extends AbstractSmartClient {
     
     public GroupInfo getGroupInfo(long groupCode) {
         try {
+            LOGGER.info(String.format("获取群(code=%s)信息", groupCode));
             return groupInfoHandler.handle(api.getGroupInfo(groupCode));
         } catch (Exception e) {
             e.printStackTrace();
@@ -339,6 +340,7 @@ public class SmartQQClient extends AbstractSmartClient {
     
     public DiscussInfo getDiscussInfo(long discussId) {
         try {
+            LOGGER.info(String.format("获取讨论组(code=%s)信息", discussId));
             return discussInfoHandler.handle(api.getDiscussInfo(discussId));
         } catch (Exception e) {
             e.printStackTrace();
@@ -515,6 +517,7 @@ public class SmartQQClient extends AbstractSmartClient {
         // out of date
         if (info == null) {
             try {
+                LOGGER.info(String.format("获取群%s(code=%s)信息", group, group.code));
                 info = getGroupInfo(group.code);
                 if (modificationCallback != null) {
                     modificationCallback.onContactChanged(info);
@@ -551,6 +554,7 @@ public class SmartQQClient extends AbstractSmartClient {
         // out of date
         if (info == null) {
             try {
+                LOGGER.info(String.format("获取讨论组%s(code=%s)信息", discuss, discuss.id));
                 info = getDiscussInfo(discuss.id);
                 if (modificationCallback != null) {
                     modificationCallback.onContactChanged(info);
@@ -618,8 +622,8 @@ public class SmartQQClient extends AbstractSmartClient {
         boolean newGroup = false;
         if (g == null) {
             g = new Group();
-            g.code = message.getGroupId();
-            g.id = g.code;
+            g.id = message.getGroupId();
+            //g.code = g.id;
             newGroup = true;
         }
         
