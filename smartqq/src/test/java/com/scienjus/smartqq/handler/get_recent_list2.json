@@ -1,0 +1,13 @@
+{
+    "result": [{
+        "type": 1,
+        "uin": 1
+    }, {
+        "type": 2,
+        "uin": 2
+    }, {
+        "type": 0,
+        "uin": 3
+    }],
+    "retcode": 0
+}

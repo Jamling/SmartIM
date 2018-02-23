@@ -1,0 +1,32 @@
+{
+    "retcode": 0,
+    "result": {
+        "birthday": {
+            "month": 8,
+            "year": 1985,
+            "day": 2
+        },
+        "face": 0,
+        "phone": "",
+        "occupation": "民工",
+        "allow": 1,
+        "college": "社会大学/自学成长院",
+        "uin": 157250921,
+        "blood": 5,
+        "constel": 7,
+        "lnick": "",
+        "vfwebqq": "3356f62b6978f0c3b0dcbdc07e4b698c26d3b74640531e0789030c124364d0ed9d9666f667bf73be",
+        "homepage": "http://ieclipse.cn",
+        "vip_info": 0,
+        "city": "南京",
+        "country": "中国",
+        "personal": "",
+        "shengxiao": 2,
+        "nick": "明月",
+        "email": "",
+        "province": "江苏",
+        "account": 157250921,
+        "gender": "male",
+        "mobile": "139********"
+    }
+}

@@ -1,0 +1,12 @@
+{
+    "retcode": 0,
+    "result": {
+        "dnamelist": [{
+            "name": "d1",
+            "did": 1
+        }, {
+            "name": "d2",
+            "did": 2
+        }]
+    }
+}

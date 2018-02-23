@@ -1,0 +1,30 @@
+{
+    "retcode": 0,
+    "result": {
+        "gmasklist": [{
+            "gid": 1000,
+            "mask": 0
+        }, {
+            "gid": 2000,
+            "mask": 1
+        }, {
+            "gid": 2412189510,
+            "mask": 0
+        }],
+        "gnamelist": [{
+            "flag": 16778257,
+            "name": "G1",
+            "gid": 1468537771,
+            "code": 1923632889
+        }, {
+            "flag": 721421329,
+            "name": "G2",
+            "gid": 3177877638,
+            "code": 3972775055
+        }],
+        "gmarklist": [{
+            "uin": 2412189510,
+            "markname": "Group1"
+        }]
+    }
+}
