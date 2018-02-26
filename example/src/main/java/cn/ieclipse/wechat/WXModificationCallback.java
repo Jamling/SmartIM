@@ -15,8 +15,8 @@ public class WXModificationCallback implements ModificationCallback {
     }
 
     @Override
-    public void onContactChanged(IContact iContact) {
-        if (iContact instanceof Contact || iContact == null) {
+    public void onContactChanged(IContact contact) {
+        if (contact instanceof Contact || contact == null) {
             imPanel.notifyUpdateContacts(0, true);
         }
     }

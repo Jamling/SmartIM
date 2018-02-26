@@ -94,5 +94,4 @@ public class QQReceiveCallback extends IMReceiveCallback {
                 : from.getName() + ":" + message.getText();
         return content.toString();
     }
-    
 }

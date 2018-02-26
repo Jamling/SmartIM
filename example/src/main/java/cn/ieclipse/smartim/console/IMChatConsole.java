@@ -57,7 +57,11 @@ public abstract class IMChatConsole extends JPanel {
         this.imPanel = imPanel;
         this.uin = target.getUin();
         initUI();
-        loadHistories();
+        new Thread() {
+            public void run() {
+                loadHistories();
+            };
+        }.start();
     }
     
     public SmartClient getClient() {
@@ -157,7 +161,7 @@ public abstract class IMChatConsole extends JPanel {
                     LOG.error("发送文件失败 : " + e);
                     LOG.sendNotification("发送文件失败",
                             String.format("文件：%s(%s)", file, e.getMessage()));
-                    error(String.format("发送文件失败：%s(%s)", file));
+                    error(String.format("发送文件失败：%s(%s)", file, e.getMessage()));
                 } finally {
                     uploadLock = false;
                 }

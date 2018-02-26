@@ -1,5 +1,7 @@
 package cn.ieclipse.wechat;
 
+import javax.swing.JToolBar;
+
 import cn.ieclipse.smartim.IMClientFactory;
 import cn.ieclipse.smartim.console.IMChatConsole;
 import cn.ieclipse.smartim.model.IContact;
@@ -28,5 +30,11 @@ public class WechatPanel extends IMPanel {
     @Override
     public IMChatConsole createConsoleUI(IContact contact) {
         return new WXChatConsole(contact, this);
+    }
+    
+    @Override
+    protected void initToolBar1(JToolBar toolBar) {
+        super.initToolBar1(toolBar);
+        toolBar.add(new WXBroadcastAction(this));
     }
 }

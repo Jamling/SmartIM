@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import cn.ieclipse.smartim.helper.FileStorage;
+import cn.ieclipse.smartim.settings.SmartIMSettings;
 
 /**
  * 类/接口描述
@@ -45,7 +46,8 @@ public class IMHistoryManager {
         if (fs == null) {
             File f = new File(client.getWorkDir("history"), uin);
             fs = new FileStorage(size, f.getAbsolutePath());
-            fs.setPersistent(true);
+            boolean persistent = SmartIMSettings.getInstance().getState().LOG_HISTORY;
+            fs.setPersistent(persistent);
             stores.put(uin, fs);
         }
         return fs;

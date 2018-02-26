@@ -17,7 +17,6 @@ package cn.ieclipse.wechat;
 
 import cn.ieclipse.smartim.IMReceiveCallback;
 import cn.ieclipse.smartim.common.IMUtils;
-import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
 import cn.ieclipse.smartim.settings.SmartIMSettings;

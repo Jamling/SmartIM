@@ -35,6 +35,7 @@ public class GeneralPanel extends JPanel {
     private String update_url = "http://api.ieclipse.cn/smartqq/index/notice?p=swing";
     private String about_url = "http://api.ieclipse.cn/smartqq/index/about";
     private String version = "2.2.0";
+    private JCheckBox chkHistory;
     
     /**
      * Create the panel.
@@ -118,9 +119,18 @@ public class GeneralPanel extends JPanel {
             contentPanel.add(chkNotifyUnknown, gbc_chckbxNewCheckBox_5);
         }
         {
+            chkHistory = new JCheckBox("保存聊天记录");
+            GridBagConstraints gbc_chkHistory = new GridBagConstraints();
+            gbc_chkHistory.anchor = GridBagConstraints.WEST;
+            gbc_chkHistory.insets = new Insets(0, 0, 5, 5);
+            gbc_chkHistory.gridx = 0;
+            gbc_chkHistory.gridy = 5;
+            add(chkHistory, gbc_chkHistory);
+        }
+        {
             linkUpdate = new JLabel("<html><a href=\"\">检查新版本</a></html>");
             GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
-            gbc_lblNewLabel_1.insets = new Insets(0, 5, 0, 5);
+            gbc_lblNewLabel_1.insets = new Insets(0, 5, 5, 5);
             gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
             gbc_lblNewLabel_1.fill = GridBagConstraints.VERTICAL;
             gbc_lblNewLabel_1.gridx = 0;
@@ -130,7 +140,7 @@ public class GeneralPanel extends JPanel {
         {
             linkAbout = new JLabel("<html><a href=\"\">关于</a></html>");
             GridBagConstraints gbc_lblNewLabel_2 = new GridBagConstraints();
-            gbc_lblNewLabel_2.insets = new Insets(0, 5, 0, 5);
+            gbc_lblNewLabel_2.insets = new Insets(0, 5, 5, 0);
             gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
             gbc_lblNewLabel_2.fill = GridBagConstraints.VERTICAL;
             gbc_lblNewLabel_2.gridx = 1;
@@ -207,6 +217,7 @@ public class GeneralPanel extends JPanel {
         chkNotifyUnread.setSelected(settings.getState().NOTIFY_UNREAD);
         chkNotifyUnknown.setSelected(settings.getState().NOTIFY_UNKNOWN);
         chkHideMyInput.setSelected(settings.getState().HIDE_MY_INPUT);
+        chkHistory.setSelected(settings.getState().LOG_HISTORY);
     }
     
     public void apply() {
@@ -216,5 +227,6 @@ public class GeneralPanel extends JPanel {
         settings.getState().NOTIFY_GROUP_MSG = chkNotifyGroupMsg.isSelected();
         settings.getState().NOTIFY_UNKNOWN = chkNotifyUnknown.isSelected();
         settings.getState().HIDE_MY_INPUT = chkHideMyInput.isSelected();
+        settings.getState().LOG_HISTORY = chkHistory.isSelected();
     }
 }

@@ -78,6 +78,7 @@ public class SmartIMSettings {
         
         public boolean NOTIFY_UNKNOWN = false;
         public boolean HIDE_MY_INPUT = true;
+        public boolean LOG_HISTORY = true;
         
         public boolean ROBOT_ENABLE = false;
         public String ROBOT_NAME = "";

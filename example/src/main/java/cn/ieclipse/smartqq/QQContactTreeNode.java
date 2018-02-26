@@ -3,8 +3,6 @@ package cn.ieclipse.smartqq;
 import java.util.Collections;
 import java.util.List;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
 import com.scienjus.smartqq.client.SmartQQClient;
 import com.scienjus.smartqq.model.Category;
 import com.scienjus.smartqq.model.Discuss;

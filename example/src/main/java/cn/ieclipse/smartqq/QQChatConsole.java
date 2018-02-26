@@ -2,8 +2,6 @@ package cn.ieclipse.smartqq;
 
 import java.io.File;
 
-import javax.swing.SwingUtilities;
-
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.scienjus.smartqq.QNUploader;
@@ -69,14 +67,6 @@ public class QQChatConsole extends IMChatConsole {
     
     }
     
-    public void write(final String msg) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                insertDocument(msg);
-            }
-        });
-    }
     
     @Override
     public boolean hideMyInput() {
@@ -89,7 +79,7 @@ public class QQChatConsole extends IMChatConsole {
     @Override
     protected void sendFileInternal(String file) throws Exception {
         final File f = new File(file);
-        if (f.length() > (1 << 10)) {
+        if (f.length() > (1 << 18)) {
             write(String.format("%s 上传中，请稍候……", f.getName()));
         }
         QNUploader uploader = new QNUploader();

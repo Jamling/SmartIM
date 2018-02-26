@@ -1,7 +1,5 @@
 package cn.ieclipse.smartim.views;
 
-import javax.swing.tree.DefaultMutableTreeNode;
-
 /**
  * Created by Jamling on 2017/7/12.
  */
