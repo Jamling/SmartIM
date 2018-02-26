@@ -125,7 +125,7 @@ public class WXChatConsole extends IMChatConsole {
                     String msg = IMUtils.formatHtmlMsg(true, false,
                             System.currentTimeMillis(), name, m.text);
                     insertDocument(msg);
-                    IMHistoryManager.getInstance().save(client, getUin(), msg);
+                    IMHistoryManager.getInstance().save(client, getHistoryFile(), msg);
                 }
             }
         });

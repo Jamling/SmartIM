@@ -45,6 +45,7 @@ public class IMHistoryManager {
         if (fs == null) {
             File f = new File(client.getWorkDir("history"), uin);
             fs = new FileStorage(size, f.getAbsolutePath());
+            fs.setPersistent(true);
             stores.put(uin, fs);
         }
         return fs;

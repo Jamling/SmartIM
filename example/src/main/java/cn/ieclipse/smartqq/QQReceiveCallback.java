@@ -68,6 +68,9 @@ public class QQReceiveCallback extends IMReceiveCallback {
                         .getState().NOTIFY_GROUP_MSG;
                 qqContact = client.getDiscuss(gf.getDiscuss().getId());
             }
+            else {
+                qqContact = from.getContact();
+            }
             handle(unknown, notify, message, from, (AbstractContact) qqContact);
         }
     }
@@ -79,6 +82,7 @@ public class QQReceiveCallback extends IMReceiveCallback {
         if (message instanceof QQMessage) {
             QQMessage m = (QQMessage) message;
             msg = IMUtils.formatHtmlMsg(m.getTime(), name, m.getContent());
+            msg = QQUtils.decodeEmoji(msg);
         }
         return msg;
     }

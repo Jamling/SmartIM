@@ -41,6 +41,8 @@ public class SmartIcons {
     public static Icon close = IconLoader.getIcon("/icons/close.png");
     public static Icon show = IconLoader.getIcon("/icons/eye.png");
     public static Icon hide = IconLoader.getIcon("/icons/eye-slash.png");
+    public static Icon broadcast = IconLoader.getIcon("/icons/broadcast.png");
+    public static Icon settings = IconLoader.getIcon("/icons/settings.png");
     
     public static Icon group = IconLoader.getIcon("/icons/user-circle.png");
     public static Icon friend = IconLoader.getIcon("/icons/user.png");
@@ -50,7 +52,7 @@ public class SmartIcons {
     public static Icon image = IconLoader.getIcon("/icons/image.png");
     public static Icon face = IconLoader.getIcon("/icons/face.png");
     public static Icon lock = IconLoader.getIcon("/icons/lock_co.png");
-    public static Icon settings = IconLoader.getIcon("/icons/settings.png");
+    public static Icon clear = IconLoader.getIcon("/icons/clear_co.png");
     
     public static void main(String[] args) {
         System.out.println(group);

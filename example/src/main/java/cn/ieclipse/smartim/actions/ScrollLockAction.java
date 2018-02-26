@@ -9,7 +9,7 @@ import cn.ieclipse.smartim.console.IMChatConsole;
 import icons.SmartIcons;
 
 public class ScrollLockAction extends JToggleButton implements ActionListener {
-    IMChatConsole console;
+    private IMChatConsole console;
     
     public ScrollLockAction(IMChatConsole console) {
         super(SmartIcons.lock);

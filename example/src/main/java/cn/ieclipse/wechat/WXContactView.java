@@ -50,7 +50,7 @@ public class WXContactView extends IMContactView {
         
         receiveCallback = new WXReceiveCallback(imPanel);
         sendCallback = new IMSendCallback(imPanel);
-        robotCallback = null;
+        robotCallback = new WXReceiveCallback(imPanel);
         modificationCallback = new WXModificationCallback(imPanel);
         
         root1 = new WXContactTreeNode(false, "recent", imPanel);

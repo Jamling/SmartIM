@@ -1,5 +1,7 @@
 package cn.ieclipse.smartqq;
 
+import javax.swing.JToolBar;
+
 import com.scienjus.smartqq.client.SmartQQClient;
 
 import cn.ieclipse.smartim.IMClientFactory;
@@ -32,10 +34,9 @@ public class SmartQQPanel extends IMPanel {
         return new QQChatConsole(contact, this);
     }
     
-    //
-    // private Map<String, QQChatConsole> consoles = new HashMap<>();
-    //
-    // public QQChatConsole findConsole(String name, boolean add) {
-    // return consoles.get(name);
-    // }
+    @Override
+    protected void initToolBar1(JToolBar toolBar) {
+        super.initToolBar1(toolBar);
+        toolBar.add(new QQBroadcastAction(this));
+    }
 }

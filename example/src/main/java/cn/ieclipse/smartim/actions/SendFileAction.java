@@ -1,10 +1,8 @@
 package cn.ieclipse.smartim.actions;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
 
-import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.filechooser.FileFilter;
@@ -13,18 +11,15 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import cn.ieclipse.smartim.console.IMChatConsole;
 import icons.SmartIcons;
 
-public class SendFileAction extends JButton implements ActionListener {
-    IMChatConsole console;
+public class SendFileAction extends IMChatAction {
     protected String dialogTitle;
     protected FileNameExtensionFilter filter_image = new FileNameExtensionFilter(
             "图片文件", "jpg", "gif", "bmp", "jpeg", "png");
     protected FileFilter filter;
     
     public SendFileAction(IMChatConsole console) {
-        super(SmartIcons.file);
+        super(console, SmartIcons.file);
         this.setToolTipText("发送文件");
-        this.console = console;
-        this.addActionListener(this);
         this.dialogTitle = "请选择要发送的文件";
     }
     

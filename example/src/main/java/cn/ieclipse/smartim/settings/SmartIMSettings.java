@@ -78,5 +78,22 @@ public class SmartIMSettings {
         
         public boolean NOTIFY_UNKNOWN = false;
         public boolean HIDE_MY_INPUT = true;
+        
+        public boolean ROBOT_ENABLE = false;
+        public String ROBOT_NAME = "";
+        public int ROBOT_TYPE = 0;
+        public String ROBOT_KEY = "";
+        public String ROBOT_GROUP_WELCOME = "欢迎{user} {memo}";
+        public boolean ROBOT_GROUP_ANY = false;
+        public boolean ROBOT_FRIEND_ANY = false;
+        public String ROBOT_REPLY_EMPTY = "";
+        
+        public boolean QN_ENABLE = false;
+        public String QN_BUCKET = "";
+        public int QN_ZONE_ = 0;
+        public String QN_DOMAIN = "";
+        public String QN_AK = "";
+        public String QN_SK = "";
+        public boolean QN_TS = false;
     }
 }

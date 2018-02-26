@@ -51,7 +51,7 @@ public class QQContactView extends IMContactView {
         
         receiveCallback = new QQReceiveCallback(imPanel);
         sendCallback = new IMSendCallback(imPanel);
-        robotCallback = null;
+        robotCallback = new QQRobotCallback(imPanel);
         modificationCallback = new QQModificationCallback(imPanel);
         
         root1 = new QQContactTreeNode(false, "recent", imPanel);
@@ -83,11 +83,6 @@ public class QQContactView extends IMContactView {
         friendTree.setModel(friendModel);
         groupTree.setModel(groupModel);
         discussTree.setModel(discussModel);
-    }
-    
-    @Override
-    protected void initTree(JTree tree) {
-        super.initTree(tree);
     }
     
     @Override

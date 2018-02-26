@@ -29,35 +29,6 @@ public class QQChatConsole extends IMChatConsole {
     }
     
     @Override
-    protected void sendFileInternal(String file) throws Exception {
-        final File f = new File(file);
-        QNUploader uploader = new QNUploader();
-        String ak = "";
-        String sk = "";
-        String bucket = "";
-        String domain = "";
-        String qq = getClient().getAccount().getAccount();
-        boolean enable = false;
-        boolean ts = false;
-        if (!enable) {
-            ak = "";
-            sk = "";
-        }
-        QNUploader.UploadInfo info = uploader.upload(qq, f, ak, sk, bucket,
-                null);
-        String url = info.getUrl(domain, ts);
-        
-        final String msg = String.format("来自SmartQQ的文件: %s (大小%s), 点击链接 %s 查看",
-                IMUtils.getName(file), IMUtils.formatFileSize(info.fsize), url);
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                send(msg);
-            }
-        });
-    }
-    
-    @Override
     public SmartQQClient getClient() {
         return (SmartQQClient) super.getClient();
     }
@@ -113,5 +84,32 @@ public class QQChatConsole extends IMChatConsole {
             return false;
         }
         return SmartIMSettings.getInstance().getState().HIDE_MY_INPUT;
+    }
+    
+    @Override
+    protected void sendFileInternal(String file) throws Exception {
+        final File f = new File(file);
+        if (f.length() > (1 << 10)) {
+            write(String.format("%s 上传中，请稍候……", f.getName()));
+        }
+        QNUploader uploader = new QNUploader();
+        String ak = SmartIMSettings.getInstance().getState().QN_AK;
+        String sk = SmartIMSettings.getInstance().getState().QN_SK;
+        String bucket = SmartIMSettings.getInstance().getState().QN_BUCKET;
+        String domain = SmartIMSettings.getInstance().getState().QN_DOMAIN;
+        String qq = getClient().getAccount().getAccount();
+        boolean enable = SmartIMSettings.getInstance().getState().QN_ENABLE;
+        boolean ts = SmartIMSettings.getInstance().getState().QN_TS;
+        if (!enable) {
+            ak = "";
+            sk = "";
+        }
+        QNUploader.UploadInfo info = uploader.upload(qq, f, ak, sk, bucket,
+                null);
+        String url = info.getUrl(domain, ts);
+        
+        final String msg = String.format("来自SmartQQ的文件: %s (大小%s), 点击链接 %s 查看",
+                IMUtils.getName(file), IMUtils.formatFileSize(info.fsize), url);
+        send(msg);
     }
 }

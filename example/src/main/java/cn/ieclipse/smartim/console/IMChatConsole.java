@@ -27,6 +27,7 @@ import javax.swing.text.html.StyleSheet;
 
 import cn.ieclipse.smartim.IMHistoryManager;
 import cn.ieclipse.smartim.SmartClient;
+import cn.ieclipse.smartim.actions.ClearHistoryAction;
 import cn.ieclipse.smartim.actions.ScrollLockAction;
 import cn.ieclipse.smartim.actions.SendFileAction;
 import cn.ieclipse.smartim.actions.SendImageAction;
@@ -38,6 +39,7 @@ import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.smartim.views.IMPanel;
 import cn.ieclipse.util.BareBonesBrowserLaunch;
+import cn.ieclipse.util.EncodeUtils;
 import cn.ieclipse.util.StringUtils;
 
 /**
@@ -67,7 +69,7 @@ public abstract class IMChatConsole extends JPanel {
     public abstract void post(final String msg);
     
     public String getHistoryFile() {
-        return uin;
+        return EncodeUtils.getMd5(contact.getName());
     }
     
     public String getUin() {
@@ -100,7 +102,7 @@ public abstract class IMChatConsole extends JPanel {
     
     public void clearHistories() {
         IMHistoryManager.getInstance().clear(getClient(), getHistoryFile());
-        //composite.clearHistory();
+        historyWidget.setText("");
     }
     
     public void clearUnread() {
@@ -135,7 +137,7 @@ public abstract class IMChatConsole extends JPanel {
                 input);
         if (!hideMyInput()) {
             insertDocument(msg);
-            IMHistoryManager.getInstance().save(client, getUin(), msg);
+            IMHistoryManager.getInstance().save(client, getHistoryFile(), msg);
         }
         new Thread() {
             @Override
@@ -163,7 +165,7 @@ public abstract class IMChatConsole extends JPanel {
         }.start();
     }
     
-    protected void sendFileInternal(final String file) throws Exception{
+    protected void sendFileInternal(final String file) throws Exception {
     
     }
     
@@ -172,13 +174,7 @@ public abstract class IMChatConsole extends JPanel {
     }
     
     public void error(final String msg) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                insertDocument(
-                        String.format("<div class=\"error\">%s</div>", msg));
-            }
-        });
+        insertDocument(String.format("<div class=\"error\">%s</div>", msg));
     }
     
     private void createUIComponents() {
@@ -186,12 +182,7 @@ public abstract class IMChatConsole extends JPanel {
     }
     
     public void write(final String msg) {
-        SwingUtilities.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                insertDocument(msg);
-            }
-        });
+        insertDocument(msg);
     }
     
     protected ChatHistoryPane top;
@@ -257,6 +248,7 @@ public abstract class IMChatConsole extends JPanel {
         toolBar.add(new SendImageAction(this));
         toolBar.add(new SendFileAction(this));
         toolBar.add(new ScrollLockAction(this));
+        toolBar.add(new ClearHistoryAction(this));
     }
     
     protected boolean scrollLock = false;
@@ -336,20 +328,28 @@ public abstract class IMChatConsole extends JPanel {
         return false;
     }
     
-    protected void insertDocument(String msg) {
-        try {
-            HTMLEditorKit kit = (HTMLEditorKit) historyWidget.getEditorKit();
-            HTMLDocument doc = (HTMLDocument) historyWidget.getDocument();
-            // historyWidget.getDocument().insertString(len - offset,
-            // trimMsg(msg), null);
-            // Element root = doc.getDefaultRootElement();
-            // Element body = root.getElement(1);
-            // doc.insertBeforeEnd(body, msg);
-            int pos = historyWidget.getCaretPosition();
-            kit.insertHTML(doc, doc.getLength(), msg, 0, 0, null);
-            historyWidget.setCaretPosition(scrollLock ? pos : doc.getLength());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+    protected void insertDocument(final String msg) {
+        SwingUtilities.invokeLater(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    HTMLEditorKit kit = (HTMLEditorKit) historyWidget
+                            .getEditorKit();
+                    HTMLDocument doc = (HTMLDocument) historyWidget
+                            .getDocument();
+                    // historyWidget.getDocument().insertString(len - offset,
+                    // trimMsg(msg), null);
+                    // Element root = doc.getDefaultRootElement();
+                    // Element body = root.getElement(1);
+                    // doc.insertBeforeEnd(body, msg);
+                    int pos = historyWidget.getCaretPosition();
+                    kit.insertHTML(doc, doc.getLength(), msg, 0, 0, null);
+                    historyWidget.setCaretPosition(
+                            scrollLock ? pos : doc.getLength());
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        });
     }
 }
