@@ -59,20 +59,20 @@ public class QNUploaderTest {
             
             String ak = "";
             String sk = "";
-            String bucket = "";
-            File f = new File("qrcode.png");
+            String bucket = "temp";
+            File f = new File("pom.xml");
             Zone zone = null;
             UploadInfo info = uploader.upload("testqq", f, ak, sk, bucket,
                     zone);
             System.out.println(info);
-            assertEquals("qrcode.png", info.key);
+            assertEquals("testqq/pom.xml", info.key);
             assertEquals("temp", info.bucket);
             assertEquals(f.length(), info.fsize);
-            assertEquals("http://temp.ieclipse.cn/qrcode.png",
-                    info.getUrl(null, false));
+            assertEquals("http://temp.ieclipse.cn/testqq/pom.xml",
+                    info.getUrl("http://temp.ieclipse.cn", false));
                     
             AuthInfo auth = uploader.getToken("testqq", "", "", "",
-                    "qrcode.png");
+                    "pom.xml");
             System.out.println(auth);
             assertNotNull(auth);
             assertNotNull(auth.token);

@@ -68,7 +68,7 @@ public class QNUploader {
         RequestBody body = new FormBody.Builder().add("key", key)
                 .add("bucket", bucket).add("qq", qq).build();
         Request.Builder builder = new Request.Builder().url(API_GET_TOKEN)
-                .addHeader("accessKey", sk).addHeader("secretKey", sk)
+                .addHeader("accessKey", ak).addHeader("secretKey", sk)
                 .post(body);
         Request request = builder.build();
         Call call = this.client.newCall(request);
@@ -173,7 +173,18 @@ public class QNUploader {
             if (domain != null && !domain.isEmpty()) {
                 url = domain;
             }
-            url += "/" + key;
+            if (url.startsWith("http://") || url.startsWith("https://")) {
+            
+            }
+            else {
+                url = "http://" + url;
+            }
+            if (url.endsWith("/")) {
+                url += key;
+            }
+            else {
+                url += "/" + key;
+            }
             if (ts) {
                 url += "?ts=" + System.currentTimeMillis();
             }
