@@ -25,6 +25,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import cn.ieclipse.util.FileUtils;
+import cn.ieclipse.util.Patterns;
 import cn.ieclipse.util.StringUtils;
 
 /**
@@ -125,7 +126,7 @@ public class IMUtils {
     }
     
     private static String autoLink(String input) {
-        Pattern p = Pattern.compile(LINK_REGEX, Pattern.MULTILINE);
+        Pattern p = Patterns.WEB_URL;// Pattern.compile(LINK_REGEX, Pattern.MULTILINE);
         Matcher m = p.matcher(input);
         
         List<String> groups = new ArrayList<>();
