@@ -124,6 +124,9 @@ public class FileStorage {
     }
     
     public void release() {
+        if (queue != null) {
+            queue.clear();
+        }
         File f = new File(path);
         if (f.exists()) {
             f.delete();

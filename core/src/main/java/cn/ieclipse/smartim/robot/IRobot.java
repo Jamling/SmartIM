@@ -27,5 +27,6 @@ import java.util.Map;
 public interface IRobot {
     String getRobotName();
     
-    String getRobotAnswer(String question) throws Exception;
+    String getRobotAnswer(String question, Map<String, Object> params)
+            throws Exception;
 }

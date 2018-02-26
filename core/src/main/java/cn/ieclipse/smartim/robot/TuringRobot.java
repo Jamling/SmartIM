@@ -15,13 +15,17 @@
  */
 package cn.ieclipse.smartim.robot;
 
-import java.io.IOException;
+import java.net.Proxy;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.annotations.Expose;
 
 import cn.ieclipse.util.StringUtils;
 import okhttp3.MediaType;
@@ -39,17 +43,29 @@ import okhttp3.RequestBody;
 public class TuringRobot implements IRobot {
     
     public static final String URL = "http://www.tuling123.com/openapi/api";
+    public static final String TURING_API_V2 = "http://openapi.tuling123.com/openapi/api/v2";
+    public static int TIMEOUT = 3;
     private String name;
-    private String apiKey;
     private OkHttpClient client;
+    private Gson gson = new Gson();
     
-    private String userId;
-    
-    public TuringRobot(String name, String apiKey) {
+    public TuringRobot(String name, int timeout, Proxy proxy) {
         this.name = name;
-        this.apiKey = apiKey;
-        this.client = new OkHttpClient.Builder()
-                .connectTimeout(3, TimeUnit.SECONDS).build();
+        OkHttpClient.Builder builder = new OkHttpClient.Builder();
+        if (timeout > 0) {
+            builder.connectTimeout(timeout, TimeUnit.SECONDS);
+        }
+        else {
+            builder.connectTimeout(TIMEOUT, TimeUnit.SECONDS);
+        }
+        if (proxy != null) {
+            builder.proxy(proxy);
+        }
+        this.client = builder.build();
+    }
+    
+    public void setRobotName(String name) {
+        this.name = name;
     }
     
     @Override
@@ -58,40 +74,142 @@ public class TuringRobot implements IRobot {
     }
     
     @Override
-    public String getRobotAnswer(String question) throws Exception {
-        return getReply(null, question);
+    public String getRobotAnswer(String question, Map<String, Object> params)
+            throws Exception {
+        try {
+            if (params == null) {
+                return null;
+            }
+            OkHttpClient client = this.client;
+            String body = new Gson().toJson(params);
+            Request request = new Request.Builder().url(TURING_API_V2)
+                    .post(RequestBody
+                            .create(MediaType.parse("application/json"), body))
+                    .build();
+            String result = client.newCall(request).execute().body().string();
+            JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+            if (obj != null && obj.has("results")) {
+                JsonElement ele = obj.get("results");
+                JsonObject ret = null;
+                if (ele instanceof JsonObject) {
+                    ret = ele.getAsJsonObject();
+                }
+                else if (ele instanceof JsonArray) {
+                    ret = ele.getAsJsonArray().get(0).getAsJsonObject();
+                }
+                // System.out.println("响应json" + ret);
+                if (ret != null && ret.has("values")) {
+                    String type = ret.get("resultType").getAsString();
+                    ret = ret.getAsJsonObject("values");
+                    Response response = gson.fromJson(ret, Response.class);
+                    response.type = type;
+                    if ("text".equals(type)) {
+                        return response.text;
+                    }
+                    else if ("image".equals(type)) {
+                        return response.image;
+                    }
+                    else if ("url".equals(type)) {
+                        return response.url;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
     
-    public String getReply(String userId, String text) throws Exception {
-        JsonObject response = post(userId,
-                StringUtils.getRequestParamValue(text, "utf-8"));
-        Response obj = new Gson().fromJson(response, Response.class);
-        return obj.text;
-    }
-    
-    protected JsonObject post(String userId, String text) throws IOException {
-        JsonObject body = new JsonObject();
-        body.addProperty("key", this.apiKey);
-        body.addProperty("userid", userId);
-        body.addProperty("info", text);
-        Request request = new Request.Builder().url(URL).post(RequestBody
-                .create(MediaType.parse("application/json"), body.toString()))
-                .build();
-        String json = client.newCall(request).execute().body().string();
-        JsonObject response = new JsonParser().parse(json).getAsJsonObject();
-        return response;
-    }
-    
-    public void setUserId(String userId) {
-        this.userId = userId;
-    }
-    
-    public void setApiKey(String apiKey) {
-        this.apiKey = apiKey;
+    public static class TuringRequestV2Builder {
+        public int reqType = 0;
+        public String text;
+        public String apiKey;
+        public String userId;
+        public String groupId;
+        public String userIdName;
+        public String city;
+        public String province;
+        public String street;
+        
+        public TuringRequestV2Builder(String apiKey) {
+            this.apiKey = apiKey;
+        }
+        
+        public TuringRequestV2Builder setText(String text) {
+            this.text = text.length() > 128 ? text.substring(0, 128) : text;
+            return this;
+        }
+        
+        public TuringRequestV2Builder setUserInfo(String userId,
+                String userName, String groupId) {
+            this.userId = userId;
+            this.userIdName = userName;
+            this.groupId = groupId;
+            return this;
+        }
+        
+        public TuringRequestV2Builder setLocation(String city, String province,
+                String street) {
+            this.city = city;
+            this.province = province;
+            this.street = street;
+            return this;
+        }
+        
+        public Map<String, Object> build() {
+            if (StringUtils.isEmpty(text)) {
+                return null;
+            }
+            Map<String, Object> params = new HashMap<>();
+            params.put("reqType", reqType);
+            
+            Map<String, Object> perception = new HashMap<>();
+            params.put("perception", perception);
+            
+            Map<String, Object> input = new HashMap<>();
+            input.put("text", text);
+            perception.put("inputText", input);
+            
+            Map<String, Object> location = new HashMap<>();
+            if (!StringUtils.isEmpty(city)) {
+                location.put("city", city);
+            }
+            if (!StringUtils.isEmpty(province)) {
+                location.put("province", province);
+            }
+            if (!StringUtils.isEmpty(street)) {
+                location.put("street", street);
+            }
+            if (!location.isEmpty()) {
+                Map<String, Object> self = new HashMap<>();
+                self.put("location", location);
+                perception.put("selfInfo", self);
+            }
+            
+            location = new HashMap<>();
+            if (!StringUtils.isEmpty(userId)) {
+                location.put("userId", userId);
+            }
+            if (!StringUtils.isEmpty(userIdName)) {
+                location.put("userIdName", userIdName);
+            }
+            if (!StringUtils.isEmpty(groupId)) {
+                location.put("groupId", groupId);
+            }
+            location.put("apiKey", apiKey);
+            params.put("userInfo", location);
+            // System.out.println(
+            // String.format("图灵请求：uid=%s,name=%s,gid=%s,text=%s,city=%s",
+            // userId, userIdName, groupId, text, city));
+            return params;
+        }
     }
     
     public static class Response implements java.io.Serializable {
-        public int code;
+        @Expose(deserialize = false, serialize = false)
+        public String type;
         public String text;
+        public String image;
+        public String url;
     }
 }
