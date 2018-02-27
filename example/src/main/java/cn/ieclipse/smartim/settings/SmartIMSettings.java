@@ -91,7 +91,7 @@ public class SmartIMSettings {
         
         public boolean QN_ENABLE = false;
         public String QN_BUCKET = "";
-        public int QN_ZONE_ = 0;
+        public int QN_ZONE = 0;
         public String QN_DOMAIN = "";
         public String QN_AK = "";
         public String QN_SK = "";

@@ -25,7 +25,7 @@ public class RobotPanel extends JPanel {
     private JCheckBox chkGroupAny;
     private JCheckBox chkFriendAny;
     private JLabel lblNewLabel_5;
-    private JTextField textReplayEmpty;
+    private JTextField textReplyEmpty;
     private SmartIMSettings settings;
     
     /**
@@ -158,14 +158,14 @@ public class RobotPanel extends JPanel {
             panel_1.add(lblNewLabel_5, gbc_lblNewLabel_5);
         }
         {
-            textReplayEmpty = new JTextField();
-            textReplayEmpty.setToolTipText("未设置不回复");
+            textReplyEmpty = new JTextField();
+            textReplyEmpty.setToolTipText("未设置不回复");
             GridBagConstraints gbc_textReplayEmpty = new GridBagConstraints();
             gbc_textReplayEmpty.fill = GridBagConstraints.HORIZONTAL;
             gbc_textReplayEmpty.gridx = 1;
             gbc_textReplayEmpty.gridy = 7;
-            panel_1.add(textReplayEmpty, gbc_textReplayEmpty);
-            textReplayEmpty.setColumns(10);
+            panel_1.add(textReplyEmpty, gbc_textReplayEmpty);
+            textReplyEmpty.setColumns(10);
         }
     }
     
@@ -178,7 +178,7 @@ public class RobotPanel extends JPanel {
         chkFriendAny.setSelected(settings.getState().ROBOT_FRIEND_ANY);
         chkGroupAny.setSelected(settings.getState().ROBOT_GROUP_ANY);
         textApiKey.setText(settings.getState().ROBOT_KEY);
-        textReplayEmpty.setText(settings.getState().ROBOT_REPLY_EMPTY);
+        textReplyEmpty.setText(settings.getState().ROBOT_REPLY_EMPTY);
         textRobotName.setText(settings.getState().ROBOT_NAME);
         textWelcome.setText(settings.getState().ROBOT_GROUP_WELCOME);
     }
@@ -189,7 +189,7 @@ public class RobotPanel extends JPanel {
         settings.getState().ROBOT_FRIEND_ANY = chkFriendAny.isSelected();
         settings.getState().ROBOT_GROUP_ANY = chkGroupAny.isSelected();
         settings.getState().ROBOT_KEY = textApiKey.getText().trim();
-        settings.getState().ROBOT_REPLY_EMPTY = textReplayEmpty.getText()
+        settings.getState().ROBOT_REPLY_EMPTY = textReplyEmpty.getText()
                 .trim();
         settings.getState().ROBOT_NAME = textRobotName.getText().trim();
         settings.getState().ROBOT_GROUP_WELCOME = textWelcome.getText().trim();

@@ -159,7 +159,7 @@ public class UploadPanel extends JPanel {
     }
     
     public void reset() {
-        int idx = settings.getState().QN_ZONE_;
+        int idx = settings.getState().QN_ZONE;
         if (idx >= 0 && idx < comboZone.getItemCount()) {
             comboZone.setSelectedIndex(idx);
         }
@@ -172,7 +172,7 @@ public class UploadPanel extends JPanel {
     }
     
     public void apply() {
-        settings.getState().QN_ZONE_ = comboZone.getSelectedIndex();
+        settings.getState().QN_ZONE = comboZone.getSelectedIndex();
         settings.getState().QN_ENABLE = chkEnable.isSelected();
         settings.getState().QN_TS = chkTs.isSelected();
         settings.getState().QN_AK = textAccessKey.getText().trim();
