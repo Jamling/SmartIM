@@ -66,19 +66,19 @@ public class FileStorage {
         }
     }
     
-    public String read(int line) throws IOException {
+    public synchronized String read(int line) throws IOException {
         return queue.get(line);
     }
     
-    public boolean append(String content) {
+    public synchronized boolean append(String content) {
         return queue.add(content);
     }
     
-    public int getLines() {
+    public synchronized int getLines() {
         return queue.size();
     }
     
-    public List<String> getLast(int count) {
+    public synchronized List<String> getLast(int count) {
         int size = getLines();
         if (size <= count) {
             return queue;
@@ -96,7 +96,7 @@ public class FileStorage {
         return persistent;
     }
     
-    public boolean flush() {
+    public synchronized boolean flush() {
         BufferedWriter bw;
         try {
             File f = new File(path);
@@ -123,7 +123,7 @@ public class FileStorage {
         return false;
     }
     
-    public void release() {
+    public synchronized void release() {
         if (queue != null) {
             queue.clear();
         }
