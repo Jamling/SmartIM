@@ -13,25 +13,28 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import javax.swing.SwingConstants;
 
+import cn.ieclipse.smartim.IMHistoryManager;
 import cn.ieclipse.smartim.SmartClient;
 import cn.ieclipse.smartim.actions.DisconnectAction;
 import cn.ieclipse.smartim.actions.LoginAction;
+import cn.ieclipse.smartim.actions.MockConsoleAction;
 import cn.ieclipse.smartim.actions.SettingsAction;
 import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.console.ClosableTabHost;
 import cn.ieclipse.smartim.console.IMChatConsole;
+import cn.ieclipse.smartim.console.MockChatConsole;
 import cn.ieclipse.smartim.model.IContact;
 
 /**
  * Created by Jamling on 2017/7/11.
  */
-public abstract class IMPanel extends JSplitPane implements ClosableTabHost.Callback {
-    
+public abstract class IMPanel extends JSplitPane
+        implements ClosableTabHost.Callback {
+        
     protected JTabbedPane tabbedChat;
     protected IMContactView left;
     
     public IMPanel() {
-        
         initUI();
     }
     
@@ -66,7 +69,8 @@ public abstract class IMPanel extends JSplitPane implements ClosableTabHost.Call
         toolBar.add(new LoginAction(this));
         toolBar.add(new DisconnectAction(this));
         toolBar.add(new SettingsAction(this));
-        // toolBar.add(new MockConsoleAction(this));
+        MockConsoleAction test = new MockConsoleAction(this);
+        toolBar.add(test);
     }
     
     public boolean isLeftHidden() {
@@ -106,6 +110,26 @@ public abstract class IMPanel extends JSplitPane implements ClosableTabHost.Call
         }
     }
     
+    public boolean isCurrent(final IMChatConsole console) {
+        if (console != null) {
+            if (console == tabbedChat.getSelectedComponent()) {
+                return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isCurrent(final IContact contact) {
+        if (contact != null) {
+            Object o = tabbedChat.getSelectedComponent();
+            IMChatConsole console = (IMChatConsole) o;
+            if (o != null && o instanceof IMChatConsole) {
+                return contact.getUin().equals(console.getUin());
+            }
+        }
+        return false;
+    }
+    
     public IMChatConsole findConsoleById(String id, boolean show) {
         int count = tabbedChat.getTabCount();
         for (int i = 0; i < count; i++) {
@@ -142,6 +166,7 @@ public abstract class IMPanel extends JSplitPane implements ClosableTabHost.Call
             consoles.put(console.getUin(), console);
             tabbedChat.setSelectedComponent(console);
         }
+        console.clearUnread();
     }
     
     public void addConsole(IMChatConsole console) {
@@ -162,6 +187,7 @@ public abstract class IMPanel extends JSplitPane implements ClosableTabHost.Call
             tabbedChat.remove(0);
         }
         consoles.clear();
+        IMHistoryManager.getInstance().flush();
     }
     
     @Override
@@ -174,14 +200,15 @@ public abstract class IMPanel extends JSplitPane implements ClosableTabHost.Call
         }
         tabbedChat.removeTabAt(index);
     }
-
+    
     public java.util.List<IMChatConsole> getConsoleList() {
         java.util.List<IMChatConsole> list = new ArrayList<>();
         if (tabbedChat != null) {
             int count = tabbedChat.getTabCount();
             for (int i = 0; i < count; i++) {
                 if (tabbedChat.getComponentAt(i) instanceof IMChatConsole) {
-                    IMChatConsole t = (IMChatConsole) tabbedChat.getComponentAt(i);
+                    IMChatConsole t = (IMChatConsole) tabbedChat
+                            .getComponentAt(i);
                     list.add(t);
                 }
             }
