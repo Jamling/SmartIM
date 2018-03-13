@@ -36,3 +36,6 @@
 1. 下载SmartIM-App.jar，双击执行
 2. 通过`java -jar SmartIM-App.jar`来执行
 3. 找到example下的Application类，在IDE中Run As Main
+
+## 即时讨论
+请加入![QQ群: 307490913](group.png)
