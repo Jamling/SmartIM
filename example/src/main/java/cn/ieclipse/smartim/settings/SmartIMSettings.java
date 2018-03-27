@@ -42,7 +42,7 @@ public class SmartIMSettings {
         try {
             this.myState = (State) FileUtils.readObject(new File("."), CFG);
         } catch (Exception e) {
-        
+            e.printStackTrace();
         }
         if (this.myState == null) {
             this.myState = new State();
@@ -53,7 +53,7 @@ public class SmartIMSettings {
         try {
             FileUtils.writeObject(new File("."), CFG, myState);
         } catch (Exception e) {
-        
+            e.printStackTrace();
         }
     }
     
@@ -79,6 +79,7 @@ public class SmartIMSettings {
         public boolean NOTIFY_UNKNOWN = false;
         public boolean HIDE_MY_INPUT = true;
         public boolean LOG_HISTORY = true;
+        public String WORK_PATH = "";
         
         public boolean ROBOT_ENABLE = false;
         public String ROBOT_NAME = "";

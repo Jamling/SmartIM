@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
+import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.smartqq.SmartQQPanel;
 import cn.ieclipse.wechat.WechatPanel;
 import icons.SmartIcons;
@@ -20,6 +21,7 @@ public class Application {
      */
     public static void main(String[] args) {
         WechatClient.initSSL();
+        SmartIMSettings.getInstance().loadProp();
         EventQueue.invokeLater(new Runnable() {
             public void run() {
                 try {

@@ -7,6 +7,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JCheckBox;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -14,11 +15,17 @@ import javax.swing.SwingUtilities;
 
 import com.google.gson.Gson;
 
+import cn.ieclipse.smartim.IMClientFactory;
+import cn.ieclipse.smartim.IMHistoryManager;
 import cn.ieclipse.smartim.common.LOG;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
+import javax.swing.JTextField;
+import javax.swing.JButton;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class GeneralPanel extends JPanel {
     private JCheckBox chkNotify;
@@ -36,6 +43,10 @@ public class GeneralPanel extends JPanel {
     private String about_url = "http://api.ieclipse.cn/smartqq/index/about";
     private String version = "2.2.0";
     private JCheckBox chkHistory;
+    private JPanel panel;
+    private JLabel lblNewLabel_1;
+    private JTextField tfWorkDir;
+    private JButton btnNewButton;
     
     /**
      * Create the panel.
@@ -44,11 +55,11 @@ public class GeneralPanel extends JPanel {
         this.settings = settings;
         GridBagLayout gbl_contentPanel = new GridBagLayout();
         gbl_contentPanel.columnWidths = new int[] { 0, 0, 0 };
-        gbl_contentPanel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0 };
+        gbl_contentPanel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
         gbl_contentPanel.columnWeights = new double[] { 1.0, 1.0,
                 Double.MIN_VALUE };
         gbl_contentPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 1.0 };
+                0.0, 1.0, 1.0 };
         JPanel contentPanel = this;
         contentPanel.setLayout(gbl_contentPanel);
         {
@@ -128,13 +139,72 @@ public class GeneralPanel extends JPanel {
             add(chkHistory, gbc_chkHistory);
         }
         {
+            panel = new JPanel();
+            GridBagConstraints gbc_panel = new GridBagConstraints();
+            gbc_panel.gridwidth = 2;
+            gbc_panel.insets = new Insets(0, 0, 5, 5);
+            gbc_panel.fill = GridBagConstraints.HORIZONTAL;
+            gbc_panel.gridx = 0;
+            gbc_panel.gridy = 6;
+            add(panel, gbc_panel);
+            GridBagLayout gbl_panel = new GridBagLayout();
+            gbl_panel.columnWidths = new int[] { 10, 20, 0, 10 };
+            gbl_panel.rowHeights = new int[] { 15, 0 };
+            gbl_panel.columnWeights = new double[] { 0.0, 1.0, 0.0,
+                    Double.MIN_VALUE };
+            gbl_panel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+            panel.setLayout(gbl_panel);
+            {
+                lblNewLabel_1 = new JLabel("工作目录");
+                GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
+                gbc_lblNewLabel_1.anchor = GridBagConstraints.EAST;
+                gbc_lblNewLabel_1.insets = new Insets(0, 0, 0, 5);
+                gbc_lblNewLabel_1.gridx = 0;
+                gbc_lblNewLabel_1.gridy = 0;
+                panel.add(lblNewLabel_1, gbc_lblNewLabel_1);
+            }
+            {
+                tfWorkDir = new JTextField();
+                tfWorkDir.setToolTipText("请设置二维码，聊天记录保存位置");
+                GridBagConstraints gbc_tfWorkDir = new GridBagConstraints();
+                gbc_tfWorkDir.insets = new Insets(0, 0, 0, 5);
+                gbc_tfWorkDir.fill = GridBagConstraints.HORIZONTAL;
+                gbc_tfWorkDir.gridx = 1;
+                gbc_tfWorkDir.gridy = 0;
+                panel.add(tfWorkDir, gbc_tfWorkDir);
+                tfWorkDir.setColumns(10);
+            }
+            {
+                btnNewButton = new JButton("浏览");
+                btnNewButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        JFileChooser chooser = new JFileChooser(SmartIMSettings
+                                .getInstance().getState().WORK_PATH);
+                        chooser.setFileSelectionMode(
+                                JFileChooser.DIRECTORIES_ONLY);
+                        int code = chooser.showOpenDialog(null);
+                        if (code == JFileChooser.APPROVE_OPTION) {
+                            if (chooser.getSelectedFile() != null) {
+                                tfWorkDir.setText(chooser.getSelectedFile()
+                                        .getAbsolutePath());
+                            }
+                        }
+                    }
+                });
+                GridBagConstraints gbc_btnNewButton = new GridBagConstraints();
+                gbc_btnNewButton.gridx = 2;
+                gbc_btnNewButton.gridy = 0;
+                panel.add(btnNewButton, gbc_btnNewButton);
+            }
+        }
+        {
             linkUpdate = new JLabel("<html><a href=\"\">检查新版本</a></html>");
             GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
             gbc_lblNewLabel_1.insets = new Insets(0, 5, 5, 5);
             gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
             gbc_lblNewLabel_1.fill = GridBagConstraints.VERTICAL;
             gbc_lblNewLabel_1.gridx = 0;
-            gbc_lblNewLabel_1.gridy = 6;
+            gbc_lblNewLabel_1.gridy = 7;
             contentPanel.add(linkUpdate, gbc_lblNewLabel_1);
         }
         {
@@ -144,7 +214,7 @@ public class GeneralPanel extends JPanel {
             gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
             gbc_lblNewLabel_2.fill = GridBagConstraints.VERTICAL;
             gbc_lblNewLabel_2.gridx = 1;
-            gbc_lblNewLabel_2.gridy = 6;
+            gbc_lblNewLabel_2.gridy = 7;
             contentPanel.add(linkAbout, gbc_lblNewLabel_2);
         }
         
@@ -218,6 +288,7 @@ public class GeneralPanel extends JPanel {
         chkNotifyUnknown.setSelected(settings.getState().NOTIFY_UNKNOWN);
         chkHideMyInput.setSelected(settings.getState().HIDE_MY_INPUT);
         chkHistory.setSelected(settings.getState().LOG_HISTORY);
+        tfWorkDir.setText(settings.getState().WORK_PATH);
     }
     
     public void apply() {
@@ -228,5 +299,9 @@ public class GeneralPanel extends JPanel {
         settings.getState().NOTIFY_UNKNOWN = chkNotifyUnknown.isSelected();
         settings.getState().HIDE_MY_INPUT = chkHideMyInput.isSelected();
         settings.getState().LOG_HISTORY = chkHistory.isSelected();
+        if (!settings.getState().WORK_PATH.equals(tfWorkDir.getText())) {
+            IMClientFactory.getInstance().setWorkDir(tfWorkDir.getText());
+        }
+        settings.getState().WORK_PATH = tfWorkDir.getText();
     }
 }

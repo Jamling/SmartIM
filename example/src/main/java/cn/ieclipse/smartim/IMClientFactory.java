@@ -18,9 +18,12 @@ package cn.ieclipse.smartim;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 import com.scienjus.smartqq.client.SmartQQClient;
 
+import cn.ieclipse.smartim.settings.SmartIMSettings;
+import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.api.WechatClient;
 
 /**
@@ -58,8 +61,19 @@ public class IMClientFactory {
         SmartClient client = clients.get(type);
         if (client == null || client.isClose()) {
             client = create(type);
-            File dir = new File("").getAbsoluteFile();
-            client.setWorkDir(new File(dir, "target"));
+            String wp = SmartIMSettings.getInstance().getState().WORK_PATH;
+            boolean cwp = false;
+            if (!StringUtils.isEmpty(wp)) {
+                File dir = new File(wp).getAbsoluteFile();
+                if (dir.isDirectory()) {
+                    client.setWorkDir(dir);
+                    cwp = true;
+                }
+            }
+            if (!cwp) {
+                File dir = new File("").getAbsoluteFile();
+                client.setWorkDir(new File(dir, "target"));
+            }
             clients.put(type, client);
         }
         return client;
@@ -75,5 +89,18 @@ public class IMClientFactory {
     
     public static IMClientFactory getInstance() {
         return instance;
+    }
+    
+    public void setWorkDir(String text) {
+        if (clients != null && !clients.isEmpty()
+                && !StringUtils.isEmpty(text)) {
+            Set<String> keys = clients.keySet();
+            for (String key : keys) {
+                SmartClient client = clients.get(key);
+                if (client != null) {
+                    client.setWorkDir(new File(text));
+                }
+            }
+        }
     }
 }

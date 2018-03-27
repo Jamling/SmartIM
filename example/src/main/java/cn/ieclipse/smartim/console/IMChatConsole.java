@@ -284,7 +284,7 @@ public abstract class IMChatConsole extends JPanel {
         styleSheet.addRule("img {max-width: 100%; display: block;}");
         styleSheet.addRule(".sender {display: inline; float: left;}");
         styleSheet.addRule(
-                ".content {display: inline-block; white-space: pre; padding-left: 4px;}");
+                ".content {display: inline-block; white-space: pre-warp; padding-left: 4px;}");
         styleSheet.addRule(
                 ".br {height: 1px; line-height: 1px; min-height: 1px;}");
         try {
