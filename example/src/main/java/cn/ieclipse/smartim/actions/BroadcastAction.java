@@ -3,6 +3,7 @@ package cn.ieclipse.smartim.actions;
 import java.awt.event.ActionEvent;
 
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
 
 import cn.ieclipse.smartim.SmartClient;
 import cn.ieclipse.smartim.views.IMPanel;
@@ -25,7 +26,7 @@ public class BroadcastAction extends IMPanelAction {
             openDialog();
         }
         else {
-            JOptionPane.showInternalMessageDialog(null, "已断开连接，请重新登录成功后再试");
+            JOptionPane.showMessageDialog(null, "已断开连接，请重新登录成功后再试");
         }
     }
     
