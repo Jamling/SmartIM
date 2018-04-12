@@ -49,11 +49,13 @@ public class WXReceiveCallback extends IMReceiveCallback {
             if (from instanceof GroupFrom) {
                 GroupFrom gf = (GroupFrom) from;
                 unknown = gf.getMember() == null || gf.getMember().isUnknown();
-                notify = SmartIMSettings.getInstance()
+                notify = notify && SmartIMSettings.getInstance()
                         .getState().NOTIFY_GROUP_MSG;
             }
             else {
                 unknown = from.getMember() == null;
+                notify = notify && SmartIMSettings.getInstance()
+                        .getState().NOTIFY_FRIEND_MSG;
             }
             handle(unknown, notify, message, from, contact);
         }

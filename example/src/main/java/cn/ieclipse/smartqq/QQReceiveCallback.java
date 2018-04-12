@@ -55,7 +55,7 @@ public class QQReceiveCallback extends IMReceiveCallback {
                 unknown = (gf.getGroupUser() == null
                         || gf.getGroupUser().isUnknown());
                 uin = gf.getGroup().getUin();
-                notify = SmartIMSettings.getInstance()
+                notify = notify && SmartIMSettings.getInstance()
                         .getState().NOTIFY_GROUP_MSG;
                 qqContact = client.getGroup(gf.getGroup().getId());
             }
@@ -64,12 +64,14 @@ public class QQReceiveCallback extends IMReceiveCallback {
                 unknown = (gf.getDiscussUser() == null
                         || gf.getDiscussUser().isUnknown());
                 uin = gf.getDiscuss().getUin();
-                notify = SmartIMSettings.getInstance()
+                notify = notify && SmartIMSettings.getInstance()
                         .getState().NOTIFY_GROUP_MSG;
                 qqContact = client.getDiscuss(gf.getDiscuss().getId());
             }
             else {
                 qqContact = from.getContact();
+                notify = notify && SmartIMSettings.getInstance()
+                        .getState().NOTIFY_FRIEND_MSG;
             }
             handle(unknown, notify, message, from, (AbstractContact) qqContact);
         }

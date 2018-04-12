@@ -6,6 +6,7 @@ import java.awt.EventQueue;
 import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
+import cn.ieclipse.smartim.common.Notifications;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.smartqq.SmartQQPanel;
 import cn.ieclipse.wechat.WechatPanel;
@@ -27,6 +28,7 @@ public class Application {
                 try {
                     Application window = new Application();
                     window.window.setVisible(true);
+                    Notifications.init(window.window);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

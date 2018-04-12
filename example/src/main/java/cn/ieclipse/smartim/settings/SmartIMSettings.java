@@ -16,7 +16,9 @@
 package cn.ieclipse.smartim.settings;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 
+import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.util.FileUtils;
 
 /**
@@ -40,9 +42,13 @@ public class SmartIMSettings {
     
     public void loadProp() {
         try {
-            this.myState = (State) FileUtils.readObject(new File("."), CFG);
+            this.myState = (State) FileUtils.readObject(new File("./"), CFG);
         } catch (Exception e) {
-            e.printStackTrace();
+            if (e instanceof FileNotFoundException) {
+        	LOG.warn("找不到配置文件 " + e.getMessage());
+            } else {
+                e.printStackTrace();
+            }
         }
         if (this.myState == null) {
             this.myState = new State();
@@ -73,6 +79,7 @@ public class SmartIMSettings {
         private static final long serialVersionUID = -5719423461653118971L;
         public boolean SHOW_SEND = false;
         public boolean NOTIFY_MSG = true;
+        public boolean NOTIFY_FRIEND_MSG = true;
         public boolean NOTIFY_GROUP_MSG = false;
         public boolean NOTIFY_UNREAD = true;
         

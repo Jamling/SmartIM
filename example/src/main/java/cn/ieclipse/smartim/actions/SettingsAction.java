@@ -2,6 +2,7 @@ package cn.ieclipse.smartim.actions;
 
 import java.awt.event.ActionEvent;
 
+import cn.ieclipse.smartim.common.Notifications;
 import cn.ieclipse.smartim.dialogs.SettingsDialog;
 import cn.ieclipse.smartim.views.IMPanel;
 import icons.SmartIcons;

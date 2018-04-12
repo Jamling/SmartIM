@@ -31,6 +31,7 @@ public class GeneralPanel extends JPanel {
     private JCheckBox chkNotify;
     private JCheckBox chkNotifyUnread;
     private JCheckBox chkSendBtn;
+    private JCheckBox chkNotifyFriendMsg;
     private JCheckBox chkNotifyGroupMsg;
     private JCheckBox chkNotifyUnknown;
     private JCheckBox chkHideMyInput;
@@ -91,7 +92,7 @@ public class GeneralPanel extends JPanel {
         }
         {
             chkNotify = new JCheckBox("接收消息时在右下角弹出通知框");
-            chkNotify.setEnabled(false);
+            chkNotify.setEnabled(true);
             GridBagConstraints gbc_chckbxNewCheckBox_2 = new GridBagConstraints();
             gbc_chckbxNewCheckBox_2.anchor = GridBagConstraints.WEST;
             gbc_chckbxNewCheckBox_2.insets = new Insets(0, 0, 5, 5);
@@ -101,7 +102,7 @@ public class GeneralPanel extends JPanel {
         }
         {
             chkNotifyGroupMsg = new JCheckBox("群消息通知");
-            chkNotifyGroupMsg.setEnabled(false);
+            chkNotifyGroupMsg.setEnabled(true);
             GridBagConstraints gbc_chckbxNewCheckBox_3 = new GridBagConstraints();
             gbc_chckbxNewCheckBox_3.fill = GridBagConstraints.HORIZONTAL;
             gbc_chckbxNewCheckBox_3.insets = new Insets(0, 0, 5, 0);
@@ -111,7 +112,7 @@ public class GeneralPanel extends JPanel {
         }
         {
             chkNotifyUnread = new JCheckBox("接收消息时更新未读数目");
-            chkNotifyUnread.setEnabled(false);
+            chkNotifyUnread.setEnabled(true);
             GridBagConstraints gbc_chckbxNewCheckBox_4 = new GridBagConstraints();
             gbc_chckbxNewCheckBox_4.anchor = GridBagConstraints.WEST;
             gbc_chckbxNewCheckBox_4.insets = new Insets(0, 0, 5, 5);
@@ -121,7 +122,7 @@ public class GeneralPanel extends JPanel {
         }
         {
             chkNotifyUnknown = new JCheckBox("未识别用户消息通知");
-            chkNotifyUnknown.setEnabled(false);
+            chkNotifyUnknown.setEnabled(true);
             GridBagConstraints gbc_chckbxNewCheckBox_5 = new GridBagConstraints();
             gbc_chckbxNewCheckBox_5.anchor = GridBagConstraints.WEST;
             gbc_chckbxNewCheckBox_5.insets = new Insets(0, 0, 5, 0);
@@ -137,6 +138,15 @@ public class GeneralPanel extends JPanel {
             gbc_chkHistory.gridx = 0;
             gbc_chkHistory.gridy = 5;
             add(chkHistory, gbc_chkHistory);
+        }
+        {
+            chkNotifyFriendMsg = new JCheckBox("好友消息通知");
+            GridBagConstraints gbc_chkHistory = new GridBagConstraints();
+            gbc_chkHistory.anchor = GridBagConstraints.WEST;
+            gbc_chkHistory.insets = new Insets(0, 0, 5, 5);
+            gbc_chkHistory.gridx = 1;
+            gbc_chkHistory.gridy = 5;
+            add(chkNotifyFriendMsg, gbc_chkHistory);
         }
         {
             panel = new JPanel();
@@ -282,6 +292,7 @@ public class GeneralPanel extends JPanel {
     
     public void reset() {
         chkNotify.setSelected(settings.getState().NOTIFY_MSG);
+        chkNotifyFriendMsg.setSelected(settings.getState().NOTIFY_FRIEND_MSG);
         chkNotifyGroupMsg.setSelected(settings.getState().NOTIFY_GROUP_MSG);
         chkSendBtn.setSelected(settings.getState().SHOW_SEND);
         chkNotifyUnread.setSelected(settings.getState().NOTIFY_UNREAD);
@@ -295,6 +306,7 @@ public class GeneralPanel extends JPanel {
         settings.getState().NOTIFY_MSG = chkNotify.isSelected();
         settings.getState().NOTIFY_UNREAD = chkNotifyUnread.isSelected();
         settings.getState().SHOW_SEND = chkSendBtn.isSelected();
+        settings.getState().NOTIFY_FRIEND_MSG = chkNotifyFriendMsg.isSelected();
         settings.getState().NOTIFY_GROUP_MSG = chkNotifyGroupMsg.isSelected();
         settings.getState().NOTIFY_UNKNOWN = chkNotifyUnknown.isSelected();
         settings.getState().HIDE_MY_INPUT = chkHideMyInput.isSelected();
