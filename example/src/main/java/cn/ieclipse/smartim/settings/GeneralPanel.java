@@ -1,31 +1,36 @@
 package cn.ieclipse.smartim.settings;
 
+import java.awt.BorderLayout;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.UIManager;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
 import com.google.gson.Gson;
 
 import cn.ieclipse.smartim.IMClientFactory;
-import cn.ieclipse.smartim.IMHistoryManager;
 import cn.ieclipse.smartim.common.LOG;
+import cn.ieclipse.smartim.common.SwingUtils;
 import okhttp3.Call;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import javax.swing.JTextField;
-import javax.swing.JButton;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
 
 public class GeneralPanel extends JPanel {
     private JCheckBox chkNotify;
@@ -42,12 +47,14 @@ public class GeneralPanel extends JPanel {
     
     private String update_url = "http://api.ieclipse.cn/smartqq/index/notice?p=swing";
     private String about_url = "http://api.ieclipse.cn/smartqq/index/about";
-    private String version = "2.2.0";
+    private String version = "2.4.1";
     private JCheckBox chkHistory;
     private JPanel panel;
     private JLabel lblNewLabel_1;
     private JTextField tfWorkDir;
     private JButton btnNewButton;
+    private JPanel panel_1;
+    private JComboBox<LookAndFeelInfo> comboTheme;
     
     /**
      * Create the panel.
@@ -56,11 +63,12 @@ public class GeneralPanel extends JPanel {
         this.settings = settings;
         GridBagLayout gbl_contentPanel = new GridBagLayout();
         gbl_contentPanel.columnWidths = new int[] { 0, 0, 0 };
-        gbl_contentPanel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        gbl_contentPanel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                0 };
         gbl_contentPanel.columnWeights = new double[] { 1.0, 1.0,
                 Double.MIN_VALUE };
         gbl_contentPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 1.0, 1.0 };
+                0.0, 1.0, 1.0, 1.0 };
         JPanel contentPanel = this;
         contentPanel.setLayout(gbl_contentPanel);
         {
@@ -85,7 +93,7 @@ public class GeneralPanel extends JPanel {
             JLabel lblNewLabel = new JLabel("消息通知");
             GridBagConstraints gbc_lblNewLabel = new GridBagConstraints();
             gbc_lblNewLabel.anchor = GridBagConstraints.WEST;
-            gbc_lblNewLabel.insets = new Insets(0, 0, 5, 5);
+            gbc_lblNewLabel.insets = new Insets(5, 5, 5, 5);
             gbc_lblNewLabel.gridx = 0;
             gbc_lblNewLabel.gridy = 2;
             contentPanel.add(lblNewLabel, gbc_lblNewLabel);
@@ -143,7 +151,7 @@ public class GeneralPanel extends JPanel {
             chkNotifyFriendMsg = new JCheckBox("好友消息通知");
             GridBagConstraints gbc_chkHistory = new GridBagConstraints();
             gbc_chkHistory.anchor = GridBagConstraints.WEST;
-            gbc_chkHistory.insets = new Insets(0, 0, 5, 5);
+            gbc_chkHistory.insets = new Insets(0, 0, 5, 0);
             gbc_chkHistory.gridx = 1;
             gbc_chkHistory.gridy = 5;
             add(chkNotifyFriendMsg, gbc_chkHistory);
@@ -152,7 +160,7 @@ public class GeneralPanel extends JPanel {
             panel = new JPanel();
             GridBagConstraints gbc_panel = new GridBagConstraints();
             gbc_panel.gridwidth = 2;
-            gbc_panel.insets = new Insets(0, 0, 5, 5);
+            gbc_panel.insets = new Insets(5, 5, 5, 5);
             gbc_panel.fill = GridBagConstraints.HORIZONTAL;
             gbc_panel.gridx = 0;
             gbc_panel.gridy = 6;
@@ -208,13 +216,39 @@ public class GeneralPanel extends JPanel {
             }
         }
         {
+            panel_1 = new JPanel();
+            GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+            gbc_panel_1.gridwidth = 2;
+            gbc_panel_1.insets = new Insets(5, 5, 5, 5);
+            gbc_panel_1.fill = GridBagConstraints.HORIZONTAL;
+            gbc_panel_1.gridx = 0;
+            gbc_panel_1.gridy = 7;
+            add(panel_1, gbc_panel_1);
+            panel_1.setLayout(new BorderLayout(0, 0));
+            panel_1.add(new JLabel("主题"), BorderLayout.WEST);
+            comboTheme = new JComboBox<>(UIManager.getInstalledLookAndFeels());
+            comboTheme.setRenderer(new BasicComboBoxRenderer() {
+                public java.awt.Component getListCellRendererComponent(
+                        javax.swing.JList list, Object value, int index,
+                        boolean isSelected, boolean cellHasFocus) {
+                    java.awt.Component c = super.getListCellRendererComponent(
+                            list, value, index, isSelected, cellHasFocus);
+                    if (value instanceof LookAndFeelInfo) {
+                        setText(((LookAndFeelInfo) value).getName());
+                    }
+                    return c;
+                };
+            });
+            panel_1.add(comboTheme, BorderLayout.CENTER);
+        }
+        {
             linkUpdate = new JLabel("<html><a href=\"\">检查新版本</a></html>");
             GridBagConstraints gbc_lblNewLabel_1 = new GridBagConstraints();
             gbc_lblNewLabel_1.insets = new Insets(0, 5, 5, 5);
             gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
             gbc_lblNewLabel_1.fill = GridBagConstraints.VERTICAL;
             gbc_lblNewLabel_1.gridx = 0;
-            gbc_lblNewLabel_1.gridy = 7;
+            gbc_lblNewLabel_1.gridy = 8;
             contentPanel.add(linkUpdate, gbc_lblNewLabel_1);
         }
         {
@@ -224,7 +258,7 @@ public class GeneralPanel extends JPanel {
             gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
             gbc_lblNewLabel_2.fill = GridBagConstraints.VERTICAL;
             gbc_lblNewLabel_2.gridx = 1;
-            gbc_lblNewLabel_2.gridy = 7;
+            gbc_lblNewLabel_2.gridy = 8;
             contentPanel.add(linkAbout, gbc_lblNewLabel_2);
         }
         
@@ -300,6 +334,7 @@ public class GeneralPanel extends JPanel {
         chkHideMyInput.setSelected(settings.getState().HIDE_MY_INPUT);
         chkHistory.setSelected(settings.getState().LOG_HISTORY);
         tfWorkDir.setText(settings.getState().WORK_PATH);
+        comboTheme.setSelectedIndex(settings.getState().THEME);
     }
     
     public void apply() {
@@ -315,5 +350,10 @@ public class GeneralPanel extends JPanel {
             IMClientFactory.getInstance().setWorkDir(tfWorkDir.getText());
         }
         settings.getState().WORK_PATH = tfWorkDir.getText();
+        if (settings.getState().THEME != comboTheme.getSelectedIndex()){
+            SwingUtils.setLookAndFeel(comboTheme.getSelectedIndex());
+            JOptionPane.showMessageDialog(null, "您已修改主题，建议重启本应用");
+        }
+        settings.getState().THEME = comboTheme.getSelectedIndex();
     }
 }
