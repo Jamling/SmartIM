@@ -319,7 +319,13 @@ public class WechatApi {
             synckey.append("|" + item.get("Key").getAsInt() + "_"
                     + item.get("Val").getAsInt());
         }
-        this.synckey = synckey.substring(1);
+        // Add length check
+        if (synckey.length() > 0) {
+            this.synckey = synckey.substring(1);
+        }
+        else {
+            this.synckey = ""; // TODO
+        }
     }
     
     /**
