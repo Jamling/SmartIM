@@ -35,7 +35,23 @@
 
 1. 下载SmartIM-App.jar，双击执行
 2. 通过`java -jar SmartIM-App.jar`来执行
-3. 找到example下的Application类，在IDE中Run As Main
+3. 找到example下的Application.java类，在IDE中Run As Main
+
+### Windows
+
+双击`SmartIM-App.jar`即可
+
+### Ubuntu (桌面版)
+先安装jre（已有jre的跳过）
+ 打开终端输入`java -version`，如果java未安装，则会提示找不到java指令，然后建议你安装列出的软件包，建议选择安装`openjdk`的jre。
+ 安装完成后再输入`java -version`，测试一下jre是否安装成功
+
+创建一个**启动器**，类型为**应用程序**，名称随便填，命令写`java -jar /home/jamling/SmartIM-App.jar`。注意jar的路径要是绝对路径哦。
+然后就能像在windows下面一样双击运行了，是不是很方便？
+
+如有更多问题，建议先参考[常见问题]
 
 ## 即时讨论
 请加入![QQ群: 307490913](group.png)
+
+[常见问题]:https://github.com/Jamling/SmartIM/wiki/%E5%B8%B8%E8%A7%81%E9%97%AE%E9%A2%98
