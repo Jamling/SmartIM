@@ -18,7 +18,13 @@ public class Application {
     QRCodeFrame qrCodeFrame;
     DefaultLoginCallback loginCallback = new DefaultLoginCallback() {
         protected void onLoginFinish(boolean success, Exception e) {
-            
+            if (success) {
+                System.out.println("登录成功！");
+            }
+            else {
+                System.err.println("登录失败!");
+                e.printStackTrace();
+            }
         };
     };
     
@@ -44,14 +50,24 @@ public class Application {
         client.setLoginCallback(loginCallback);
         client.setReceiveCallback(receiveCallback);
         client.login();
-        if (client.isLogin()) {
+        
+        while (true) {
+            if (client.isLogin()) {
+                try {
+                    client.init();
+                } catch (Exception e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+                client.start();
+                break;
+            }
             try {
-                client.init();
-            } catch (Exception e) {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
-            client.start();
         }
     }
     
