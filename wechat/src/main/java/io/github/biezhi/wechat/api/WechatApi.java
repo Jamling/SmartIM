@@ -95,7 +95,7 @@ public class WechatApi {
         this.connTimeout = environment.getInt("http.conn-time-out", 10);
         this.readTimeout = environment.getInt("http.read-time-out", 60);
         this.writeTimeout = environment.getInt("http.write-time-out", 60);
-        URLConst.init(this.wxHost);
+        // URLConst.init(this.wxHost);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
                 .connectTimeout(connTimeout, TimeUnit.SECONDS)
