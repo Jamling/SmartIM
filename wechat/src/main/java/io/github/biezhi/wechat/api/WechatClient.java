@@ -3,6 +3,7 @@ package io.github.biezhi.wechat.api;
 import java.io.File;
 import java.io.IOException;
 import java.net.Proxy;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -155,6 +156,15 @@ public class WechatClient extends AbstractSmartClient {
         this.specialUsersList = special;
         
         this.groupList = contactHandler.getGroupList();
+        // fetch group member
+        if (this.groupList != null && !this.groupList.isEmpty()) {
+            List<String> gids = new ArrayList<>(this.groupList.size());
+            for(Contact c : this.groupList) {
+                gids.add(c.getUin());
+            }
+            JsonArray garray = api.batchGetContact(gids);
+            this.groupList = contactHandler.handle(garray);
+        }
         this.memberList = contactHandler.getMemberList();
         this.publicUsersList = contactHandler.getPublicUsersList();
         List<Contact> special2 = contactHandler.getSpecialUsersList();
