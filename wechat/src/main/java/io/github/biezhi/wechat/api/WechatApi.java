@@ -95,7 +95,7 @@ public class WechatApi {
         this.connTimeout = environment.getInt("http.conn-time-out", 10);
         this.readTimeout = environment.getInt("http.read-time-out", 60);
         this.writeTimeout = environment.getInt("http.write-time-out", 60);
-        // URLConst.init(this.wxHost);
+        URLConst.init(this.wxHost);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
                 .connectTimeout(connTimeout, TimeUnit.SECONDS)
@@ -187,7 +187,7 @@ public class WechatApi {
      */
     public boolean waitforlogin(int tip) {
         Utils.sleep(tip);
-        String url = URLConst.API.LOGIN + "?tip=%d&uuid=%s&_%s";
+        String url = URLConst.API.LOGIN.url() + "?tip=%d&uuid=%s&_%s";
         url = String.format(url, tip, session.getUuid(),
                 System.currentTimeMillis());
                 
@@ -288,7 +288,7 @@ public class WechatApi {
             return false;
         }
         
-        String url = URLConst.API.INIT + "?pass_ticket=%s&skey=%s&r=%s";
+        String url = URLConst.API.INIT.url() + "?pass_ticket=%s&skey=%s&r=%s";
         url = String.format(url, session.getPassTicket(), session.getSkey(),
                 System.currentTimeMillis());
                 
@@ -334,7 +334,7 @@ public class WechatApi {
      * @return
      */
     public boolean openStatusNotify() throws Exception {
-        String url = URLConst.API.STATUS_NOTIFY + "?lang=%s&pass_ticket=%s";
+        String url = URLConst.API.STATUS_NOTIFY .url()+ "?lang=%s&pass_ticket=%s";
         url = String.format(url, "zh_CN", session.getPassTicket());
         
         Map<String, Object> params = new HashMap<String, Object>();
@@ -353,7 +353,7 @@ public class WechatApi {
     }
     
     public JsonObject wxGetContact() throws Exception {
-        String url = URLConst.API.GET_CONTACT + "?pass_ticket=%s&skey=%s&r=%s";
+        String url = URLConst.API.GET_CONTACT.url() + "?pass_ticket=%s&skey=%s&r=%s";
         url = String.format(url, session.getPassTicket(), session.getSkey(),
                 System.currentTimeMillis());
         JsonObject response = doPost(url, null).getAsJsonObject();
@@ -367,7 +367,7 @@ public class WechatApi {
      * @return
      */
     public JsonArray batchGetContact(List<String> groupIds) {
-        String url = URLConst.API.GET_CONTACT_BATCH
+        String url = URLConst.API.GET_CONTACT_BATCH.url()
                 + "?type=ex&r=%s&pass_ticket=%s";
         url = String.format(url, System.currentTimeMillis(),
                 session.getPassTicket());
@@ -397,7 +397,7 @@ public class WechatApi {
      * @return
      */
     public JsonObject wxSync() throws Exception {
-        String url = URLConst.API.SYNC + "?sid=%s&skey=%s&pass_ticket=%s";
+        String url = URLConst.API.SYNC.url() + "?sid=%s&skey=%s&pass_ticket=%s";
         url = String.format(url, session.getSid(), session.getSkey(),
                 session.getPassTicket());
                 
@@ -468,7 +468,7 @@ public class WechatApi {
      */
     public JsonObject wxSendMessage(String msg, String to) throws Exception {
         
-        String url = URLConst.API.SEND_MSG + "?pass_ticket=%s";
+        String url = URLConst.API.SEND_MSG.url() + "?pass_ticket=%s";
         url = String.format(url, session.getPassTicket());
         
         String clientMsgId = System.currentTimeMillis()
@@ -492,11 +492,11 @@ public class WechatApi {
     }
     
     public JsonObject wxSendMessage(Map<String, Object> Msg) throws Exception {
-        String url = URLConst.API.SEND_MSG + "?pass_ticket=%s";
+        String url = URLConst.API.SEND_MSG.url() + "?pass_ticket=%s";
         url = String.format(url, session.getPassTicket());
         
-        String clientMsgId = System.currentTimeMillis()
-                + Utils.getRandomNumber(5);
+        String clientMsgId = System.currentTimeMillis() / 1000
+                + Utils.getRandomNumber(6);
         Map<String, Object> params = new HashMap<String, Object>();
         params.put("BaseRequest", this.baseRequest);
         int type = (Integer) Msg.get("Type");
@@ -504,12 +504,12 @@ public class WechatApi {
         
         }
         else if (type == WechatMessage.MSGTYPE_IMAGE) {
-            url = URLConst.API.SEND_IMG + "?fun=async&f=json&pass_ticket="
+            url = URLConst.API.SEND_IMG.url() + "?fun=async&f=json&pass_ticket="
                     + this.session.getPassTicket();
             params.put("Scene", 0);
         }
         else if (type == WechatMessage.MSGTYPE_EMOTICON) {
-            url = URLConst.API.SEND_EMOTION + "?fun=sys&f=json&pass_ticket="
+            url = URLConst.API.SEND_EMOTION.url() + "?fun=sys&f=json&pass_ticket="
                     + this.session.getPassTicket();
             params.put("Scene", 0);
             if (Msg.get("EmojiFlag") == null) {
@@ -517,7 +517,7 @@ public class WechatApi {
             }
         }
         else if (type == WechatMessage.MSGTYPE_FILE) {
-            url = URLConst.API.SEND_FILE + "?fun=async&f=json&pass_ticket="
+            url = URLConst.API.SEND_FILE.url() + "?fun=async&f=json&pass_ticket="
                     + this.session.getPassTicket();
             params.put("Scene", 0);
         }
@@ -631,7 +631,7 @@ public class WechatApi {
     }
     
     public String wxGetIcon(String username, File file) throws Exception {
-        String url = URLConst.API.GET_ICON + "?username=" + username + "&skey="
+        String url = URLConst.API.GET_ICON.url() + "?username=" + username + "&skey="
                 + this.session.getSkey();
         if (file == null) {
             return url;
@@ -640,7 +640,7 @@ public class WechatApi {
     }
     
     public String wxGetHead(String username, File file) throws Exception {
-        String url = URLConst.API.GET_HEAD + "?username=" + username + "&skey="
+        String url = URLConst.API.GET_HEAD.url() + "?username=" + username + "&skey="
                 + this.session.getSkey();
         if (file == null) {
             return url;
@@ -649,7 +649,7 @@ public class WechatApi {
     }
     
     public String wxGetMsgImg(String msgId, File file) throws Exception {
-        String url = URLConst.API.GET_IMG + "?MsgID=" + msgId + "&skey="
+        String url = URLConst.API.GET_IMG.url() + "?MsgID=" + msgId + "&skey="
                 + this.session.getSkey();
         if (file == null) {
             return url;
@@ -698,7 +698,7 @@ public class WechatApi {
         if (this.session == null) {
             return;
         }
-        String url = URLConst.API.LOGOUT + "?redirect=0&type=1&skey="
+        String url = URLConst.API.LOGOUT.url() + "?redirect=0&type=1&skey="
                 + this.session.getSkey();
         Map<String, Object> params = new HashMap<>();
         params.put("sid", this.session.getSid());

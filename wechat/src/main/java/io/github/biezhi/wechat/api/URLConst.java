@@ -122,46 +122,50 @@ public final class URLConst {
     }
     
     public interface API {
-        public String INIT = new BaseApi("webwxinit").get();
-        public String STATUS_NOTIFY = new BaseApi("webwxstatusnotify").get();
-        public String SEND_MSG = new BaseApi("webwxsendmsg").get();
-        public String SEND_FILE = new BaseApi("webwxsendappmsg").get();
-        public String SEND_EMOTION = new BaseApi("webwxsendemoticon").get();
-        public String SEND_IMG = new BaseApi("webwxsendmsgimg").get();
-        public String SEND_VIDEO = new BaseApi("webwxsendmsgvideo").get();
-        public String GET_ICON = new BaseApi("webwxgeticon").get();
-        public String GET_HEAD = new BaseApi("webwxgetheadimg").get();
-        public String GET_IMG = new BaseApi("webwxgetmsgimg").get();
-        public String GET_MEDIA = new BaseApi("webwxgetmedia").get();
-        public String GET_VIDEO = new BaseApi("webwxgetvideo").get();
-        public String GET_VOICE = new BaseApi("webwxgetvoice").get();
-        public String GET_CONTACT = new BaseApi("webwxgetcontact").get();
-        public String GET_CONTACT_BATCH = new BaseApi("webwxbatchgetcontact")
+        public BaseApi INIT = new BaseApi("webwxinit").get();
+        public BaseApi STATUS_NOTIFY = new BaseApi("webwxstatusnotify").get();
+        public BaseApi SEND_MSG = new BaseApi("webwxsendmsg").get();
+        public BaseApi SEND_FILE = new BaseApi("webwxsendappmsg").get();
+        public BaseApi SEND_EMOTION = new BaseApi("webwxsendemoticon").get();
+        public BaseApi SEND_IMG = new BaseApi("webwxsendmsgimg").get();
+        public BaseApi SEND_VIDEO = new BaseApi("webwxsendmsgvideo").get();
+        public BaseApi GET_ICON = new BaseApi("webwxgeticon").get();
+        public BaseApi GET_HEAD = new BaseApi("webwxgetheadimg").get();
+        public BaseApi GET_IMG = new BaseApi("webwxgetmsgimg").get();
+        public BaseApi GET_MEDIA = new BaseApi("webwxgetmedia").get();
+        public BaseApi GET_VIDEO = new BaseApi("webwxgetvideo").get();
+        public BaseApi GET_VOICE = new BaseApi("webwxgetvoice").get();
+        public BaseApi GET_CONTACT = new BaseApi("webwxgetcontact").get();
+        public BaseApi GET_CONTACT_BATCH = new BaseApi("webwxbatchgetcontact")
                 .get();
-        public String LOGOUT = new BaseApi("webwxlogout").get();
-        public String LOGIN = new BaseApi("login").get();
-        public String SYNC = new BaseApi("webwxsync").get();
+        public BaseApi LOGOUT = new BaseApi("webwxlogout").get();
+        public BaseApi LOGIN = new BaseApi("login").get();
+        public BaseApi SYNC = new BaseApi("webwxsync").get();
         
-        public String PREVIEW = new BaseApi("webwxpreview").get();
-        public String UPDATE_CHATROOM = new BaseApi("webwxupdatechatroom")
+        public BaseApi PREVIEW = new BaseApi("webwxpreview").get();
+        public BaseApi UPDATE_CHATROOM = new BaseApi("webwxupdatechatroom")
                 .get();
-        public String CREATE_CHATROOM = new BaseApi("webwxcreatechatroom")
+        public BaseApi CREATE_CHATROOM = new BaseApi("webwxcreatechatroom")
                 .get();
-        public String CHECK_URL = new BaseApi("webwxcheckurl").get();
-        public String VERIFY_USER = new BaseApi("webwxverifyuser").get();
-        public String REVOKE_MSG = new BaseApi("webwxrevokemsg").get();
-        public String SEARCH_CONTACT = new BaseApi("webwxsearchcontact").get();
+        public BaseApi CHECK_URL = new BaseApi("webwxcheckurl").get();
+        public BaseApi VERIFY_USER = new BaseApi("webwxverifyuser").get();
+        public BaseApi REVOKE_MSG = new BaseApi("webwxrevokemsg").get();
+        public BaseApi SEARCH_CONTACT = new BaseApi("webwxsearchcontact").get();
     }
     
-    private static class BaseApi {
-        String url = null;
+    public static class BaseApi {
+        String path = null;
         
         BaseApi(String path) {
-            url = BASE + path;
+            this.path = path;
         }
         
-        String get() {
-            return url;
+        public BaseApi get() {
+            return this;
+        }
+        
+        public String url() {
+            return BASE + path;
         }
     }
     
