@@ -47,7 +47,7 @@ public class GeneralPanel extends JPanel {
     
     private String update_url = "http://api.ieclipse.cn/smartqq/index/notice?p=swing";
     private String about_url = "http://api.ieclipse.cn/smartqq/index/about";
-    private String version = "2.4.1";
+    private String version = "2.5.0";
     private JCheckBox chkHistory;
     private JPanel panel;
     private JLabel lblNewLabel_1;
