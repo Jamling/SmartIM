@@ -33,7 +33,7 @@
 
 三种运行方式，提前是都需要安装Java SDK或JRE。
 
-1. [下载SmartIM-App.jar](https://github.com/Jamling/jws/SmartIM-App.jar)，双击执行
+1. 下载SmartIM-App.jar ([下载站点：国外](https://jamling.github.com/jws/SmartIM-App.jar),[下载站点：国内](http://dl.ieclipse.cn/jws/SmartIM-App.jar))，双击执行
 2. 通过`java -jar SmartIM-App.jar`来执行
 3. 找到example下的Application.java类，在IDE中Run As Main
 
