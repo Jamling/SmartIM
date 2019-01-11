@@ -175,6 +175,10 @@ public class SmartQQClient extends AbstractSmartClient {
                     }
                     if (!getRecentList().contains(r)) {
                         getRecentList().add(0, r);
+                        IContact n = getRecentTarget(r);
+                        if (n != null && n instanceof QQContact) {
+                            getRecents2().add(0, (QQContact) n);
+                        }
                     }
                 }
                 notifyReceive(m, from);
