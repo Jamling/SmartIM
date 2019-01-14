@@ -57,7 +57,7 @@ public class AbstractMsgXmlHandler {
         this.message = message;
         String content = isUnescape() ? StringUtils.decodeXml(message.Content)
                 : message.Content;
-        if (isParseXmlContent()) {
+        if (isParseXmlContent() && !"该类型暂不支持，请在手机上查看".equals(content)) {
             String regex = String.format(".*(<%s>.*</%s>).*", rootTag, rootTag);
             this.content = Pattern.compile(regex, Pattern.MULTILINE)
                     .matcher(content.replaceAll("\\s*<br\\s?/>\\s*", ""))
