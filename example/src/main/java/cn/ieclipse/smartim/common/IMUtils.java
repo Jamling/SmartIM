@@ -84,8 +84,8 @@ public class IMUtils {
     }
     
     public static boolean isMySendMsg(String raw) {
-        return raw.matches("^\\d{2}:\\d{2}:\\d{2} [.\\s\\S]*")
-                || raw.startsWith("<div");
+        return raw.startsWith("<div")
+                || raw.matches("^\\d{2}:\\d{2}:\\d{2} [.\\s\\S]*");
     }
     
     public static String formatHtmlMsg(String msg, boolean encodeHtml) {
@@ -137,7 +137,7 @@ public class IMUtils {
         return input;
     }
     
-    private static String autoLink(String input) {
+    public static String autoLink(String input) {
         Pattern p = Patterns.WEB_URL;// Pattern.compile(LINK_REGEX,
                                      // Pattern.MULTILINE);
         Matcher m = p.matcher(input);
