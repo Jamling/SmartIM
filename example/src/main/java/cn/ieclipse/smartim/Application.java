@@ -7,6 +7,7 @@ import javax.swing.JFrame;
 import javax.swing.JTabbedPane;
 
 import cn.ieclipse.smartim.common.Notifications;
+import cn.ieclipse.smartim.common.RestUtils;
 import cn.ieclipse.smartim.common.SwingUtils;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.smartqq.SmartQQPanel;
@@ -56,18 +57,18 @@ public class Application {
                 super.dispose();
             }
         };
-        window.setTitle("SmartIM-SmartQQ/微信网页版");
+        window.setTitle("SmartIM (" + RestUtils.version + ")");
         window.setBounds(100, 100, 700, 450);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         window.getContentPane().add(tabbedPane, BorderLayout.CENTER);
         
-        SmartQQPanel panel1 = new SmartQQPanel();
-        tabbedPane.addTab("SmartQQ", SmartIcons.qq, panel1, null);
-        
         WechatPanel panel2 = new WechatPanel();
         tabbedPane.addTab("Wechat", SmartIcons.wechat, panel2, null);
+        
+        SmartQQPanel panel1 = new SmartQQPanel();
+        tabbedPane.addTab("SmartQQ", SmartIcons.qq, panel1, null);
         
         // JMenuBar menuBar = new JMenuBar();
         // frmSmartim.setJMenuBar(menuBar);
@@ -82,5 +83,4 @@ public class Application {
         // JMenuItem mntmNewMenuItem_1 = new JMenuItem("微信");
         // mnNewMenu.add(mntmNewMenuItem_1);
     }
-    
 }

@@ -2,10 +2,11 @@ package cn.ieclipse.smartim.actions;
 
 import java.awt.event.ActionEvent;
 
-import cn.ieclipse.smartim.common.IMUtils;
 import cn.ieclipse.smartim.console.MockChatConsole;
 import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.views.IMPanel;
+import cn.ieclipse.wechat.WXChatConsoleMock;
+import cn.ieclipse.wechat.WechatPanel;
 import icons.SmartIcons;
 
 /**
@@ -30,12 +31,16 @@ public class MockConsoleAction extends IMPanelAction {
             }
         };
         
-        MockChatConsole console = new MockChatConsole(contact, panel);
+        MockChatConsole console = null;
+        if (panel instanceof WechatPanel) {
+            console = new WXChatConsoleMock(contact, panel);
+        }
+        else {
+            console = new MockChatConsole(contact, panel);
+        }
         console.setName(contact.getName());
         panel.addConsole(console);
         panel.randBling();
-        String msg = IMUtils.formatHtmlMsg(System.currentTimeMillis(), "明月",
-                "我的未来不是梦http://www.baidu.com咕咕");
-        console.write(msg);
+        console.initMockMsg();
     }
 }

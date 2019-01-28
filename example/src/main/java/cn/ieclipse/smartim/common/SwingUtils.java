@@ -15,7 +15,7 @@
  */
 package cn.ieclipse.smartim.common;
 
-import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 
 import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
@@ -89,5 +89,19 @@ public class SwingUtils {
         if (!setLookAndFeel(theme)) {
             initOSLookAndFeel();
         }
+    }
+    
+    public static String key2string(KeyEvent e) {
+        String key = "";
+        if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+            key = "Enter";
+        }
+        if (e.isShiftDown()) {
+            key = "Shit + " + key;
+        }
+        if (e.isControlDown()) {
+            key = "Ctrl + " + key;
+        }
+        return key;
     }
 }

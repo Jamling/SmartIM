@@ -17,6 +17,7 @@ public class SmartQQPanel extends IMPanel {
     
     public SmartQQPanel() {
         super();
+        loadWelcome("qq");
     }
     
     @Override

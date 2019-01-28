@@ -14,6 +14,7 @@ import cn.ieclipse.smartim.robot.TuringRobot.TuringRequestV2Builder;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.api.WechatClient;
+import io.github.biezhi.wechat.model.Const;
 import io.github.biezhi.wechat.model.Contact;
 import io.github.biezhi.wechat.model.GroupFrom;
 import io.github.biezhi.wechat.model.UserFrom;
@@ -43,6 +44,9 @@ public class WXRobotCallback extends IMRobotCallback {
         }
         try {
             WechatMessage m = (WechatMessage) message;
+            if (Const.API_SPECIAL_USER.contains(m.FromUserName)) {
+                return;
+            }
             if (m.MsgType == WechatMessage.MSGTYPE_TEXT) {
                 console = (WXChatConsole) fContactView
                         .findConsoleById(from.getContact().getUin(), false);
@@ -244,9 +248,9 @@ public class WXRobotCallback extends IMRobotCallback {
                     from.getContact());
             client.sendMessage(msg, from.getContact());
             String name = getAccount().getName();
-            String log = IMUtils.formatHtmlMyMsg(System.currentTimeMillis(),
-                    name, message);
-            IMHistoryManager.getInstance().save(client,
+            String log = WXUtils.formatHtmlOutgoing(name, message, true);
+            IMHistoryManager.getInstance().save(
+                    client.getWorkDir(IMHistoryManager.HISTORY_NAME),
                     from.getContact().getUin(), log);
         }
     }

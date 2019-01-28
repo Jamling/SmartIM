@@ -57,7 +57,6 @@ public abstract class IMContactView extends JPanel {
         tree.setShowsRootHandles(false);
         tree.setRootVisible(false);
         tree.addMouseListener(new IMContactDoubleClicker(getImPanel()));
-        
     }
     
     public void updateTrees(JTree... trees) {

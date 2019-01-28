@@ -40,11 +40,15 @@ public class WXChatConsole extends IMChatConsole {
             write(raw);
             return;
         }
+        // unreachable code
         WechatMessage m = (WechatMessage) getClient().handleMessage(raw);
         AbstractFrom from = getClient().getFrom(m);
-        String name = from == null ? "未知用户" : from.getName();
-        String msg = IMUtils.formatHtmlMsg(m.getTime(), name, m.getText());
-        write(msg);
+        write(WXUtils.formatHtmlIncoming(m, from));
+    }
+    
+    @Override
+    protected String formatInput(String name, String input) {
+        return WXUtils.formatHtmlOutgoing(name, input, true);
     }
     
     @Override
@@ -101,6 +105,7 @@ public class WXChatConsole extends IMChatConsole {
             error("上传失败");
             return;
         }
+        
         String link = StringUtils.file2url(file);
         String label = file.replace('\\', '/');
         String input = null;
@@ -130,10 +135,9 @@ public class WXChatConsole extends IMChatConsole {
         client.sendMessage(m, contact);
         if (!hideMyInput()) {
             String name = client.getAccount().getName();
-            String msg = IMUtils.formatHtmlMsg(true, false,
-                    System.currentTimeMillis(), name, m.text);
+            String msg = WXUtils.formatHtmlOutgoing(name, m.text, false);
             insertDocument(msg);
-            IMHistoryManager.getInstance().save(client, getHistoryFile(), msg);
+            IMHistoryManager.getInstance().save(getHistoryDir(), getHistoryFile(), msg);
         }
     }
 }

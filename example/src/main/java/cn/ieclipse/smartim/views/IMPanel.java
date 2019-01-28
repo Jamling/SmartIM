@@ -20,6 +20,7 @@ import cn.ieclipse.smartim.actions.LoginAction;
 import cn.ieclipse.smartim.actions.MockConsoleAction;
 import cn.ieclipse.smartim.actions.SettingsAction;
 import cn.ieclipse.smartim.common.LOG;
+import cn.ieclipse.smartim.common.RestUtils;
 import cn.ieclipse.smartim.console.ClosableTabHost;
 import cn.ieclipse.smartim.console.IMChatConsole;
 import cn.ieclipse.smartim.console.MockChatConsole;
@@ -33,6 +34,7 @@ public abstract class IMPanel extends JSplitPane
         
     protected JTabbedPane tabbedChat;
     protected IMContactView left;
+    protected String welcome;
     
     public IMPanel() {
         initUI();
@@ -222,5 +224,21 @@ public abstract class IMPanel extends JSplitPane
     
     public void notifyUpdateContacts(int index, boolean force) {
         left.notifyUpdateContacts(index, force);
+    }
+    
+    public void loadWelcome(final String im) {
+        new Thread() {
+            @Override
+            public void run() {
+                welcome = RestUtils.getWelcome(im);
+            }
+        }.start();
+    }
+    
+    public String getWelcome() {
+        if (welcome == null) {
+            return "";
+        }
+        return welcome;
     }
 }

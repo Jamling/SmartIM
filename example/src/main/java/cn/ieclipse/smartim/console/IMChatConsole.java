@@ -6,6 +6,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.List;
@@ -33,6 +34,8 @@ import cn.ieclipse.smartim.actions.SendFileAction;
 import cn.ieclipse.smartim.actions.SendImageAction;
 import cn.ieclipse.smartim.common.IMUtils;
 import cn.ieclipse.smartim.common.LOG;
+import cn.ieclipse.smartim.common.RestUtils;
+import cn.ieclipse.smartim.common.SwingUtils;
 import cn.ieclipse.smartim.common.WrapHTMLFactory;
 import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.impl.AbstractContact;
@@ -72,6 +75,14 @@ public abstract class IMChatConsole extends JPanel {
     
     public abstract void post(final String msg);
     
+    public File getHistoryDir() {
+        if (getClient() != null) {
+            return getClient().getWorkDir(IMHistoryManager.HISTORY_NAME);
+        }
+        String dir = SmartIMSettings.getInstance().getState().WORK_PATH;
+        return new File(dir, IMHistoryManager.HISTORY_NAME);
+    }
+    
     public String getHistoryFile() {
         return EncodeUtils.getMd5(contact.getName());
     }
@@ -90,7 +101,7 @@ public abstract class IMChatConsole extends JPanel {
     public void loadHistories() {
         SmartClient client = getClient();
         if (client != null) {
-            List<String> ms = IMHistoryManager.getInstance().load(client,
+            List<String> ms = IMHistoryManager.getInstance().load(getHistoryDir(),
                     getHistoryFile());
             int size = ms.size();
             for (int i=0; i < size; i++) {
@@ -107,7 +118,7 @@ public abstract class IMChatConsole extends JPanel {
     }
     
     public void clearHistories() {
-        IMHistoryManager.getInstance().clear(getClient(), getHistoryFile());
+        IMHistoryManager.getInstance().clear(getHistoryDir(), getHistoryFile());
         historyWidget.setText("");
     }
     
@@ -140,11 +151,10 @@ public abstract class IMChatConsole extends JPanel {
             return;
         }
         String name = client.getAccount().getName();
-        String msg = IMUtils.formatHtmlMyMsg(System.currentTimeMillis(), name,
-                input);
+        String msg = formatInput(name, input);
         if (!hideMyInput()) {
             insertDocument(msg);
-            IMHistoryManager.getInstance().save(client, getHistoryFile(), msg);
+            IMHistoryManager.getInstance().save(getHistoryDir(), getHistoryFile(), msg);
         }
         new Thread() {
             @Override
@@ -174,6 +184,14 @@ public abstract class IMChatConsole extends JPanel {
     
     protected void sendFileInternal(final String file) throws Exception {
     
+    }
+    protected String encodeInput(String input) {
+        return StringUtils.encodeXml(input);
+    }
+    // 组装成我输入的历史记录，并显示在聊天窗口中
+    protected String formatInput(String name, String msg) {
+        return IMUtils.formatHtmlMyMsg(System.currentTimeMillis(), name,
+                msg);
     }
     
     public void error(Throwable e) {
@@ -238,7 +256,8 @@ public abstract class IMChatConsole extends JPanel {
             @Override
             public void keyPressed(KeyEvent e) {
                 super.keyPressed(e);
-                if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                
+                if (SmartIMSettings.getInstance().getState().KEY_SEND.equals(SwingUtils.key2string(e))) {
                     String input = inputWidget.getText();
                     if (!input.isEmpty()) {
                         inputWidget.setText("");
@@ -276,7 +295,7 @@ public abstract class IMChatConsole extends JPanel {
                 return new WrapHTMLFactory();
             }
         };
-        StyleSheet styleSheet = kit.getStyleSheet();
+        final StyleSheet styleSheet = kit.getStyleSheet();
         styleSheet.addRule("body {text-align: left;}");
         styleSheet.addRule(
                 ".my {font-size: 1 em; font-style: italic; float: left;}");
@@ -287,15 +306,10 @@ public abstract class IMChatConsole extends JPanel {
                 ".content {display: inline-block; white-space: pre-warp; padding-left: 4px;}");
         styleSheet.addRule(
                 ".br {height: 1px; line-height: 1px; min-height: 1px;}");
-        try {
-            styleSheet.importStyleSheet(
-                    new URL("http://dl.ieclipse.cn/r/smartim-min.css"));
-        } catch (MalformedURLException e1) {
-            e1.printStackTrace();
-        }
+        RestUtils.loadStyleAsync(styleSheet);
         HTMLDocument doc = (HTMLDocument) kit.createDefaultDocument();
         String initText = String.format(
-                "<html><head></head><body>%s</body></html>", "欢迎使用SmartIM");
+                "<html><head></head><body>%s</body></html>", imPanel.getWelcome());
         historyWidget.setContentType("text/html");
         historyWidget.setEditorKit(kit);
         historyWidget.setDocument(doc);

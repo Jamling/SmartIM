@@ -158,7 +158,23 @@ public class IMUtils {
                 int e = ends.get(i);
                 String g = groups.get(i);
                 String http = null;
-                if (!g.matches(Patterns.PROTOCOL)) {
+
+                String ucs = "";
+                String rg = UCS_REGEX_BEGIN.matcher(g).replaceAll("$2");
+                if (g.length() > rg.length()) {
+                    ucs = g.substring(0, g.length() - rg.length());
+                    g = rg;
+                    s = s + ucs.length();
+                }
+                
+                rg = UCS_REGEX_END.matcher(g).replaceAll("$1");
+                if (g.length() > rg.length()) {
+                    ucs = g.substring(rg.length());
+                    g = rg;
+                    e = e - ucs.length();
+                }
+                
+                if (!PROTOCOL.matcher(g).find()) {
                     boolean f = g.startsWith("www.") || g.endsWith(".com")
                             || g.endsWith(".cn");
                     if (!f) {
@@ -182,26 +198,19 @@ public class IMUtils {
                         continue;
                     }
                 }
-                String rg = UCS_REGEX.matcher(g).replaceAll("$1");
-                String ucs = "";
-                if (g.length() > rg.length()) {
-                    ucs = g.substring(rg.length());
-                    g = rg;
-                    e = e - ucs.length();
-                }
-                sb.delete(pos, offset + e);
+                sb.delete(offset + s, offset + e);
                 String link = http == null ? g : http + g;
                 String ng = g;
                 if (IMG_EXTS.indexOf(
                         FileUtils.getExtension(g).toLowerCase()) >= 0) {
                     ng = String.format(
                             "<a href=\"%s\"><img src=\"%s\" alt=\"%s\" border=\"0\"/></a>",
-                            link, link, g);
+                            link, link, "无法预览，请尝试点击");
                 }
                 else {
                     ng = String.format("<a href=\"%s\">%s</a>", link, g);
                 }
-                sb.insert(pos, ng);
+                sb.insert(offset + s, ng);
                 offset += ng.length() - g.length();
             }
             return sb.toString();
@@ -227,6 +236,9 @@ public class IMUtils {
             + "\uDAC0\uDC00-\uDAFF\uDFFD" + "\uDB00\uDC00-\uDB3F\uDFFD"
             + "\uDB44\uDC00-\uDB7F\uDFFD"
             + "&&[^\u00A0[\u2000-\u200A]\u2028\u2029\u202F\u3000]]";
-    public static final Pattern UCS_REGEX = Pattern
+    public static final Pattern UCS_REGEX_END = Pattern
             .compile("(.+?)(" + UCS_CHAR + "+$)");
+    public static final Pattern UCS_REGEX_BEGIN = Pattern
+            .compile("^(" + UCS_CHAR + "+)" + "(.+?)");
+    public static final Pattern PROTOCOL = Pattern.compile(Patterns.PROTOCOL);
 }

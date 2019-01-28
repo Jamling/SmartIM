@@ -15,6 +15,7 @@ import io.github.biezhi.wechat.api.WechatClient;
 public class WechatPanel extends IMPanel {
     public WechatPanel() {
         super();
+        loadWelcome("wechat");
     }
 
     @Override

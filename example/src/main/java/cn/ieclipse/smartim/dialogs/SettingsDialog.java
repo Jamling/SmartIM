@@ -28,6 +28,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
     public static void main(String[] args) {
         try {
             SettingsDialog dialog = new SettingsDialog();
+            dialog.setTitle("设置");
             dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
             dialog.setLocationRelativeTo(null);
             dialog.setVisible(true);
@@ -40,7 +41,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
      * Create the dialog.
      */
     public SettingsDialog() {
-        setSize(500, 350);
+        setSize(500, 450);
         getContentPane().setLayout(new BorderLayout());
         {
             JPanel buttonPane = new JPanel();
@@ -67,7 +68,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
                 {
                     generalPanel = new GeneralPanel(settings);
                     JScrollPane scrollPane = new JScrollPane(generalPanel);
-                    tabbedPane.addTab("常用", null, scrollPane, null);
+                    tabbedPane.addTab("常规", null, scrollPane, null);
                     
                     robotPanel = new RobotPanel(settings);
                     scrollPane = new JScrollPane(robotPanel);
