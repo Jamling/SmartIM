@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cn.ieclipse.smartim.helper;
+package cn.ieclipse.util;
 
 import java.util.ArrayList;
 import java.util.Collection;
