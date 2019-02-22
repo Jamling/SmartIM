@@ -22,14 +22,14 @@ public class WXUtilsTest {
     @Test
     public void testGetContactChar() {
         Contact contact = new Contact();
-        
+        contact.UserName = "@J";
         char c = WXUtils.getContactChar(contact);
         assertEquals(c, 'F');
     }
     
     @Test
     public void testDecodeEmoji() {
-        fail("Not yet implemented");
+        // TODO
     }
     
     @Test

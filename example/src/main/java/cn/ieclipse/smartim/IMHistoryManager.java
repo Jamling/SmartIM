@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import cn.ieclipse.smartim.helper.FileStorage;
+import cn.ieclipse.util.FileStorage;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 
 /**

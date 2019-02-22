@@ -145,6 +145,7 @@ public class WXUtils {
             AbstractFrom from) {
         String name = from.isOut() ? from.getTarget().getName()
                 : from.getName();
+        name = WXUtils.getPureName(name);
         String msg = null;
         String text = m.getText() == null ? "" : m.getText().toString();
         boolean my = from.isOut() ? true : false;

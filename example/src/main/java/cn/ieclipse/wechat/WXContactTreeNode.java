@@ -25,6 +25,14 @@ public class WXContactTreeNode extends ContactTreeNode {
     }
     
     @Override
+    public String toString() {
+        if (userObject instanceof Contact) {
+            return WXUtils.getPureName(((Contact) userObject).getName());
+        }
+        return super.toString();
+    }
+    
+    @Override
     public void update() {
         WechatClient client = (WechatClient) imPanel.getClient();
         WXContactTreeNode root = (WXContactTreeNode) getRoot();
@@ -36,8 +44,7 @@ public class WXContactTreeNode extends ContactTreeNode {
                     Collections.sort(list);
                 }
                 for (Contact target : list) {
-                    WXContactTreeNode cn = new WXContactTreeNode(
-                            target);
+                    WXContactTreeNode cn = new WXContactTreeNode(target);
                     root.add(cn);
                 }
             }
@@ -53,8 +60,7 @@ public class WXContactTreeNode extends ContactTreeNode {
                     root.add(cn);
                     if (c.list != null) {
                         for (Contact f : c.list) {
-                            WXContactTreeNode fn = new WXContactTreeNode(
-                                    f);
+                            WXContactTreeNode fn = new WXContactTreeNode(f);
                             cn.add(fn);
                         }
                     }

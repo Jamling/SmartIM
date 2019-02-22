@@ -25,6 +25,7 @@ import cn.ieclipse.smartim.console.ClosableTabHost;
 import cn.ieclipse.smartim.console.IMChatConsole;
 import cn.ieclipse.smartim.console.MockChatConsole;
 import cn.ieclipse.smartim.model.IContact;
+import cn.ieclipse.util.StringUtils;
 
 /**
  * Created by Jamling on 2017/7/11.
@@ -90,7 +91,7 @@ public abstract class IMPanel extends JSplitPane
     
     public abstract IMChatConsole createConsoleUI(IContact contact);
     
-    private Map<String, IMChatConsole> consoles = new HashMap<>();
+    protected Map<String, IMChatConsole> consoles = new HashMap<>();
     
     public IMChatConsole findConsole(IContact contact, boolean add) {
         return consoles.get(contact.getUin());
@@ -163,8 +164,11 @@ public abstract class IMPanel extends JSplitPane
         IMChatConsole console = findConsoleById(contact.getUin(), true);
         if (console == null) {
             console = createConsoleUI(contact);
-            console.setName(contact.getName());
-            tabbedChat.addTab(contact.getName(), console);
+            if (StringUtils.isEmpty(console.getName())) {
+                // TODO set name in console
+                console.setName(contact.getName());
+            }
+            tabbedChat.addTab(console.getName(), console);
             consoles.put(console.getUin(), console);
             tabbedChat.setSelectedComponent(console);
         }

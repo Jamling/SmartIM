@@ -54,7 +54,7 @@ public class SmartIMSettings {
             this.myState = new State();
         }
         if (this.myState.KEY_SEND == null) {
-            this.myState.KEY_SEND = "Ctrl + Enter";
+            this.myState.KEY_SEND = "Enter";
         }
     }
     
@@ -80,7 +80,7 @@ public class SmartIMSettings {
     
     public static class State implements java.io.Serializable {
         private static final long serialVersionUID = -5719423461653118971L;
-        public String KEY_SEND = "Ctrl + Enter";
+        public String KEY_SEND = "Enter";
         public boolean SHOW_SEND = false;
         public boolean NOTIFY_MSG = true;
         public boolean NOTIFY_FRIEND_MSG = true;
