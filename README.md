@@ -26,8 +26,8 @@
 ## 应用
 
 - [SmartIM example](https://jamling.github.com/jws): SmartIM的Swing客户端，支持SmartQQ、微信聊天
-- [SmartQQ4Eclipse](https://github.com/Jamling/SmartQQ4Eclipse): SmartIM的eclipse插件，可以在eclipse中使用QQ、微信进行聊天并且相互交流代码问题
-- [SmartQQ4IntelliJ](https://github.com/Jamling/SmartQQ4IntelliJ): SmartIM的Idea插件，功能上要比eclipse少
+- [SmartIM4Eclipse](https://github.com/Jamling/SmartIM4Eclipse): SmartIM的eclipse插件，可以在eclipse中使用QQ、微信进行聊天并且相互交流代码问题
+- [SmartIM4IntelliJ](https://github.com/Jamling/SmartIM4IntelliJ): SmartIM的Idea插件，功能上要比eclipse少
 
 ## Example运行
 
