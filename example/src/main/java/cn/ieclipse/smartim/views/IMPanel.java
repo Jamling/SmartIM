@@ -73,7 +73,7 @@ public abstract class IMPanel extends JSplitPane
         toolBar.add(new DisconnectAction(this));
         toolBar.add(new SettingsAction(this));
         MockConsoleAction test = new MockConsoleAction(this);
-        toolBar.add(test);
+        //toolBar.add(test);
     }
     
     public boolean isLeftHidden() {

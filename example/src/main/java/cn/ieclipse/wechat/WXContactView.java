@@ -3,6 +3,7 @@ package cn.ieclipse.wechat;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.tree.TreeCellRenderer;
 
 import cn.ieclipse.smartim.IMSendCallback;
 import cn.ieclipse.smartim.common.LOG;
@@ -31,10 +32,10 @@ public class WXContactView extends IMContactView {
     public WXContactView(WechatPanel imPanel) {
         super(imPanel);
         
-        recentTree = new JTree();
-        friendTree = new JTree();
-        groupTree = new JTree();
-        discussTree = new JTree();
+        recentTree = new WXContactTree();
+        friendTree = new WXContactTree();
+        groupTree = new WXContactTree();
+        discussTree = new WXContactTree();
         
         JScrollPane scrollPane1 = new JScrollPane(recentTree);
         tabHost.addTab("最近", null, scrollPane1, null);
@@ -90,6 +91,10 @@ public class WXContactView extends IMContactView {
         super.initTree(tree);
     }
     
+    @Override
+    protected TreeCellRenderer getContactRenderer() {
+        return new WXContactTreeCellRenderer();
+    }
     @Override
     protected WechatClient getClient() {
         return getImPanel().getClient();

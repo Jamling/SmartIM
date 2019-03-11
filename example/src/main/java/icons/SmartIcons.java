@@ -47,6 +47,8 @@ public class SmartIcons {
     public static Icon group = IconLoader.getIcon("/icons/user-circle.png");
     public static Icon friend = IconLoader.getIcon("/icons/user.png");
     public static Icon discuss = IconLoader.getIcon("/icons/user-o.png");
+    public static Icon subscriber = IconLoader.getIcon("/icons/subscriber.png");
+    public static Icon app3rd = IconLoader.getIcon("/icons/app.png");
     
     public static Icon file = IconLoader.getIcon("/icons/File.png");
     public static Icon image = IconLoader.getIcon("/icons/image.png");

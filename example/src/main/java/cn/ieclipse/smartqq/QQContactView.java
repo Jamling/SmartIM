@@ -3,6 +3,7 @@ package cn.ieclipse.smartqq;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTree;
+import javax.swing.tree.TreeCellRenderer;
 
 import com.scienjus.smartqq.client.SmartQQClient;
 
@@ -83,6 +84,11 @@ public class QQContactView extends IMContactView {
         friendTree.setModel(friendModel);
         groupTree.setModel(groupModel);
         discussTree.setModel(discussModel);
+    }
+    
+    @Override
+    protected TreeCellRenderer getContactRenderer() {
+        return new QQContactTreeCellRenderer();
     }
     
     @Override

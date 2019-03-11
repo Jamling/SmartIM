@@ -6,6 +6,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
+import javax.swing.tree.TreeCellRenderer;
 
 import cn.ieclipse.smartim.SmartClient;
 import cn.ieclipse.smartim.callback.ModificationCallback;
@@ -53,7 +54,7 @@ public abstract class IMContactView extends JPanel {
     }
     
     protected void initTree(JTree tree) {
-        // tree.setCellRenderer(new ContactTreeCellRenderer());
+        tree.setCellRenderer(new ContactTreeCellRenderer());
         tree.setShowsRootHandles(false);
         tree.setRootVisible(false);
         tree.addMouseListener(new IMContactDoubleClicker(getImPanel()));
@@ -80,6 +81,10 @@ public abstract class IMContactView extends JPanel {
     protected abstract void doLoadContacts();
     
     protected abstract void onLoadContacts(boolean success);
+    
+    protected TreeCellRenderer getContactRenderer() {
+        return new ContactTreeCellRenderer();
+    }
     
     protected void notifyLoadContacts(final boolean success) {
         SwingUtilities.invokeLater(new Runnable() {

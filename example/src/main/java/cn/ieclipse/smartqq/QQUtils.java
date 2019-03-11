@@ -61,5 +61,6 @@ public class QQUtils {
                 "1毛9[\"face\",0] [\"face\",71] 哈哈");
         System.out.println(src);
         System.out.println(decodeEmoji(src));
+        System.out.println(IMUtils.formatHtmlMsg(System.currentTimeMillis(), "Me", "来自SmartQQ的文件: 1536299092(1).png (大小7K), 点击链接 http://temp.ieclipse.cn/157250921/1536299092.png 查看"));
     }
 }
