@@ -252,10 +252,10 @@ public class WechatApi {
         if (Utils.isBlank(body)) {
             throw new LogicException(-1, "登录失败");
         }
-        String error = Utils.match("<error>(\\S+)</error>", body);
+        String error = Utils.match("<error>([\\S ]+)</error>", body);
         if (!StringUtils.isEmpty(error)) {
-            String code = Utils.match("<ret>(\\S+)</ret>", error);
-            String msg = Utils.match("<message>(\\S+)</message>", error);
+            String code = Utils.match("<ret>([\\S ]+)</ret>", error);
+            String msg = Utils.match("<message>([\\S ]+)</message>", error);
             if (!"0".equals(code) && msg != null) {
                 throw new LogicException(Integer.parseInt(code), msg);
             }
