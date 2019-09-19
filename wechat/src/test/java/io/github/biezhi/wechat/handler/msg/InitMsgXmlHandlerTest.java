@@ -9,6 +9,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import cn.ieclipse.util.FileUtils;
 import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.model.WechatMessage;
 
@@ -16,7 +17,7 @@ public class InitMsgXmlHandlerTest {
     InitMsgXmlHandler handler;
     
     WechatMessage from(String file) {
-        String content = StringUtils.file2string(getClass(), file);
+        String content = FileUtils.readString(getClass().getResourceAsStream(file), null);
         WechatMessage m = new WechatMessage();
         m.Content = content;
         return m;

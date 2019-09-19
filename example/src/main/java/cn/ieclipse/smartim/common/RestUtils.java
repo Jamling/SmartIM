@@ -84,7 +84,7 @@ public class RestUtils {
                                         msg, "更新",
                                         JOptionPane.OK_CANCEL_OPTION);
                                 if (ret == JOptionPane.OK_OPTION) {
-                                    cn.ieclipse.util.BareBonesBrowserLaunch
+                                    cn.ieclipse.common.BareBonesBrowserLaunch
                                             .openURL(info.link);
                                 }
                             };

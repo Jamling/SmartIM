@@ -12,7 +12,7 @@ import java.util.regex.Pattern;
 import org.junit.Before;
 import org.junit.Test;
 
-import cn.ieclipse.util.Patterns;
+import cn.ieclipse.common.Patterns;
 
 public class IMUtilsTest {
     String regex = "(https?|ftp|file)://(([\\w-~]+)\\.)+([\\w-~\\/])+(((?!\\.)(\\S))+(\\.\\w+(\\?(\\w+=\\S&?)*)?)?)?";

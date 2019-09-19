@@ -20,6 +20,7 @@ import java.io.File;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import cn.ieclipse.util.EncodeUtils;
 import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.model.WechatMessage;
 import io.github.biezhi.wechat.model.xml.AppMsgInfo;
@@ -86,7 +87,7 @@ public class AppMsgXmlHandler extends AbstractMsgXmlHandler {
             info.showType = StringUtils.getInt(showType, 0);
             info.url = node.elementTextTrim("url");
             if (info.url != null) {
-                info.url = StringUtils.decodeXml(info.url);
+                info.url = EncodeUtils.decodeXml(info.url);
             }
             
             node = root.element("appinfo");

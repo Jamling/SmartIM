@@ -21,6 +21,7 @@ import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
 
+import cn.ieclipse.util.EncodeUtils;
 import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.api.WechatClient;
 import io.github.biezhi.wechat.model.WechatMessage;
@@ -55,7 +56,7 @@ public class AbstractMsgXmlHandler {
     
     public AbstractMsgXmlHandler(WechatMessage message) {
         this.message = message;
-        String content = isUnescape() ? StringUtils.decodeXml(message.Content)
+        String content = isUnescape() ? EncodeUtils.decodeXml(message.Content)
                 : message.Content;
         if (isParseXmlContent() && !"该类型暂不支持，请在手机上查看".equals(content)) {
             String regex = String.format(".*(<%s>.*</%s>).*", rootTag, rootTag);

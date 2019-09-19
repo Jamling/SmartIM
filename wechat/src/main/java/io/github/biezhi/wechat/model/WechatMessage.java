@@ -6,6 +6,7 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
+import cn.ieclipse.util.EncodeUtils;
 import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.api.WechatClient;
 import io.github.biezhi.wechat.handler.msg.AppMsgXmlHandler;
@@ -133,7 +134,7 @@ public class WechatMessage extends AbstractMessage {
             text = "视频邀请消息（请在手机上查看）";
         }
         else {
-            String temp = StringUtils.decodeXml(Content);
+            String temp = EncodeUtils.decodeXml(Content);
             text = temp;
         }
     }

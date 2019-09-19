@@ -41,8 +41,9 @@ import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.smartim.views.IMPanel;
-import cn.ieclipse.util.BareBonesBrowserLaunch;
+import cn.ieclipse.common.BareBonesBrowserLaunch;
 import cn.ieclipse.util.EncodeUtils;
+import cn.ieclipse.util.EncryptUtils;
 import cn.ieclipse.util.StringUtils;
 
 /**
@@ -84,7 +85,7 @@ public abstract class IMChatConsole extends JPanel {
     }
     
     public String getHistoryFile() {
-        return EncodeUtils.getMd5(contact.getName());
+        return EncryptUtils.encryptMd5(contact.getName());
     }
     
     public String getUin() {
@@ -186,7 +187,7 @@ public abstract class IMChatConsole extends JPanel {
     
     }
     protected String encodeInput(String input) {
-        return StringUtils.encodeXml(input);
+        return EncodeUtils.encodeXml(input);
     }
     // 组装成我输入的历史记录，并显示在聊天窗口中
     protected String formatInput(String name, String msg) {

@@ -26,6 +26,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 
 import cn.ieclipse.smartim.exception.LogicException;
+import cn.ieclipse.util.EncodeUtils;
 import cn.ieclipse.util.FileUtils;
 import cn.ieclipse.util.StringUtils;
 import io.github.biezhi.wechat.Utils;
@@ -725,7 +726,7 @@ public class WechatApi {
     private String doGet(boolean enableLog, String url, String cookie,
             Map<String, Object> params) throws Exception {
         String query = params == null ? null
-                : StringUtils.getMapBody(params, null, true);
+                : EncodeUtils.encodeRequestBody(params, null, true);
         if (!StringUtils.isEmpty(query)) {
             if (url.contains("=")) {
                 url = url + "&" + query;
@@ -782,7 +783,7 @@ public class WechatApi {
     private String doDown(boolean enableLog, String url, String cookie,
             File file, Map<String, Object> params) throws Exception {
         String query = params == null ? null
-                : StringUtils.getMapBody(params, null, true);
+                : EncodeUtils.encodeRequestBody(params, null, true);
         if (!StringUtils.isEmpty(query)) {
             if (url.contains("=")) {
                 url = url + "&" + query;
@@ -816,7 +817,7 @@ public class WechatApi {
             }
             is.close();
             fos.close();
-            return StringUtils.file2url(file.getAbsolutePath());
+            return FileUtils.toUrl(file.getAbsolutePath());
         }
         return null;
     }

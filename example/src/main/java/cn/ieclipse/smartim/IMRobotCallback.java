@@ -20,6 +20,7 @@ import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.robot.TuringRobot;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.util.EncodeUtils;
+import cn.ieclipse.util.EncryptUtils;
 
 /**
  * 类/接口描述
@@ -49,7 +50,7 @@ public abstract class IMRobotCallback
      * @return 加密后的md5字串
      */
     public static String encodeUid(String id) {
-        return EncodeUtils.getMd5(id);
+        return EncryptUtils.encryptMd5(id);
     }
     
     public static String getTuringApiKey() {

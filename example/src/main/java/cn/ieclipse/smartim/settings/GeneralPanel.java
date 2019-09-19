@@ -22,6 +22,7 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.plaf.basic.BasicComboBoxRenderer;
 
+import cn.ieclipse.common.BareBonesBrowserLaunch;
 import cn.ieclipse.smartim.IMClientFactory;
 import cn.ieclipse.smartim.common.RestUtils;
 import cn.ieclipse.smartim.common.SwingUtils;
@@ -288,7 +289,7 @@ public class GeneralPanel extends JPanel {
         linkAbout.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                cn.ieclipse.util.BareBonesBrowserLaunch.openURL(RestUtils.about_url);
+                BareBonesBrowserLaunch.openURL(RestUtils.about_url);
             }
         });
     }

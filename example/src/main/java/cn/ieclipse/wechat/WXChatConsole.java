@@ -106,7 +106,7 @@ public class WXChatConsole extends IMChatConsole {
             return;
         }
         
-        String link = StringUtils.file2url(file);
+        String link = FileUtils.toUrl(file);
         String label = file.replace('\\', '/');
         String input = null;
         if (type == WechatMessage.MSGTYPE_EMOTICON
