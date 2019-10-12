@@ -12,32 +12,29 @@ import javax.swing.tree.TreePath;
  */
 public class IMContactDoubleClicker extends MouseAdapter {
     protected IMPanel imPanel;
-    
+
     public IMContactDoubleClicker(IMPanel imPanel) {
         this.imPanel = imPanel;
     }
-    
+
     @Override
     public void mouseClicked(MouseEvent e) {
         super.mouseClicked(e);
-        JTree tree = (JTree) e.getSource();
+        JTree tree = (JTree)e.getSource();
         int selRow = tree.getRowForLocation(e.getX(), e.getY());
         TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
         if (selRow != -1 && selPath != null) {
-            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode) selPath
-                    .getLastPathComponent();
+            DefaultMutableTreeNode selectedNode = (DefaultMutableTreeNode)selPath.getLastPathComponent();
             if (selectedNode.getChildCount() > 0) {
                 if (tree.isExpanded(selPath)) {
                     tree.collapsePath(selPath);
-                }
-                else {
+                } else {
                     tree.expandPath(selPath);
                 }
                 return;
             }
             if (imPanel != null && e.getClickCount() == 2) {
-                imPanel.onDoubleClick(((DefaultMutableTreeNode) selectedNode)
-                        .getUserObject());
+                imPanel.onDoubleClick(((DefaultMutableTreeNode)selectedNode).getUserObject());
             }
         }
     }

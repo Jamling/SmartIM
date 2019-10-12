@@ -19,23 +19,23 @@ public class WXContactTreeNode extends ContactTreeNode {
     public WXContactTreeNode(Object userObject) {
         super(userObject);
     }
-    
+
     public WXContactTreeNode(boolean check, String name, IMPanel imPanel) {
         super(check, name, imPanel);
     }
-    
+
     @Override
     public String toString() {
         if (userObject instanceof Contact) {
-            return WXUtils.getPureName(((Contact) userObject).getName());
+            return WXUtils.getPureName(((Contact)userObject).getName());
         }
         return super.toString();
     }
-    
+
     @Override
     public void update() {
-        WechatClient client = (WechatClient) imPanel.getClient();
-        WXContactTreeNode root = (WXContactTreeNode) getRoot();
+        WechatClient client = (WechatClient)imPanel.getClient();
+        WXContactTreeNode root = (WXContactTreeNode)getRoot();
         root.removeAllChildren();
         if ("recent".equals(name)) {
             List<Contact> list = client.getRecentList();
@@ -48,13 +48,10 @@ public class WXContactTreeNode extends ContactTreeNode {
                     root.add(cn);
                 }
             }
-        }
-        else if ("friend".equals(name)) {
-            List<VirtualCategory<Contact>> categories = getContactGroup(
-                    client.getMemberList());
+        } else if ("friend".equals(name)) {
+            List<VirtualCategory<Contact>> categories = getContactGroup(client.getMemberList());
             if (categories != null) {
-                categories.add(0,
-                        new VirtualCategory<>("groups", client.getGroupList()));
+                categories.add(0, new VirtualCategory<>("groups", client.getGroupList()));
                 for (VirtualCategory<Contact> c : categories) {
                     WXContactTreeNode cn = new WXContactTreeNode(c);
                     root.add(cn);
@@ -66,8 +63,7 @@ public class WXContactTreeNode extends ContactTreeNode {
                     }
                 }
             }
-        }
-        else if ("group".equals(name)) {
+        } else if ("group".equals(name)) {
             List<Contact> list = client.getGroupList();
             if (list != null) {
                 for (Contact r : list) {
@@ -75,8 +71,7 @@ public class WXContactTreeNode extends ContactTreeNode {
                     root.add(cn);
                 }
             }
-        }
-        else if ("public".equals(name)) {
+        } else if ("public".equals(name)) {
             List<Contact> list = client.getPublicUsersList();
             if (list != null) {
                 for (Contact r : list) {
@@ -86,7 +81,7 @@ public class WXContactTreeNode extends ContactTreeNode {
             }
         }
     }
-    
+
     public List<VirtualCategory<Contact>> getContactGroup(List<Contact> list) {
         List<VirtualCategory<Contact>> cates = new ArrayList<>();
         if (!IMUtils.isEmpty(list)) {
@@ -103,8 +98,7 @@ public class WXContactTreeNode extends ContactTreeNode {
                         maps.put(a, values);
                     }
                     values.add(c);
-                }
-                else {
+                } else {
                     unA.add(c);
                 }
             }

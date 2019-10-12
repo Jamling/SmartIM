@@ -18,13 +18,14 @@ public class ChatHistoryPane extends JPanel {
         scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
         add(scrollPane);
     }
+
     private JPanel panel;
     private JEditorPane editorPane;
-    
+
     public JEditorPane getEditorPane() {
         return editorPane;
     }
-    
+
     public JPanel getPanel() {
         return this;
     }

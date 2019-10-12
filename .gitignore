@@ -5,3 +5,5 @@ logs
 smartqq.jpg
 wechat.jpg
 .DS_Store
+.gradle/
+build/

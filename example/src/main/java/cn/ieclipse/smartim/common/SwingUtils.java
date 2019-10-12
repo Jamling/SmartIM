@@ -1,17 +1,14 @@
 /*
  * Copyright 2014-2018 ieclipse.cn.
  *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with
+ * the License. You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ * http://www.apache.org/licenses/LICENSE-2.0
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on
+ * an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the
+ * specific language governing permissions and limitations under the License.
  */
 package cn.ieclipse.smartim.common;
 
@@ -27,7 +24,7 @@ import cn.ieclipse.smartim.settings.SmartIMSettings;
  * 
  * @author Jamling
  * @date 2018年4月12日
- *       
+ * 
  */
 public class SwingUtils {
     public static boolean setLookAndFeel(String name, boolean className) {
@@ -35,15 +32,15 @@ public class SwingUtils {
         if (infos != null) {
             for (int i = 0; i < infos.length; i++) {
                 LookAndFeelInfo info = infos[i];
-                boolean f = (!className && info.getName().equals(name))
-                        || (className && info.getClassName().equals(name));
+                boolean f =
+                    (!className && info.getName().equals(name)) || (className && info.getClassName().equals(name));
                 if (f) {
                     try {
                         UIManager.setLookAndFeel(info.getClassName());
                         SmartIMSettings.getInstance().getState().THEME = i;
                         return true;
                     } catch (Exception e) {
-                    
+
                     }
                 }
                 // System.out.println(info);
@@ -51,7 +48,7 @@ public class SwingUtils {
         }
         return false;
     }
-    
+
     public static boolean setLookAndFeel(int theme) {
         if (theme > 0) {
             LookAndFeelInfo[] infos = UIManager.getInstalledLookAndFeels();
@@ -60,13 +57,13 @@ public class SwingUtils {
                     UIManager.setLookAndFeel(infos[theme].getClassName());
                     return true;
                 } catch (Exception e) {
-                
+
                 }
             }
         }
         return false;
     }
-    
+
     public static void initOSLookAndFeel() {
         // String os = System.getProperty("os.name").toLowerCase();
         // if (os.indexOf("windows") >= 0) {
@@ -83,14 +80,14 @@ public class SwingUtils {
             setLookAndFeel(UIManager.getSystemLookAndFeelClassName(), true);
         }
     }
-    
+
     public static void initLookAndFeel() {
         int theme = SmartIMSettings.getInstance().getState().THEME;
         if (!setLookAndFeel(theme)) {
             initOSLookAndFeel();
         }
     }
-    
+
     public static String key2string(KeyEvent e) {
         String key = "";
         if (e.getKeyCode() == KeyEvent.VK_ENTER) {

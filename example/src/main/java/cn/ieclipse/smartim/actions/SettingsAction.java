@@ -11,12 +11,12 @@ import icons.SmartIcons;
  * Created by Jamling on 2017/7/12.
  */
 public class SettingsAction extends IMPanelAction {
-    
+
     public SettingsAction(IMPanel panel) {
         super(panel, SmartIcons.settings);
         setToolTipText("设置");
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent anActionEvent) {
         SettingsDialog.main(null);

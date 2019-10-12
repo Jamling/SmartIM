@@ -18,7 +18,7 @@ public class QQContactTreeCellRenderer extends ContactTreeCellRenderer {
     @Override
     public Icon getDisplayIcon(Object obj) {
         if (obj instanceof Recent) {
-            Recent r = (Recent) obj;
+            Recent r = (Recent)obj;
             if (r.getType() == 0) {
                 return SmartIcons.friend;
             } else if (r.getType() == 1) {
@@ -37,7 +37,7 @@ public class QQContactTreeCellRenderer extends ContactTreeCellRenderer {
     @Override
     public String getDisplayName(Object obj) {
         if (obj != null && obj instanceof Contact) {
-            return WXUtils.getPureName(((Contact) obj).getName());
+            return WXUtils.getPureName(((Contact)obj).getName());
         }
         return super.getDisplayName(obj);
     }

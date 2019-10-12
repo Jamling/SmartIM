@@ -15,7 +15,7 @@ public class MockChatConsole extends IMChatConsole {
     public MockChatConsole(IContact target, IMPanel imPanel) {
         super(target, imPanel);
     }
-    
+
     @Override
     public void loadHistory(String raw) {
         if (IMUtils.isMySendMsg(raw)) {
@@ -23,23 +23,22 @@ public class MockChatConsole extends IMChatConsole {
             return;
         }
     }
-    
+
     @Override
     public void post(String msg) {
-    
+
     }
-    
+
     @Override
     public SmartClient getClient() {
         return null;
     }
-    
+
     @Override
     public void loadHistories() {
-        List<String> ms = IMHistoryManager.getInstance().load(getHistoryDir(),
-                getHistoryFile());
+        List<String> ms = IMHistoryManager.getInstance().load(getHistoryDir(), getHistoryFile());
         int size = ms.size();
-        for (int i=0; i < size; i++) {
+        for (int i = 0; i < size; i++) {
             String raw = ms.get(i);
             if (!IMUtils.isEmpty(raw)) {
                 try {
@@ -50,7 +49,7 @@ public class MockChatConsole extends IMChatConsole {
             }
         }
     }
-    
+
     @Override
     public void send(String input) {
         String name = "我";
@@ -58,12 +57,11 @@ public class MockChatConsole extends IMChatConsole {
         System.out.println(msg);
         if (!hideMyInput()) {
             insertDocument(msg);
-            IMHistoryManager.getInstance().save(getHistoryDir(),
-                    getHistoryFile(), msg);
+            IMHistoryManager.getInstance().save(getHistoryDir(), getHistoryFile(), msg);
         }
     }
-    
+
     public void initMockMsg() {
-    
+
     }
 }

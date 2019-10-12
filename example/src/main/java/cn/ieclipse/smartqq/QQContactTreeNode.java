@@ -17,18 +17,18 @@ import cn.ieclipse.smartim.views.IMPanel;
  * Created by Jamling on 2017/11/1.
  */
 public class QQContactTreeNode extends ContactTreeNode {
-    
+
     public QQContactTreeNode(Object userObject) {
         super(userObject);
     }
-    
+
     public QQContactTreeNode(boolean check, String name, IMPanel imPanel) {
         super(check, name, imPanel);
     }
-    
+
     public void update() {
-        SmartQQClient client = (SmartQQClient) imPanel.getClient();
-        QQContactTreeNode root = (QQContactTreeNode) getRoot();
+        SmartQQClient client = (SmartQQClient)imPanel.getClient();
+        QQContactTreeNode root = (QQContactTreeNode)getRoot();
         root.removeAllChildren();
         if ("recent".equals(name)) {
             List<QQContact> list = client.getRecents2();
@@ -41,8 +41,7 @@ public class QQContactTreeNode extends ContactTreeNode {
                     root.add(cn);
                 }
             }
-        }
-        else if ("friend".equals(name)) {
+        } else if ("friend".equals(name)) {
             List<Category> categories = client.getFriendListWithCategory();
             if (categories != null) {
                 for (Category c : categories) {
@@ -54,8 +53,7 @@ public class QQContactTreeNode extends ContactTreeNode {
                     }
                 }
             }
-        }
-        else if ("group".equals(name)) {
+        } else if ("group".equals(name)) {
             List<Group> list = client.getGroupList();
             if (list != null) {
                 for (Group r : list) {
@@ -63,8 +61,7 @@ public class QQContactTreeNode extends ContactTreeNode {
                     root.add(cn);
                 }
             }
-        }
-        else if ("discuss".equals(name)) {
+        } else if ("discuss".equals(name)) {
             List<Discuss> list = client.getDiscussList();
             if (list != null) {
                 for (Discuss r : list) {

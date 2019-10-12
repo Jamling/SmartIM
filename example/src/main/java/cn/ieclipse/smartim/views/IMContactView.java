@@ -17,34 +17,32 @@ import cn.ieclipse.smartim.callback.SendCallback;
  * Created by Jamling on 2017/7/11.
  */
 public abstract class IMContactView extends JPanel {
-    
+
     protected IMPanel imPanel;
     protected JTabbedPane tabHost;
-    
+
     protected ReceiveCallback receiveCallback;
     protected SendCallback sendCallback;
     protected ReceiveCallback robotCallback;
     protected ModificationCallback modificationCallback;
-    
+
     public IMContactView(IMPanel imPanel) {
         this.imPanel = imPanel;
         setLayout(new BorderLayout(0, 0));
-        
 
-        
         tabHost = new JTabbedPane(JTabbedPane.TOP);
         add(tabHost, BorderLayout.CENTER);
-        
-//        JScrollPane scrollPane = new JScrollPane();
-//        tabHost.addTab("New tab", null, scrollPane, null);
+
+        // JScrollPane scrollPane = new JScrollPane();
+        // tabHost.addTab("New tab", null, scrollPane, null);
     }
-    
+
     public abstract JPanel getPanel();
-    
+
     public IMPanel getImPanel() {
         return imPanel;
     }
-    
+
     protected void initTrees(JTree... trees) {
         for (JTree tree : trees) {
             if (tree != null) {
@@ -52,14 +50,14 @@ public abstract class IMContactView extends JPanel {
             }
         }
     }
-    
+
     protected void initTree(JTree tree) {
         tree.setCellRenderer(new ContactTreeCellRenderer());
         tree.setShowsRootHandles(false);
         tree.setRootVisible(false);
         tree.addMouseListener(new IMContactDoubleClicker(getImPanel()));
     }
-    
+
     public void updateTrees(JTree... trees) {
         for (JTree tree : trees) {
             if (tree != null) {
@@ -67,7 +65,7 @@ public abstract class IMContactView extends JPanel {
             }
         }
     }
-    
+
     public void initContacts() {
         new Thread() {
             public void run() {
@@ -75,17 +73,17 @@ public abstract class IMContactView extends JPanel {
             }
         }.start();
     }
-    
+
     protected abstract SmartClient getClient();
-    
+
     protected abstract void doLoadContacts();
-    
+
     protected abstract void onLoadContacts(boolean success);
-    
+
     protected TreeCellRenderer getContactRenderer() {
         return new ContactTreeCellRenderer();
     }
-    
+
     protected void notifyLoadContacts(final boolean success) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -94,7 +92,7 @@ public abstract class IMContactView extends JPanel {
             }
         });
     }
-    
+
     public void notifyUpdateContacts(final int index, boolean force) {
         boolean notify = true;
         if (notify || force) {
@@ -106,8 +104,8 @@ public abstract class IMContactView extends JPanel {
             });
         }
     }
-    
+
     protected void doUpdateContacts(final int index) {
-    
+
     }
 }

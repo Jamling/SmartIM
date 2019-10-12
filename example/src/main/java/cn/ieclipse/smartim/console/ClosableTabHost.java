@@ -31,12 +31,12 @@ import javax.swing.plaf.basic.BasicButtonUI;
 public class ClosableTabHost extends JTabbedPane implements ChangeListener {
     private Insets insets = new Insets(0, 0, 0, 0);
     private Callback callback;
-    
+
     public ClosableTabHost() {
         super(JTabbedPane.TOP);
         addChangeListener(this);
     }
-    
+
     public ClosableTabHost(Callback callback) {
         this();
         setCallback(callback);
@@ -45,12 +45,12 @@ public class ClosableTabHost extends JTabbedPane implements ChangeListener {
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
-    
+
     @Override
     public Border getBorder() {
         return BorderFactory.createEmptyBorder();
     }
-    
+
     @Override
     public void stateChanged(ChangeEvent e) {
         int index = getSelectedIndex();
@@ -58,14 +58,13 @@ public class ClosableTabHost extends JTabbedPane implements ChangeListener {
             setBackgroundAt(index, null);
         }
     }
-    
+
     @Override
-    public void insertTab(String title, Icon icon, Component component,
-            String tip, int index) {
+    public void insertTab(String title, Icon icon, Component component, String tip, int index) {
         super.insertTab(title, icon, component, tip, index);
         setTabComponentAt(index, createTab(title));
     }
-    
+
     public Component createTab(String text) {
         JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
         JLabel label = new JLabel(text);
@@ -77,37 +76,35 @@ public class ClosableTabHost extends JTabbedPane implements ChangeListener {
         panel.setOpaque(false);
         return panel;
     }
-    
+
     public void bling(final int index, String name) {
-        if (index >= 0 && index < getTabCount()
-                && index != getSelectedIndex()) {
+        if (index >= 0 && index < getTabCount() && index != getSelectedIndex()) {
             Component tab = getTabComponentAt(index);
             if (tab != null) {
                 SwingUtilities.invokeLater(new Runnable() {
                     @Override
                     public void run() {
-                        setBackgroundAt(index,
-                                UIManager.getColor("TabbedPane.selected"));
+                        setBackgroundAt(index, UIManager.getColor("TabbedPane.selected"));
                     }
                 });
                 new BlingTimer(tab, name).start();
             }
         }
     }
-    
+
     private class BlingTimer extends Timer implements ActionListener {
         Component component;
         JLabel label;
         String src;
         Dimension d;
         int count = 4;
-        
+
         public BlingTimer(Component tab, String name) {
             super(300, null);
             addActionListener(this);
             component = tab;
             if (component != null && component instanceof JPanel) {
-                label = (JLabel) ((JPanel) component).getComponent(0);
+                label = (JLabel)((JPanel)component).getComponent(0);
                 src = label.getText();
                 if (src == null || src.isEmpty()) {
                     src = name;
@@ -116,7 +113,7 @@ public class ClosableTabHost extends JTabbedPane implements ChangeListener {
                 label.setPreferredSize(d);
             }
         }
-        
+
         @Override
         public void actionPerformed(ActionEvent e) {
             try {
@@ -129,14 +126,14 @@ public class ClosableTabHost extends JTabbedPane implements ChangeListener {
                 ex.printStackTrace();
             }
         }
-        
+
         @Override
         public void stop() {
             label.setText(src);
             super.stop();
         }
     }
-    
+
     private class TabButton extends JButton implements ActionListener {
         public TabButton() {
             // super(SmartIcons.close);
@@ -159,7 +156,7 @@ public class ClosableTabHost extends JTabbedPane implements ChangeListener {
             // Close the proper tab by clicking the button
             addActionListener(this);
         }
-        
+
         public void actionPerformed(ActionEvent e) {
             int i = indexOfTabComponent(getParent());
             if (i != -1) {
@@ -170,15 +167,14 @@ public class ClosableTabHost extends JTabbedPane implements ChangeListener {
                 }
             }
         }
-        
+
         // we don't want to update UI for this button
-        public void updateUI() {
-        }
-        
+        public void updateUI() {}
+
         // paint the cross
         protected void paintComponent(Graphics g) {
             super.paintComponent(g);
-            Graphics2D g2 = (Graphics2D) g.create();
+            Graphics2D g2 = (Graphics2D)g.create();
             // shift the image for pressed buttons
             if (getModel().isPressed()) {
                 g2.translate(1, 1);
@@ -194,7 +190,7 @@ public class ClosableTabHost extends JTabbedPane implements ChangeListener {
             g2.dispose();
         }
     }
-    
+
     public interface Callback {
         void removeTabAt(int index);
     }

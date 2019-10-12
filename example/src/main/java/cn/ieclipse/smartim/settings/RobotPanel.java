@@ -12,7 +12,7 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 public class RobotPanel extends JPanel {
-    
+
     private JCheckBox chkRobot;
     private JLabel lblNewLabel_2;
     private JTextField textRobotName;
@@ -27,7 +27,7 @@ public class RobotPanel extends JPanel {
     private JLabel lblNewLabel_5;
     private JTextField textReplyEmpty;
     private SmartIMSettings settings;
-    
+
     /**
      * Create the panel.
      */
@@ -35,11 +35,10 @@ public class RobotPanel extends JPanel {
         this.settings = settings;
         JPanel panel_1 = this;
         GridBagLayout gbl_panel_1 = new GridBagLayout();
-        gbl_panel_1.columnWidths = new int[] { 0, 0, 0 };
-        gbl_panel_1.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-        gbl_panel_1.columnWeights = new double[] { 0.0, 1.0, Double.MIN_VALUE };
-        gbl_panel_1.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, Double.MIN_VALUE };
+        gbl_panel_1.columnWidths = new int[] {0, 0, 0};
+        gbl_panel_1.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_panel_1.columnWeights = new double[] {0.0, 1.0, Double.MIN_VALUE};
+        gbl_panel_1.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
         panel_1.setLayout(gbl_panel_1);
         {
             chkRobot = new JCheckBox("开启聊天机器人");
@@ -79,8 +78,7 @@ public class RobotPanel extends JPanel {
         }
         {
             comboRobot = new JComboBox();
-            comboRobot.setModel(
-                    new DefaultComboBoxModel(new String[] { "图灵机器人" }));
+            comboRobot.setModel(new DefaultComboBoxModel(new String[] {"图灵机器人"}));
             GridBagConstraints gbc_comboRobot = new GridBagConstraints();
             gbc_comboRobot.insets = new Insets(0, 0, 5, 0);
             gbc_comboRobot.fill = GridBagConstraints.HORIZONTAL;
@@ -168,7 +166,7 @@ public class RobotPanel extends JPanel {
             textReplyEmpty.setColumns(10);
         }
     }
-    
+
     public void reset() {
         int idx = settings.getState().ROBOT_TYPE;
         if (idx >= 0 && idx < comboRobot.getItemCount()) {
@@ -182,15 +180,14 @@ public class RobotPanel extends JPanel {
         textRobotName.setText(settings.getState().ROBOT_NAME);
         textWelcome.setText(settings.getState().ROBOT_GROUP_WELCOME);
     }
-    
+
     public void apply() {
         settings.getState().ROBOT_TYPE = comboRobot.getSelectedIndex();
         settings.getState().ROBOT_ENABLE = chkRobot.isSelected();
         settings.getState().ROBOT_FRIEND_ANY = chkFriendAny.isSelected();
         settings.getState().ROBOT_GROUP_ANY = chkGroupAny.isSelected();
         settings.getState().ROBOT_KEY = textApiKey.getText().trim();
-        settings.getState().ROBOT_REPLY_EMPTY = textReplyEmpty.getText()
-                .trim();
+        settings.getState().ROBOT_REPLY_EMPTY = textReplyEmpty.getText().trim();
         settings.getState().ROBOT_NAME = textRobotName.getText().trim();
         settings.getState().ROBOT_GROUP_WELCOME = textWelcome.getText().trim();
     }

@@ -29,7 +29,7 @@ public class PopupPanel extends JPanel {
     int height = 80;
     int expired = 5000;
     private Timer timer;
-    
+
     /**
      * Create the panel.
      */
@@ -40,13 +40,13 @@ public class PopupPanel extends JPanel {
         setLayout(null);
         setSize(width, height);
         setPreferredSize(new Dimension(width, height));
-        
+
         JPanel top = new JPanel();
         top.setBounds(5, 5, width - 10, 20);
         top.setLayout(new BorderLayout(0, 0));
         lblTitle = new JLabel("");
         top.add(lblTitle);
-        
+
         JButton close = new JButton("×");
         // close.setPreferredSize(new Dimension(30, -1));
         // close.setBackground(SystemColor.inactiveCaption);
@@ -54,7 +54,7 @@ public class PopupPanel extends JPanel {
         close.setContentAreaFilled(false);
         close.setHorizontalAlignment(SwingConstants.RIGHT);
         close.addActionListener(new ActionListener() {
-            
+
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (timer != null) {
@@ -67,24 +67,22 @@ public class PopupPanel extends JPanel {
         });
         top.add(close, BorderLayout.EAST);
         add(top);
-        
+
         lblText = new JLabel("");
         lblText.setBounds(5, 25, width - 10, height - 50);
         add(lblText);
-        
+
         JPanel bottom = new JPanel();
         bottom.setBounds(5, height - 25, width - 10, 20);
         bottom.setLayout(new BorderLayout(0, 0));
         add(bottom);
-        
-        final JLabel lblSettings = new JLabel(
-                "<html><a href=\"\">提醒设置</a></html>");
+
+        final JLabel lblSettings = new JLabel("<html><a href=\"\">提醒设置</a></html>");
         bottom.add(lblSettings, BorderLayout.WEST);
-        
-        final JLabel lblDetail = new JLabel(
-                "<html><a href=\"\">查看详情</a></html>");
+
+        final JLabel lblDetail = new JLabel("<html><a href=\"\">查看详情</a></html>");
         bottom.add(lblDetail, BorderLayout.EAST);
-        
+
         lblSettings.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -93,17 +91,16 @@ public class PopupPanel extends JPanel {
                         fContactView.openConsole(target);
                         fContactView.requestFocus();
                     }
-                }
-                else if (lblSettings == e.getSource()) {
+                } else if (lblSettings == e.getSource()) {
                     SettingsDialog.main(null);
                 }
             }
         });
         lblDetail.addMouseListener(lblSettings.getMouseListeners()[0]);
-        
+
         timer = new Timer(expired, close.getActionListeners()[0]);
     }
-    
+
     void setLabelText(JLabel label, String text) {
         StringBuilder builder = new StringBuilder("<html>");
         char[] chars = text.toCharArray();
@@ -115,8 +112,7 @@ public class PopupPanel extends JPanel {
                 len++;
                 if (start + len > text.length())
                     break;
-                if (fontMetrics.charsWidth(chars, start, len) > label
-                        .getWidth()) {
+                if (fontMetrics.charsWidth(chars, start, len) > label.getWidth()) {
                     break;
                 }
             }
@@ -128,13 +124,13 @@ public class PopupPanel extends JPanel {
         builder.append("</html>");
         label.setText(builder.toString());
     }
-    
+
     public PopupPanel setTarget(IMPanel contactView, IContact target) {
         this.fContactView = contactView;
         this.target = target;
         return this;
     }
-    
+
     public PopupPanel setMessage(final String title, final String msg) {
         SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -150,17 +146,17 @@ public class PopupPanel extends JPanel {
         });
         return this;
     }
-    
+
     Callback callback;
-    
+
     public void setCallback(Callback callback) {
         this.callback = callback;
     }
-    
+
     public interface Callback {
         void close();
     }
-    
+
     public void dispose() {
         if (timer != null) {
             timer.stop();

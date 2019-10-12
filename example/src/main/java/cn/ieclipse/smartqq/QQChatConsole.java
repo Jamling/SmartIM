@@ -25,12 +25,12 @@ public class QQChatConsole extends IMChatConsole {
     public QQChatConsole(IContact target, SmartQQPanel imPanel) {
         super(target, imPanel);
     }
-    
+
     @Override
     public SmartQQClient getClient() {
-        return (SmartQQClient) super.getClient();
+        return (SmartQQClient)super.getClient();
     }
-    
+
     @Override
     public void loadHistory(String raw) {
         if (IMUtils.isMySendMsg(raw)) {
@@ -40,21 +40,19 @@ public class QQChatConsole extends IMChatConsole {
         JsonObject obj = new JsonParser().parse(raw).getAsJsonObject();
         QQMessage m = null;
         if (obj.has("group_code")) {
-            m = (QQMessage) new GroupMessageHandler().handle(obj);
+            m = (QQMessage)new GroupMessageHandler().handle(obj);
+        } else if (obj.has("did")) {
+            m = (QQMessage)new DiscussMessageHandler().handle(obj);
+        } else {
+            m = (QQMessage)new FriendMessageHandler().handle(obj);
         }
-        else if (obj.has("did")) {
-            m = (QQMessage) new DiscussMessageHandler().handle(obj);
-        }
-        else {
-            m = (QQMessage) new FriendMessageHandler().handle(obj);
-        }
-        
+
         AbstractFrom from = getClient().parseFrom(m);
         String name = from == null ? "未知用户" : from.getName();
         String msg = IMUtils.formatHtmlMsg(m.getTime(), name, m.getContent());
         write(msg);
     }
-    
+
     public void post(final String msg) {
         SmartQQClient client = getClient();
         if (this.contact != null) {
@@ -62,12 +60,11 @@ public class QQChatConsole extends IMChatConsole {
             client.sendMessage(m, this.contact);
         }
     }
-    
+
     private void createUIComponents() {
-    
+
     }
-    
-    
+
     @Override
     public boolean hideMyInput() {
         if (contact instanceof Friend) {
@@ -75,7 +72,7 @@ public class QQChatConsole extends IMChatConsole {
         }
         return SmartIMSettings.getInstance().getState().HIDE_MY_INPUT;
     }
-    
+
     @Override
     protected void sendFileInternal(String file) throws Exception {
         final File f = new File(file);
@@ -94,12 +91,11 @@ public class QQChatConsole extends IMChatConsole {
             ak = "";
             sk = "";
         }
-        QNUploader.UploadInfo info = uploader.upload(qq, f, ak, sk, bucket,
-                null);
+        QNUploader.UploadInfo info = uploader.upload(qq, f, ak, sk, bucket, null);
         String url = info.getUrl(domain, ts);
-        
-        final String msg = String.format("来自SmartQQ的文件: %s (大小%s), 点击链接 %s 查看",
-                IMUtils.getName(file), IMUtils.formatFileSize(info.fsize), url);
+
+        final String msg = String.format("来自SmartQQ的文件: %s (大小%s), 点击链接 %s 查看", IMUtils.getName(file),
+            IMUtils.formatFileSize(info.fsize), url);
         send(msg);
     }
 }

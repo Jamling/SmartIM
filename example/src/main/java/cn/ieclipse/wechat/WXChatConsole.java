@@ -23,17 +23,17 @@ import io.github.biezhi.wechat.model.WechatMessage;
 public class WXChatConsole extends IMChatConsole {
     WechatClient client;
     WechatPanel imPanel;
-    
+
     public WXChatConsole(IContact target, WechatPanel imPanel) {
         super(target, imPanel);
         this.imPanel = imPanel;
     }
-    
+
     @Override
     public WechatClient getClient() {
-        return (WechatClient) super.getClient();
+        return (WechatClient)super.getClient();
     }
-    
+
     @Override
     public void loadHistory(String raw) {
         if (IMUtils.isMySendMsg(raw)) {
@@ -41,38 +41,36 @@ public class WXChatConsole extends IMChatConsole {
             return;
         }
         // unreachable code
-        WechatMessage m = (WechatMessage) getClient().handleMessage(raw);
+        WechatMessage m = (WechatMessage)getClient().handleMessage(raw);
         AbstractFrom from = getClient().getFrom(m);
         write(WXUtils.formatHtmlIncoming(m, from));
     }
-    
+
     @Override
     protected String formatInput(String name, String input) {
         return WXUtils.formatHtmlOutgoing(name, input, true);
     }
-    
+
     @Override
     public void post(String msg) {
         WechatClient client = getClient();
         if (client.isLogin() && contact != null) {
             WechatMessage m = client.createMessage(0, msg, contact);
             client.sendMessage(m, contact);
-        }
-        else {
+        } else {
             error("发送失败，客户端异常（可能已断开连接或找不到联系人）");
         }
     }
-    
+
     @Override
     protected boolean hyperlinkActivated(String desc) {
         if (desc.startsWith("weixin://")) {
-            JOptionPane.showInternalMessageDialog(null,
-                    desc + "为微信专用协议，请使用手机微信打开");
+            JOptionPane.showInternalMessageDialog(null, desc + "为微信专用协议，请使用手机微信打开");
             return false;
         }
         return super.hyperlinkActivated(desc);
     }
-    
+
     @Override
     public void sendFileInternal(final String file) {
         final File f = new File(file);
@@ -80,7 +78,7 @@ public class WXChatConsole extends IMChatConsole {
         if (!checkClient(client)) {
             return;
         }
-        
+
         String ext = FileUtils.getExtension(f.getPath()).toLowerCase();
         String mimeType = URLConnection.guessContentTypeFromName(f.getName());
         String media = "pic";
@@ -89,49 +87,42 @@ public class WXChatConsole extends IMChatConsole {
         if (Arrays.asList("png", "jpg", "jpeg", "bmp").contains(ext)) {
             type = WechatMessage.MSGTYPE_IMAGE;
             media = "pic";
-        }
-        else if ("gif".equals(ext)) {
+        } else if ("gif".equals(ext)) {
             type = WechatMessage.MSGTYPE_EMOTICON;
             media = "doc";
-        }
-        else {
+        } else {
             type = WechatMessage.MSGTYPE_FILE;
             media = "doc";
         }
-        
+
         final UploadInfo uploadInfo = client.uploadMedia(f, mimeType, media);
-        
+
         if (uploadInfo == null) {
             error("上传失败");
             return;
         }
-        
+
         String link = FileUtils.toUrl(file);
         String label = file.replace('\\', '/');
         String input = null;
-        if (type == WechatMessage.MSGTYPE_EMOTICON
-                || type == WechatMessage.MSGTYPE_IMAGE) {
-            input = String.format("<img src=\"%s\" border=\"0\" alt=\"%s\"",
-                    link, label);
+        if (type == WechatMessage.MSGTYPE_EMOTICON || type == WechatMessage.MSGTYPE_IMAGE) {
+            input = String.format("<img src=\"%s\" border=\"0\" alt=\"%s\"", link, label);
             if (uploadInfo.CDNThumbImgWidth > 0) {
                 input += " width=\"" + uploadInfo.CDNThumbImgWidth + "\"";
             }
             if (uploadInfo.CDNThumbImgHeight > 0) {
                 input += " height=\"" + uploadInfo.CDNThumbImgHeight + "\"";
             }
-            input = String.format("<a href=\"%s\" title=\"%s\">%s</a>", link,
-                    link, input);
-        }
-        else {
-            input = String.format("<a href=\"%s\" title=\"%s\">%s</a>", link,
-                    label, label);
+            input = String.format("<a href=\"%s\" title=\"%s\">%s</a>", link, link, input);
+        } else {
+            input = String.format("<a href=\"%s\" title=\"%s\">%s</a>", link, label, label);
             content = client.createFileMsgContent(f, uploadInfo.MediaId);
         }
-        
+
         final WechatMessage m = client.createMessage(type, content, contact);
         m.text = input;
         m.MediaId = uploadInfo.MediaId;
-        
+
         client.sendMessage(m, contact);
         if (!hideMyInput()) {
             String name = client.getAccount().getName();

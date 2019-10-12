@@ -16,9 +16,9 @@ import icons.SmartIcons;
 import io.github.biezhi.wechat.api.WechatClient;
 
 public class Application {
-    
+
     private JFrame window;
-    
+
     /**
      * Launch the application.
      */
@@ -38,14 +38,14 @@ public class Application {
             }
         });
     }
-    
+
     /**
      * Create the application.
      */
     public Application() {
         initialize();
     }
-    
+
     /**
      * Initialize the contents of the frame.
      */
@@ -60,16 +60,16 @@ public class Application {
         window.setTitle("SmartIM (" + RestUtils.version + ")");
         window.setBounds(100, 100, 700, 450);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        
+
         JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
         window.getContentPane().add(tabbedPane, BorderLayout.CENTER);
-        
+
         WechatPanel panel2 = new WechatPanel();
         tabbedPane.addTab("Wechat", SmartIcons.wechat, panel2, null);
-        
+
         SmartQQPanel panel1 = new SmartQQPanel();
         tabbedPane.addTab("SmartQQ", SmartIcons.qq, panel1, null);
-        
+
         // JMenuBar menuBar = new JMenuBar();
         // frmSmartim.setJMenuBar(menuBar);
         //

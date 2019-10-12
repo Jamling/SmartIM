@@ -20,37 +20,34 @@ public class Notifications {
     public static void notify(final String title, final CharSequence text) {
         notify(null, null, title, text);
     }
-    
-    public static void notify(final IMPanel contactView, final IContact target,
-            final String title, final CharSequence text) {
+
+    public static void notify(final IMPanel contactView, final IContact target, final String title,
+        final CharSequence text) {
         if (text != null && title != null) {
             showPopup(title, text.toString(), contactView, target);
         }
     }
-    
+
     public static void init(Window window) {
         Notifications.window = window;
         Dimension sd = Toolkit.getDefaultToolkit().getScreenSize();
         popupWidth = sd.width / 8;
         popupHeight = sd.height / 8;
-        
-        Insets insets = Toolkit.getDefaultToolkit()
-                .getScreenInsets(window.getGraphicsConfiguration());
-                
-        popupInsets = new Insets(insets.top, insets.left, insets.bottom,
-                insets.right);
+
+        Insets insets = Toolkit.getDefaultToolkit().getScreenInsets(window.getGraphicsConfiguration());
+
+        popupInsets = new Insets(insets.top, insets.left, insets.bottom, insets.right);
         popupInsets.left = sd.width - popupWidth;
         popupInsets.top = sd.height - popupHeight - insets.bottom;
         popupInsets.right = sd.width;
         popupInsets.bottom = insets.bottom;
-        popupBounds = new Rectangle(popupInsets.left, popupInsets.top,
-                popupWidth, popupHeight);
-                
+        popupBounds = new Rectangle(popupInsets.left, popupInsets.top, popupWidth, popupHeight);
+
         popupPanel = new PopupPanel(popupWidth, popupHeight);
         popupPanel.setBounds(popupBounds);
         popupPanel.setCallback(popupCallback);
     }
-    
+
     private static Window window;
     private static int popupWidth = 160;
     private static int popupHeight = 80;
@@ -67,9 +64,8 @@ public class Notifications {
             }
         }
     };
-    
-    public static void showPopup(String title, String message,
-            final IMPanel contactView, final IContact target) {
+
+    public static void showPopup(String title, String message, final IMPanel contactView, final IContact target) {
         if (Notifications.popup == null) {
             if (popupPanel != null) {
                 popupPanel.dispose();
@@ -78,8 +74,7 @@ public class Notifications {
             popupPanel.setCallback(popupCallback);
             popupPanel.setMessage(title, message);
             popupPanel.setTarget(contactView, target);
-            Popup popup = PopupFactory.getSharedInstance().getPopup(window,
-                    popupPanel, popupBounds.x, popupBounds.y);
+            Popup popup = PopupFactory.getSharedInstance().getPopup(window, popupPanel, popupBounds.x, popupBounds.y);
             Notifications.popup = popup;
             popup.show();
             return;
@@ -90,5 +85,5 @@ public class Notifications {
             return;
         }
     }
-    
+
 }

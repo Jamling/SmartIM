@@ -14,20 +14,19 @@ import javax.swing.tree.DefaultTreeCellRenderer;
  * Created by Jamling on 2017/7/13.
  */
 public class ContactTreeCellRenderer extends DefaultTreeCellRenderer {
-    
-    public ContactTreeCellRenderer() {
-    }
-    
+
+    public ContactTreeCellRenderer() {}
+
     public Icon getDisplayIcon(Object obj) {
         return SmartIcons.friend;
     }
-    
+
     public String getDisplayName(Object obj) {
         if (obj == null) {
             return null;
         }
         if (obj instanceof IContact) {
-            return ((IContact) obj).getName();
+            return ((IContact)obj).getName();
         }
         return obj.toString();
     }

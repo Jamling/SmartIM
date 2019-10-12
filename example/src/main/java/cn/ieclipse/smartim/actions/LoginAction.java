@@ -14,12 +14,12 @@ import icons.SmartIcons;
  * Created by Jamling on 2017/7/12.
  */
 public class LoginAction extends IMPanelAction {
-    
+
     public LoginAction(IMPanel panel) {
         super(panel, SmartIcons.signin);
         setToolTipText("登录");
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent anActionEvent) {
         final SmartClient client = panel.getClient();
@@ -32,8 +32,7 @@ public class LoginAction extends IMPanelAction {
                 protected void onLoginFinish(boolean success, Exception e) {
                     if (success) {
                         panel.initContacts();
-                    }
-                    else {
+                    } else {
                         LOG.error("登录失败", e);
                     }
                 };
@@ -44,8 +43,7 @@ public class LoginAction extends IMPanelAction {
                     client.login();
                 }
             }.start();
-        }
-        else {
+        } else {
             panel.initContacts();
         }
     }

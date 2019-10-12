@@ -10,14 +10,14 @@ import icons.SmartIcons;
 
 public class ScrollLockAction extends JToggleButton implements ActionListener {
     private IMChatConsole console;
-    
+
     public ScrollLockAction(IMChatConsole console) {
         super(SmartIcons.lock);
         this.setToolTipText("禁止滚动");
         this.addActionListener(this);
         this.console = console;
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         console.setScrollLock(isSelected());

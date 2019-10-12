@@ -37,7 +37,7 @@ public class GeneralPanel extends JPanel {
     private JCheckBox chkHideMyInput;
     private JLabel linkUpdate;
     private JLabel linkAbout;
-    
+
     private SmartIMSettings settings;
     private JCheckBox chkHistory;
     private JPanel panel;
@@ -49,20 +49,17 @@ public class GeneralPanel extends JPanel {
     private JPanel panel_2;
     private JLabel lblNewLabel_2;
     private JComboBox<String> comboSend;
-    
+
     /**
      * Create the panel.
      */
     public GeneralPanel(SmartIMSettings settings) {
         this.settings = settings;
         GridBagLayout gbl_contentPanel = new GridBagLayout();
-        gbl_contentPanel.columnWidths = new int[] { 0, 0, 0 };
-        gbl_contentPanel.rowHeights = new int[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                0 };
-        gbl_contentPanel.columnWeights = new double[] { 1.0, 1.0,
-                Double.MIN_VALUE };
-        gbl_contentPanel.rowWeights = new double[] { 0.0, 0.0, 0.0, 0.0, 0.0,
-                0.0, 0.0, 1.0, 1.0, 1.0 };
+        gbl_contentPanel.columnWidths = new int[] {0, 0, 0};
+        gbl_contentPanel.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_contentPanel.columnWeights = new double[] {1.0, 1.0, Double.MIN_VALUE};
+        gbl_contentPanel.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0};
         JPanel contentPanel = this;
         contentPanel.setLayout(gbl_contentPanel);
         {
@@ -81,8 +78,7 @@ public class GeneralPanel extends JPanel {
             }
             {
                 comboSend = new JComboBox<>();
-                comboSend.setModel(new DefaultComboBoxModel<>(
-                        new String[] { "Ctrl + Enter", "Enter" }));
+                comboSend.setModel(new DefaultComboBoxModel<>(new String[] {"Ctrl + Enter", "Enter"}));
                 panel_2.add(comboSend, BorderLayout.CENTER);
             }
         }
@@ -181,11 +177,10 @@ public class GeneralPanel extends JPanel {
             gbc_panel.gridy = 7;
             add(panel, gbc_panel);
             GridBagLayout gbl_panel = new GridBagLayout();
-            gbl_panel.columnWidths = new int[] { 10, 20, 0, 10 };
-            gbl_panel.rowHeights = new int[] { 15, 0 };
-            gbl_panel.columnWeights = new double[] { 0.0, 1.0, 0.0,
-                    Double.MIN_VALUE };
-            gbl_panel.rowWeights = new double[] { 0.0, Double.MIN_VALUE };
+            gbl_panel.columnWidths = new int[] {10, 20, 0, 10};
+            gbl_panel.rowHeights = new int[] {15, 0};
+            gbl_panel.columnWeights = new double[] {0.0, 1.0, 0.0, Double.MIN_VALUE};
+            gbl_panel.rowWeights = new double[] {0.0, Double.MIN_VALUE};
             panel.setLayout(gbl_panel);
             {
                 lblNewLabel_1 = new JLabel("工作目录");
@@ -211,15 +206,12 @@ public class GeneralPanel extends JPanel {
                 btnNewButton = new JButton("浏览");
                 btnNewButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        JFileChooser chooser = new JFileChooser(SmartIMSettings
-                                .getInstance().getState().WORK_PATH);
-                        chooser.setFileSelectionMode(
-                                JFileChooser.DIRECTORIES_ONLY);
+                        JFileChooser chooser = new JFileChooser(SmartIMSettings.getInstance().getState().WORK_PATH);
+                        chooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                         int code = chooser.showOpenDialog(null);
                         if (code == JFileChooser.APPROVE_OPTION) {
                             if (chooser.getSelectedFile() != null) {
-                                tfWorkDir.setText(chooser.getSelectedFile()
-                                        .getAbsolutePath());
+                                tfWorkDir.setText(chooser.getSelectedFile().getAbsolutePath());
                             }
                         }
                     }
@@ -242,16 +234,14 @@ public class GeneralPanel extends JPanel {
             panel_1.setLayout(new BorderLayout(0, 0));
             panel_1.add(new JLabel("主题"), BorderLayout.WEST);
             comboTheme = new JComboBox<>();
-            comboTheme.setModel(new DefaultComboBoxModel<>(
-                    UIManager.getInstalledLookAndFeels()));
+            comboTheme.setModel(new DefaultComboBoxModel<>(UIManager.getInstalledLookAndFeels()));
             comboTheme.setRenderer(new BasicComboBoxRenderer() {
-                public java.awt.Component getListCellRendererComponent(
-                        javax.swing.JList list, Object value, int index,
-                        boolean isSelected, boolean cellHasFocus) {
-                    java.awt.Component c = super.getListCellRendererComponent(
-                            list, value, index, isSelected, cellHasFocus);
+                public java.awt.Component getListCellRendererComponent(javax.swing.JList list, Object value, int index,
+                    boolean isSelected, boolean cellHasFocus) {
+                    java.awt.Component c =
+                        super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
                     if (value instanceof LookAndFeelInfo) {
-                        setText(((LookAndFeelInfo) value).getName());
+                        setText(((LookAndFeelInfo)value).getName());
                     }
                     return c;
                 };
@@ -278,7 +268,7 @@ public class GeneralPanel extends JPanel {
             gbc_lblNewLabel_2.gridy = 9;
             contentPanel.add(linkAbout, gbc_lblNewLabel_2);
         }
-        
+
         linkUpdate.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -293,11 +283,11 @@ public class GeneralPanel extends JPanel {
             }
         });
     }
-    
+
     public void setSettings(SmartIMSettings settings) {
         this.settings = settings;
     }
-    
+
     public void reset() {
         chkNotify.setSelected(settings.getState().NOTIFY_MSG);
         chkNotifyFriendMsg.setSelected(settings.getState().NOTIFY_FRIEND_MSG);
@@ -313,7 +303,7 @@ public class GeneralPanel extends JPanel {
         // comboSend.getModel();
         comboSend.setSelectedItem(settings.getState().KEY_SEND);
     }
-    
+
     public void apply() {
         settings.getState().NOTIFY_MSG = chkNotify.isSelected();
         settings.getState().NOTIFY_UNREAD = chkNotifyUnread.isSelected();

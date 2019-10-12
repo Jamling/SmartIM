@@ -13,16 +13,16 @@ import icons.SmartIcons;
 
 public class SendFileAction extends IMChatAction {
     protected String dialogTitle;
-    protected FileNameExtensionFilter filter_image = new FileNameExtensionFilter(
-            "图片文件", "jpg", "gif", "bmp", "jpeg", "png");
+    protected FileNameExtensionFilter filter_image =
+        new FileNameExtensionFilter("图片文件", "jpg", "gif", "bmp", "jpeg", "png");
     protected FileFilter filter;
-    
+
     public SendFileAction(IMChatConsole console) {
         super(console, SmartIcons.file);
         this.setToolTipText("发送文件");
         this.dialogTitle = "请选择要发送的文件";
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (!console.enableUpload()) {
@@ -45,5 +45,5 @@ public class SendFileAction extends IMChatAction {
         }
         return;
     }
-    
+
 }

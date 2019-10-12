@@ -21,7 +21,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
     private GeneralPanel generalPanel;
     private RobotPanel robotPanel;
     private UploadPanel uploadPanel;
-    
+
     /**
      * Launch the application.
      */
@@ -36,7 +36,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
             e.printStackTrace();
         }
     }
-    
+
     /**
      * Create the dialog.
      */
@@ -69,11 +69,11 @@ public class SettingsDialog extends JDialog implements ActionListener {
                     generalPanel = new GeneralPanel(settings);
                     JScrollPane scrollPane = new JScrollPane(generalPanel);
                     tabbedPane.addTab("常规", null, scrollPane, null);
-                    
+
                     robotPanel = new RobotPanel(settings);
                     scrollPane = new JScrollPane(robotPanel);
                     tabbedPane.addTab("机器人", null, scrollPane, null);
-                    
+
                     uploadPanel = new UploadPanel(settings);
                     scrollPane = new JScrollPane(uploadPanel);
                     tabbedPane.addTab("文件传输", null, scrollPane, null);
@@ -82,7 +82,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
         }
         reset();
     }
-    
+
     public void reset() {
         if (generalPanel != null) {
             generalPanel.reset();
@@ -94,7 +94,7 @@ public class SettingsDialog extends JDialog implements ActionListener {
             uploadPanel.reset();
         }
     }
-    
+
     public void apply() {
         if (generalPanel != null) {
             generalPanel.apply();
@@ -107,14 +107,13 @@ public class SettingsDialog extends JDialog implements ActionListener {
         }
         settings.saveProp();
     }
-    
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if ("OK".equals(e.getActionCommand())) {
             apply();
-        }
-        else if ("Cancel".equals(e.getActionCommand())) {
-        
+        } else if ("Cancel".equals(e.getActionCommand())) {
+
         }
         dispose();
     }
