@@ -28,7 +28,7 @@ subprojects {
         implementation 'com.squareup.okhttp3:okhttp:3.8.1'
         implementation 'com.google.code.gson:gson:2.8.0'
         implementation 'com.github.jamling:JavaUtils:933b1c6551'
-        testIimplementation 'junit:junit:4.12'
+        testImplementation 'junit:junit:4.12'
     }
 
     sourceCompatibility = '1.7'

@@ -7,3 +7,5 @@ wechat.jpg
 .DS_Store
 .gradle/
 build/
+out/
+target/

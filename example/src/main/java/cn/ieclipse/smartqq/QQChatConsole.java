@@ -53,6 +53,7 @@ public class QQChatConsole extends IMChatConsole {
         write(msg);
     }
 
+    @Override
     public void post(final String msg) {
         SmartQQClient client = getClient();
         if (this.contact != null) {

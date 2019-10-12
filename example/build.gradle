@@ -3,9 +3,9 @@
  */
 
 dependencies {
-    implementation project(':core')
-    implementation project(':smartqq')
-    implementation project(':wechat')
+    compile project(':core')
+    compile project(':smartqq')
+    compile project(':wechat')
 }
 
 description = 'smartim-example'
