@@ -15,24 +15,12 @@
  */
 package cn.ieclipse.smartim.callback.impl;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.EventQueue;
-import java.awt.Font;
-import java.awt.Graphics;
-
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextArea;
-import javax.swing.SwingConstants;
-import javax.swing.border.EmptyBorder;
-
 import cn.ieclipse.smartim.callback.LoginCallback;
 import cn.ieclipse.util.ScaleIcon;
+
+import javax.swing.*;
+import javax.swing.border.EmptyBorder;
+import java.awt.*;
 
 /**
  * 类/接口描述
@@ -62,36 +50,43 @@ public class DefaultLoginCallback implements LoginCallback {
     
     @Override
     public void onQrcode(final String path) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    initQrCodeFrame(path);
-                } catch (Exception e) {
-                    System.err.println("显示二维码失败" + e.toString());
-                }
+        EventQueue.invokeLater(() -> {
+            try {
+                initQrCodeFrame(path);
+            } catch (Exception e) {
+                System.err.println("显示二维码失败" + e.toString());
             }
         });
     }
-    
+
+    @Override
+    public void onAvatar(String path) {
+        EventQueue.invokeLater(() -> {
+            try {
+                initQrCodeFrame(path);
+            } catch (Exception e) {
+                System.err.println("显示二维码失败" + e.toString());
+            }
+        });
+    }
+
     @Override
     public void onLogin(final boolean success, final Exception e) {
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                if (success) {
-                    if (qrCodeFrame != null) {
-                        qrCodeFrame.setTip("登录成功");
-                        qrCodeFrame.setVisible(false);
-                        qrCodeFrame.dispose();
-                    }
+        EventQueue.invokeLater(() -> {
+            if (success) {
+                if (qrCodeFrame != null) {
+                    qrCodeFrame.setTip("登录成功");
+                    qrCodeFrame.setVisible(false);
+                    qrCodeFrame.dispose();
                 }
-                else {
-                    if (qrCodeFrame == null) {
-                        qrCodeFrame = new QRCodeFrame(null, title);
-                    }
-                    qrCodeFrame.setError(e.toString());
-                }
-                onLoginFinish(success, e);
             }
+            else {
+                if (qrCodeFrame == null) {
+                    qrCodeFrame = new QRCodeFrame(null, title);
+                }
+                qrCodeFrame.setError(e.toString());
+            }
+            onLoginFinish(success, e);
         });
     }
     
@@ -119,7 +114,6 @@ public class DefaultLoginCallback implements LoginCallback {
         /**
          * Create the frame.
          */
-        @SuppressWarnings("serial")
         public QRCodeFrame(final String filePath, final String title) {
             setBackground(Color.WHITE);
             this.setResizable(true);
@@ -178,7 +172,7 @@ public class DefaultLoginCallback implements LoginCallback {
             contentPane.add(tfError, BorderLayout.SOUTH);
             
             // this.setPreferredSize(new Dimension(400, 400));
-            this.setMaximumSize(new Dimension(600, 600));
+            this.setMaximumSize(new Dimension(600, 1000));
             
             this.setLocationRelativeTo(null);
             this.setVisible(true);
@@ -188,6 +182,7 @@ public class DefaultLoginCallback implements LoginCallback {
         public void setError(String string) {
             if (tfError != null) {
                 tfError.setText(string);
+                pack();
             }
         }
         
@@ -200,6 +195,7 @@ public class DefaultLoginCallback implements LoginCallback {
             this.tip = tip;
             if (tfTip != null) {
                 tfTip.setText(tip);
+                pack();
             }
         }
         

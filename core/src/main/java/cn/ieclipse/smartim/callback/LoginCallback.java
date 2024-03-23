@@ -24,12 +24,21 @@ package cn.ieclipse.smartim.callback;
  */
 public interface LoginCallback {
     /**
-     * 二维码登录获取的二维码图片保存路径
+     * 获取登录二维码回调
      * 
      * @param path
      *            二维码保存路径
      */
     void onQrcode(String path);
+
+    /**
+     * 获取扫码用户头像回调
+     *
+     * @param path 头像图片路径
+     */
+    default void onAvatar(String path) {
+        System.out.println("avatar " + path);
+    }
     
     /**
      * 登录回调
