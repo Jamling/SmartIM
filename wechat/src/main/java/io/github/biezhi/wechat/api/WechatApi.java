@@ -1,49 +1,23 @@
 package io.github.biezhi.wechat.api;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.concurrent.TimeUnit;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.gson.Gson;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-
 import cn.ieclipse.smartim.exception.LogicException;
 import cn.ieclipse.util.EncodeUtils;
 import cn.ieclipse.util.FileUtils;
 import cn.ieclipse.util.StringUtils;
+import com.google.gson.*;
 import io.github.biezhi.wechat.Utils;
-import io.github.biezhi.wechat.model.Const;
-import io.github.biezhi.wechat.model.Environment;
-import io.github.biezhi.wechat.model.Session;
-import io.github.biezhi.wechat.model.UploadInfo;
-import io.github.biezhi.wechat.model.WechatMessage;
-import okhttp3.Cookie;
-import okhttp3.FormBody;
-import okhttp3.Headers;
-import okhttp3.MediaType;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import io.github.biezhi.wechat.model.*;
+import okhttp3.*;
+import okhttp3.logging.HttpLoggingInterceptor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.Proxy;
+import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 /**
  * 微信API实现
@@ -97,17 +71,15 @@ public class WechatApi {
         this.readTimeout = environment.getInt("http.read-time-out", 60);
         this.writeTimeout = environment.getInt("http.write-time-out", 60);
         URLConst.init(this.wxHost);
+        HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(message -> log.debug(message));
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
                 .connectTimeout(connTimeout, TimeUnit.SECONDS)
                 .writeTimeout(writeTimeout, TimeUnit.SECONDS)
                 .readTimeout(readTimeout, TimeUnit.SECONDS)
-                .hostnameVerifier(new HostnameVerifier() {
-                    @Override
-                    public boolean verify(String arg0, SSLSession arg1) {
-                        return true;
-                    }
-                });
+                .addInterceptor(loggingInterceptor)
+                .hostnameVerifier((arg0, arg1) -> true);
         if (proxy != null) {
             builder.proxy(proxy);
         }
@@ -116,7 +88,8 @@ public class WechatApi {
     
     /**
      * 获取uuid
-     *
+     * 响应：
+     * window.QRLogin.code = 200; window.QRLogin.uuid = "Id8YaCz3aQ==";
      * @return
      */
     public boolean getUUID() {
@@ -126,6 +99,7 @@ public class WechatApi {
         params.put("fun", "new");
         params.put("lang", "zh_CN");
         params.put("_", System.currentTimeMillis() + "");
+        params.put("redirect_uri", "https://wx.qq.com/cgi-bin/mmwebwx-bin/webwxnewloginpage?mod=desktop");
         try {
             String response = doGet(url, params);
             
@@ -161,11 +135,7 @@ public class WechatApi {
                 && !output.getParentFile().exists()) {
             output.getParentFile().mkdirs();
         }
-        
-        RequestBody body = new FormBody.Builder().add("t", "webwx")
-                .add("_", System.currentTimeMillis() + "").build();
-                
-        Request request = new Request.Builder().url(url).post(body).build();
+        Request request = new Request.Builder().url(url).get().build();
         
         try {
             Response response = client.newCall(request).execute();
@@ -188,8 +158,9 @@ public class WechatApi {
      */
     public boolean waitforlogin(int tip) {
         Utils.sleep(tip);
-        String url = URLConst.API.LOGIN.url() + "?tip=%d&uuid=%s&_%s";
+        String url = URLConst.API.LOGIN.url() + "?loginicon=true&tip=%d&uuid=%s&r=-%s&_=%s";
         url = String.format(url, tip, session.getUuid(),
+                System.currentTimeMillis() / 1000,
                 System.currentTimeMillis());
                 
         String response = null;
@@ -203,7 +174,7 @@ public class WechatApi {
             log.warn("扫描二维码验证失败");
             throw new LogicException(-1, "扫描二维码验证失败");
         }
-        
+
         String code = Utils.match("window.code=(\\d+);", response);
         if (Utils.isBlank(code)) {
             log.warn("扫描二维码验证失败");
@@ -211,12 +182,14 @@ public class WechatApi {
         }
         
         if (code.equals("201")) {
+            String avatar = Utils.match("window.userAvatar = 'data:img/jpg;base64,(.*)';", response);
+            setAvatar(avatar);
             return true;
         }
         if (code.equals("200")) {
             String pm = Utils.match("window.redirect_uri=\"(\\S+?)\";",
                     response);
-            String r_uri = pm + "&fun=new";
+            String r_uri = pm + "&fun=new&target=t";
             this.redirectUri = r_uri;
             this.wxHost = r_uri.split("://")[1].split("/")[0];
             URLConst.init(this.wxHost);
@@ -230,6 +203,26 @@ public class WechatApi {
         }
         return false;
     }
+
+    private void setAvatar(String avatar) {
+        new Thread(() -> {
+            try {
+                final File output = new File(workDir, "avatar.jpg");
+                if (output.getParentFile() != null
+                        && !output.getParentFile().exists()) {
+                    output.getParentFile().mkdirs();
+                }
+
+                byte[] bytes = Base64.getDecoder().decode(avatar);
+                FileOutputStream fos = new FileOutputStream(output);
+                fos.write(bytes);
+                fos.close();
+
+            } catch (Exception e) {
+                log.warn("set avatar exception", e);
+            }
+        }).start();
+    }
     
     /**
      * 登录微信
@@ -239,6 +232,8 @@ public class WechatApi {
     public boolean login() throws Exception {
         
         Request.Builder requestBuilder = new Request.Builder()
+                .addHeader("extspam", "Go8FCIkFEokFCggwMDAwMDAwMRAGGvAESySibk50w5Wb3uTl2c2h64jVVrV7gNs06GFlWplHQbY/5FfiO++1yH4ykCyNPWKXmco+wfQzK5R98D3so7rJ5LmGFvBLjGceleySrc3SOf2Pc1gVehzJgODeS0lDL3/I/0S2SSE98YgKleq6Uqx6ndTy9yaL9qFxJL7eiA/R3SEfTaW1SBoSITIu+EEkXff+Pv8NHOk7N57rcGk1w0ZzRrQDkXTOXFN2iHYIzAAZPIOY45Lsh+A4slpgnDiaOvRtlQYCt97nmPLuTipOJ8Qc5pM7ZsOsAPPrCQL7nK0I7aPrFDF0q4ziUUKettzW8MrAaiVfmbD1/VkmLNVqqZVvBCtRblXb5FHmtS8FxnqCzYP4WFvz3T0TcrOqwLX1M/DQvcHaGGw0B0y4bZMs7lVScGBFxMj3vbFi2SRKbKhaitxHfYHAOAa0X7/MSS0RNAjdwoyGHeOepXOKY+h3iHeqCvgOH6LOifdHf/1aaZNwSkGotYnYScW8Yx63LnSwba7+hESrtPa/huRmB9KWvMCKbDThL/nne14hnL277EDCSocPu3rOSYjuB9gKSOdVmWsj9Dxb/iZIe+S6AiG29Esm+/eUacSba0k8wn5HhHg9d4tIcixrxveflc8vi2/wNQGVFNsGO6tB5WF0xf/plngOvQ1/ivGV/C1Qpdhzznh0ExAVJ6dwzNg7qIEBaw+BzTJTUuRcPk92Sn6QDn2Pu3mpONaEumacjW4w6ipPnPw+g2TfywJjeEcpSZaP4Q3YV5HG8D6UjWA4GSkBKculWpdCMadx0usMomsSS/74QgpYqcPkmamB4nVv1JxczYITIqItIKjD35IGKAUwAA==")
+                .addHeader("client-version", "2.0.0")
                 .url(this.redirectUri);
         Request request = requestBuilder.build();
         
@@ -247,6 +242,10 @@ public class WechatApi {
         Response response = client.newCall(request).execute();
         String body = response.body().string();
         Headers headers = response.headers();
+        if (headers.get("Content-Type").startsWith("text/html")) {
+            String msgDesc = Utils.match("<p class=\"msg-desc\">(.*)</p>", body);
+            throw new LogicException(-1, msgDesc.replaceAll("&nbsp;", " "));
+        }
         List<String> cookies = headers.values("Set-Cookie");
         this.cookie = Utils.getCookie(cookies);
         log.info("[*] 设置cookie [{}]", this.cookie);
@@ -281,8 +280,7 @@ public class WechatApi {
     /**
      * 微信初始化
      *
-     * @return
-     * @throws WechatException
+     * @return true or false
      */
     public boolean webwxinit() {
         if (null == session) {
@@ -444,7 +442,7 @@ public class WechatApi {
         params.put("synckey", this.synckey);
         params.put("_", System.currentTimeMillis());
         
-        String response = doGet(false, url, this.cookie, params);
+        String response = doGet(url, params);
         
         int[] arr = new int[] { -1, -1 };
         if (Utils.isBlank(response)) {
@@ -610,7 +608,7 @@ public class WechatApi {
         if (enableLog) {
             log.debug("[*] 响应 => {}", body);
         }
-        JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+        JsonObject obj = JsonParser.parseString(result).getAsJsonObject();
         if (obj.getAsJsonObject("BaseResponse").get("Ret").getAsInt() == 0) {
             UploadInfo info = new UploadInfo();
             info.MediaId = obj.get("MediaId").getAsString();
@@ -637,7 +635,7 @@ public class WechatApi {
         if (file == null) {
             return url;
         }
-        return doDown(false, url, this.cookie, file, null);
+        return doDown(url, file, null);
     }
     
     public String wxGetHead(String username, File file) throws Exception {
@@ -646,7 +644,7 @@ public class WechatApi {
         if (file == null) {
             return url;
         }
-        return doDown(false, url, this.cookie, file, null);
+        return doDown(url, file, null);
     }
     
     public String wxGetMsgImg(String msgId, File file) throws Exception {
@@ -655,7 +653,7 @@ public class WechatApi {
         if (file == null) {
             return url;
         }
-        return doDown(false, url + "&type=big", this.cookie, file, null);
+        return doDown(url + "&type=big", file, null);
     }
     
     public String wxGetMsgMedia(WechatMessage m, File file) throws Exception {
@@ -681,7 +679,7 @@ public class WechatApi {
         }
         Map<String, Object> params = new HashMap<>();
         // params.put("fromuser", null);
-        return doDown(false, url, this.cookie, file, params);
+        return doDown( url, file, params);
     }
     
     /**
@@ -720,11 +718,6 @@ public class WechatApi {
     
     private String doGet(String url, Map<String, Object> params)
             throws Exception {
-        return doGet(true, url, null, params);
-    }
-    
-    private String doGet(boolean enableLog, String url, String cookie,
-            Map<String, Object> params) throws Exception {
         String query = params == null ? null
                 : EncodeUtils.encodeRequestBody(params, null, true);
         if (!StringUtils.isEmpty(query)) {
@@ -737,20 +730,13 @@ public class WechatApi {
         }
         Request.Builder requestBuilder = new Request.Builder().url(url);
         
-        if (null != cookie) {
+        if (this.cookie != null) {
             requestBuilder.addHeader("Cookie", this.cookie);
         }
         
         Request request = requestBuilder.build();
-        if (enableLog) {
-            log.debug("[*] 请求 => {}\n", request);
-        }
-        
         Response response = client.newCall(request).execute();
         String body = response.body().string();
-        if (enableLog) {
-            log.debug("[*] 响应 => {}", body);
-        }
         return body;
     }
     
@@ -764,24 +750,19 @@ public class WechatApi {
         
         Request.Builder requestBuilder = new Request.Builder().url(url)
                 .post(requestBody);
-        if (null != cookie) {
+        if (cookie != null) {
             requestBuilder.addHeader("Cookie", cookie);
         }
         
         Request request = requestBuilder.build();
-        
-        log.debug("[*] 请求 => {}\n", request);
+
         Response response = client.newCall(request).execute();
         String body = response.body().string();
-        if (null != body && body.length() <= 300) {
-            log.debug("[*] 响应 => {}", body);
-        }
-        return new JsonParser().parse(body);
+        return JsonParser.parseString(body);
         
     }
     
-    private String doDown(boolean enableLog, String url, String cookie,
-            File file, Map<String, Object> params) throws Exception {
+    private String doDown(String url, File file, Map<String, Object> params) throws Exception {
         String query = params == null ? null
                 : EncodeUtils.encodeRequestBody(params, null, true);
         if (!StringUtils.isEmpty(query)) {
@@ -794,14 +775,11 @@ public class WechatApi {
         }
         Request.Builder requestBuilder = new Request.Builder().url(url);
         
-        if (null != cookie) {
+        if (this.cookie != null) {
             requestBuilder.addHeader("Cookie", this.cookie);
         }
         
         Request request = requestBuilder.build();
-        if (enableLog) {
-            log.debug("[*] 请求 => {}\n", request);
-        }
         
         Response response = client.newCall(request).execute();
         if (file.getParentFile() != null && !file.getParentFile().exists()) {

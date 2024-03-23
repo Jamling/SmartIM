@@ -1,22 +1,5 @@
 package io.github.biezhi.wechat.api;
 
-import java.io.File;
-import java.io.IOException;
-import java.net.Proxy;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeoutException;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-
 import cn.ieclipse.smartim.AbstractSmartClient;
 import cn.ieclipse.smartim.callback.LoginCallback;
 import cn.ieclipse.smartim.callback.ReceiveCallback;
@@ -28,20 +11,21 @@ import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
 import cn.ieclipse.util.StringUtils;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import io.github.biezhi.wechat.Utils;
-import io.github.biezhi.wechat.handler.DecodeMessageInterceptor;
-import io.github.biezhi.wechat.handler.GroupMessageInterceptor;
-import io.github.biezhi.wechat.handler.TypeMessageInterceptor;
-import io.github.biezhi.wechat.handler.WechatContactHandler;
-import io.github.biezhi.wechat.handler.WechatMessageHandler;
+import io.github.biezhi.wechat.handler.*;
 import io.github.biezhi.wechat.handler.msg.AppMsgXmlHandler;
-import io.github.biezhi.wechat.model.Const;
-import io.github.biezhi.wechat.model.Contact;
-import io.github.biezhi.wechat.model.Environment;
-import io.github.biezhi.wechat.model.GroupFrom;
-import io.github.biezhi.wechat.model.UploadInfo;
-import io.github.biezhi.wechat.model.UserFrom;
-import io.github.biezhi.wechat.model.WechatMessage;
+import io.github.biezhi.wechat.model.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.io.IOException;
+import java.net.Proxy;
+import java.util.*;
+import java.util.concurrent.TimeoutException;
 
 /**
  * Created by Jamling on 2017/7/17.
@@ -90,6 +74,10 @@ public class WechatClient extends AbstractSmartClient {
             if (!api.waitforlogin(1)) {
                 maxCount--;
                 continue;
+            }
+            File avatar = new File(workDir, "avatar.jpg");
+            if (loginCallback != null && avatar.exists()) {
+                loginCallback.onAvatar(avatar.getAbsolutePath());
             }
             log.info(Const.LOG_MSG_CONFIRM_LOGIN);
             if (!api.waitforlogin(0)) {
