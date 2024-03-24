@@ -15,7 +15,7 @@
  */
 package cn.ieclipse.smartim.robot;
 
-import java.util.Map;
+import cn.ieclipse.smartim.model.IContact;
 
 /**
  * 机器人
@@ -25,8 +25,15 @@ import java.util.Map;
  *       
  */
 public interface IRobot {
-    String getRobotName();
+    int CONNECT_TIMEOUT = 5;
+    int READ_TIMEOUT = 5;
     
-    String getRobotAnswer(String question, Map<String, Object> params)
+    String getRobotAnswer(String question, IContact contact, String groupId)
             throws Exception;
+
+    void recycle();
+
+    interface RobotSettingsChangedListener {
+
+    }
 }

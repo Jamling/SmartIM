@@ -15,23 +15,20 @@
  */
 package cn.ieclipse.smartim.robot;
 
-import java.net.Proxy;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
-
-import com.google.gson.Gson;
+import cn.ieclipse.smartim.model.IContact;
+import cn.ieclipse.util.EncryptUtils;
+import cn.ieclipse.util.StringUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.google.gson.annotations.Expose;
-
-import cn.ieclipse.util.StringUtils;
 import okhttp3.MediaType;
-import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 图灵机器人
@@ -40,54 +37,37 @@ import okhttp3.RequestBody;
  * @date 2017年10月20日
  *       
  */
-public class TuringRobot implements IRobot {
+public class TuringRobot extends AbsRobot {
+    private static final String TURING_API_V2 = "http://openapi.tuling123.com/openapi/api/v2";
+    private String apiKey;
     
-    public static final String URL = "http://www.tuling123.com/openapi/api";
-    public static final String TURING_API_V2 = "http://openapi.tuling123.com/openapi/api/v2";
-    public static int TIMEOUT = 3;
-    private String name;
-    private OkHttpClient client;
-    private Gson gson = new Gson();
-    
-    public TuringRobot(String name, int timeout, Proxy proxy) {
-        this.name = name;
-        OkHttpClient.Builder builder = new OkHttpClient.Builder();
-        if (timeout > 0) {
-            builder.connectTimeout(timeout, TimeUnit.SECONDS);
-        }
-        else {
-            builder.connectTimeout(TIMEOUT, TimeUnit.SECONDS);
-        }
-        if (proxy != null) {
-            builder.proxy(proxy);
-        }
-        this.client = builder.build();
+    public TuringRobot(String apiKey, String extra) {
+        super(0, 0);
+        this.apiKey = apiKey;
     }
-    
-    public void setRobotName(String name) {
-        this.name = name;
+
+    private Map<String, Object> getParams(String text, IContact contact, String groupId) {
+        TuringRequestV2Builder builder = new TuringRequestV2Builder(apiKey);
+        builder.setText(text);
+        String uid = EncryptUtils.encryptMd5(contact.getName());
+        String uname = contact.getName();
+        String gid = groupId == null ? null : EncryptUtils.encryptMd5(groupId);
+        builder.setUserInfo(uid, uname, gid);
+        // builder.setLocation(contact, contact.Province, null);
+        return builder.build();
     }
     
     @Override
-    public String getRobotName() {
-        return name;
-    }
-    
-    @Override
-    public String getRobotAnswer(String question, Map<String, Object> params)
+    public String getRobotAnswer(String question, IContact contact, String groupId)
             throws Exception {
         try {
-            if (params == null) {
-                return null;
-            }
-            OkHttpClient client = this.client;
-            String body = new Gson().toJson(params);
+            String body = getGson().toJson(getParams(question, contact, groupId));
             Request request = new Request.Builder().url(TURING_API_V2)
                     .post(RequestBody
                             .create(MediaType.parse("application/json"), body))
                     .build();
-            String result = client.newCall(request).execute().body().string();
-            JsonObject obj = new JsonParser().parse(result).getAsJsonObject();
+            String result = getClient().newCall(request).execute().body().string();
+            JsonObject obj = JsonParser.parseString(result).getAsJsonObject();
             if (obj != null && obj.has("results")) {
                 JsonElement ele = obj.get("results");
                 JsonObject ret = null;
@@ -101,7 +81,7 @@ public class TuringRobot implements IRobot {
                 if (ret != null && ret.has("values")) {
                     String type = ret.get("resultType").getAsString();
                     ret = ret.getAsJsonObject("values");
-                    Response response = gson.fromJson(ret, Response.class);
+                    Response response = getGson().fromJson(ret, Response.class);
                     response.type = type;
                     if ("text".equals(type)) {
                         return response.text;

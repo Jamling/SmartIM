@@ -1,11 +1,5 @@
 package cn.ieclipse.smartim;
 
-import java.awt.BorderLayout;
-import java.awt.EventQueue;
-
-import javax.swing.JFrame;
-import javax.swing.JTabbedPane;
-
 import cn.ieclipse.smartim.common.Notifications;
 import cn.ieclipse.smartim.common.RestUtils;
 import cn.ieclipse.smartim.common.SwingUtils;
@@ -14,6 +8,9 @@ import cn.ieclipse.smartqq.SmartQQPanel;
 import cn.ieclipse.wechat.WechatPanel;
 import icons.SmartIcons;
 import io.github.biezhi.wechat.api.WechatClient;
+
+import javax.swing.*;
+import java.awt.*;
 
 public class Application {
 
@@ -25,16 +22,14 @@ public class Application {
     public static void main(String[] args) {
         WechatClient.initSSL();
         SmartIMSettings.getInstance().loadProp();
-        EventQueue.invokeLater(new Runnable() {
-            public void run() {
-                try {
-                    SwingUtils.initLookAndFeel();
-                    Application window = new Application();
-                    window.window.setVisible(true);
-                    Notifications.init(window.window);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+        EventQueue.invokeLater(() -> {
+            try {
+                SwingUtils.initLookAndFeel();
+                Application window = new Application();
+                window.window.setVisible(true);
+                Notifications.init(window.window);
+            } catch (Exception e) {
+                e.printStackTrace();
             }
         });
     }
@@ -57,7 +52,7 @@ public class Application {
                 super.dispose();
             }
         };
-        window.setTitle("SmartIM (" + RestUtils.version + ")");
+        window.setTitle(String.format("SmartIM (%s)", RestUtils.VERSION));
         window.setBounds(100, 100, 700, 450);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
@@ -69,18 +64,5 @@ public class Application {
 
         SmartQQPanel panel1 = new SmartQQPanel();
         tabbedPane.addTab("SmartQQ", SmartIcons.qq, panel1, null);
-
-        // JMenuBar menuBar = new JMenuBar();
-        // frmSmartim.setJMenuBar(menuBar);
-        //
-        // JMenu mnNewMenu = new JMenu("文件");
-        // mnNewMenu.setMnemonic('F');
-        // menuBar.add(mnNewMenu);
-        //
-        // JMenuItem mntmNewMenuItem = new JMenuItem("SmartQQ");
-        // mnNewMenu.add(mntmNewMenuItem);
-        //
-        // JMenuItem mntmNewMenuItem_1 = new JMenuItem("微信");
-        // mnNewMenu.add(mntmNewMenuItem_1);
     }
 }

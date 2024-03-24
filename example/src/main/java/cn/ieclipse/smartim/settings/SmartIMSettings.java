@@ -16,6 +16,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 
 import cn.ieclipse.smartim.common.LOG;
+import cn.ieclipse.smartim.robot.RobotFactory;
 import cn.ieclipse.util.FileUtils;
 
 /**
@@ -61,19 +62,28 @@ public class SmartIMSettings {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        if (!myState.ROBOT_ENABLE) {
+            return;
+        }
+        if (myState.ROBOT_TYPE == RobotFactory.ROBOT_TURING) {
+            RobotFactory.getInstance().changeSettings(myState.ROBOT_TYPE, myState.ROBOT_KEY, null);
+        } else {
+            RobotFactory.getInstance().changeSettings(myState.ROBOT_TYPE, myState.ROBOT_OPENAI_KEY, myState.ROBOT_OPENAI_EXTRA);
+        }
     }
 
     public static SmartIMSettings getInstance() {
         if (instance == null) {
-            instance = null;
-            if (instance == null) {
-                instance = new SmartIMSettings();
+            synchronized (SmartIMSettings.class) {
+                if (instance == null) {
+                    instance = new SmartIMSettings();
+                }
             }
         }
         return instance;
     }
 
-    private static SmartIMSettings instance;
+    private static volatile SmartIMSettings instance;
 
     public static class State implements java.io.Serializable {
         private static final long serialVersionUID = -5719423461653118971L;
@@ -94,6 +104,8 @@ public class SmartIMSettings {
         public String ROBOT_NAME = "";
         public int ROBOT_TYPE = 0;
         public String ROBOT_KEY = "";
+        public String ROBOT_OPENAI_KEY = "";
+        public String ROBOT_OPENAI_EXTRA = "{\n\t\"model\":\"text-davinci-03\"}";
         public String ROBOT_GROUP_WELCOME = "欢迎{user} {memo}";
         public boolean ROBOT_GROUP_ANY = false;
         public boolean ROBOT_FRIEND_ANY = false;

@@ -1,21 +1,5 @@
 package cn.ieclipse.smartqq;
 
-import java.util.Map;
-
-import com.scienjus.smartqq.client.SmartQQClient;
-import com.scienjus.smartqq.model.DiscussFrom;
-import com.scienjus.smartqq.model.DiscussInfo;
-import com.scienjus.smartqq.model.DiscussMessage;
-import com.scienjus.smartqq.model.DiscussUser;
-import com.scienjus.smartqq.model.FriendFrom;
-import com.scienjus.smartqq.model.GroupFrom;
-import com.scienjus.smartqq.model.GroupInfo;
-import com.scienjus.smartqq.model.GroupMessage;
-import com.scienjus.smartqq.model.GroupUser;
-import com.scienjus.smartqq.model.QQContact;
-import com.scienjus.smartqq.model.QQMessage;
-import com.scienjus.smartqq.model.UserInfo;
-
 import cn.ieclipse.smartim.IMRobotCallback;
 import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.model.IContact;
@@ -25,14 +9,18 @@ import cn.ieclipse.smartim.model.impl.AbstractMessage;
 import cn.ieclipse.smartim.robot.TuringRobot.TuringRequestV2Builder;
 import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.util.StringUtils;
+import com.scienjus.smartqq.client.SmartQQClient;
+import com.scienjus.smartqq.model.*;
+
+import java.util.Map;
 
 public class QQRobotCallback extends IMRobotCallback {
-
     private QQChatConsole console;
     private SmartQQPanel fContactView;
 
     public QQRobotCallback(SmartQQPanel fContactView) {
         this.fContactView = fContactView;
+        initRobot();
     }
 
     @Override
@@ -72,8 +60,8 @@ public class QQRobotCallback extends IMRobotCallback {
         SmartQQClient client = fContactView.getClient();
         // auto reply friend
         if (from instanceof FriendFrom) {
-            if (SmartIMSettings.getInstance().getState().ROBOT_FRIEND_ANY) {
-                String reply = getReply(m.getContent(), (QQContact)from.getContact(), null);
+            if (isReplyFriend()) {
+                String reply = getReply(m.getContent(), from.getContact(), null);
                 if (reply != null) {
                     String input = robotName + reply;
                     if (console == null) {
@@ -89,7 +77,7 @@ public class QQRobotCallback extends IMRobotCallback {
             String gName = gf.getGroup().getName();
             // QQContact qqContact = client.getGroup(gf.getGroup().getId());
             if (from.isNewbie()) {
-                String welcome = SmartIMSettings.getInstance().getState().ROBOT_GROUP_WELCOME;
+                String welcome = getGroupWelcome();
                 if (welcome != null && !welcome.isEmpty()) {
                     GroupInfo info = gf.getGroup();
                     GroupUser gu = gf.getGroupUser();
@@ -127,7 +115,7 @@ public class QQRobotCallback extends IMRobotCallback {
                 return;
             }
             // replay any
-            if (SmartIMSettings.getInstance().getState().ROBOT_GROUP_ANY) {
+            if (isReplyAnyGroupMember()) {
                 if (from.isNewbie() || isMySend(m.getUserId())) {
                     return;
                 }
@@ -182,14 +170,12 @@ public class QQRobotCallback extends IMRobotCallback {
             }
             return null;
         }
-        Map<String, Object> params = getParams(text, contact, groupId);
-        if (params != null) {
             try {
-                return turingRobot.getRobotAnswer(text, params);
+                return getRobot().getRobotAnswer(text, contact, groupId);
             } catch (Exception e) {
                 LOG.error("机器人回复失败", e);
             }
-        }
+
         return null;
     }
 

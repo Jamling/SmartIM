@@ -72,7 +72,7 @@ public class WechatApi {
         this.writeTimeout = environment.getInt("http.write-time-out", 60);
         URLConst.init(this.wxHost);
         HttpLoggingInterceptor loggingInterceptor = new HttpLoggingInterceptor(message -> log.debug(message));
-        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BASIC);
+        loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.NONE);
         OkHttpClient.Builder builder = new OkHttpClient.Builder()
                 .cookieJar(cookieJar)
                 .connectTimeout(connTimeout, TimeUnit.SECONDS)

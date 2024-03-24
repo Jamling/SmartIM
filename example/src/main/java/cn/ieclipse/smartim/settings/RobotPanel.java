@@ -1,15 +1,11 @@
 package cn.ieclipse.smartim.settings;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import cn.ieclipse.smartim.robot.RobotFactory;
 
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
+import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 public class RobotPanel extends JPanel {
 
@@ -26,6 +22,7 @@ public class RobotPanel extends JPanel {
     private JCheckBox chkFriendAny;
     private JLabel lblNewLabel_5;
     private JTextField textReplyEmpty;
+    private JTextArea textExtra;
     private SmartIMSettings settings;
 
     /**
@@ -36,9 +33,9 @@ public class RobotPanel extends JPanel {
         JPanel panel_1 = this;
         GridBagLayout gbl_panel_1 = new GridBagLayout();
         gbl_panel_1.columnWidths = new int[] {0, 0, 0};
-        gbl_panel_1.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        gbl_panel_1.rowHeights = new int[] {0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
         gbl_panel_1.columnWeights = new double[] {0.0, 1.0, Double.MIN_VALUE};
-        gbl_panel_1.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, Double.MIN_VALUE};
+        gbl_panel_1.rowWeights = new double[] {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0,0, Double.MIN_VALUE};
         panel_1.setLayout(gbl_panel_1);
         {
             chkRobot = new JCheckBox("开启聊天机器人");
@@ -66,44 +63,6 @@ public class RobotPanel extends JPanel {
             gbc_textRobotName.gridy = 1;
             panel_1.add(textRobotName, gbc_textRobotName);
             textRobotName.setColumns(10);
-        }
-        {
-            label = new JLabel("机器人");
-            GridBagConstraints gbc_label = new GridBagConstraints();
-            gbc_label.anchor = GridBagConstraints.WEST;
-            gbc_label.insets = new Insets(0, 0, 5, 5);
-            gbc_label.gridx = 0;
-            gbc_label.gridy = 2;
-            panel_1.add(label, gbc_label);
-        }
-        {
-            comboRobot = new JComboBox();
-            comboRobot.setModel(new DefaultComboBoxModel(new String[] {"图灵机器人"}));
-            GridBagConstraints gbc_comboRobot = new GridBagConstraints();
-            gbc_comboRobot.insets = new Insets(0, 0, 5, 0);
-            gbc_comboRobot.fill = GridBagConstraints.HORIZONTAL;
-            gbc_comboRobot.gridx = 1;
-            gbc_comboRobot.gridy = 2;
-            panel_1.add(comboRobot, gbc_comboRobot);
-        }
-        {
-            lblNewLabel_3 = new JLabel("API key");
-            GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
-            gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
-            gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
-            gbc_lblNewLabel_3.gridx = 0;
-            gbc_lblNewLabel_3.gridy = 3;
-            panel_1.add(lblNewLabel_3, gbc_lblNewLabel_3);
-        }
-        {
-            textApiKey = new JTextField();
-            GridBagConstraints gbc_textApiKey = new GridBagConstraints();
-            gbc_textApiKey.insets = new Insets(0, 0, 5, 0);
-            gbc_textApiKey.fill = GridBagConstraints.HORIZONTAL;
-            gbc_textApiKey.gridx = 1;
-            gbc_textApiKey.gridy = 3;
-            panel_1.add(textApiKey, gbc_textApiKey);
-            textApiKey.setColumns(10);
         }
         {
             lblNewLabel_4 = new JLabel("群成员欢迎词");
@@ -165,17 +124,89 @@ public class RobotPanel extends JPanel {
             panel_1.add(textReplyEmpty, gbc_textReplayEmpty);
             textReplyEmpty.setColumns(10);
         }
+        {
+            label = new JLabel("机器人");
+            GridBagConstraints gbc_label = new GridBagConstraints();
+            gbc_label.anchor = GridBagConstraints.WEST;
+            gbc_label.insets = new Insets(0, 0, 5, 5);
+            gbc_label.gridx = 0;
+            gbc_label.gridy = 8;
+            panel_1.add(label, gbc_label);
+        }
+        {
+            comboRobot = new JComboBox();
+            DefaultComboBoxModel<String> model = new DefaultComboBoxModel(new String[] {"图灵机器人", "OpenAI"});
+            comboRobot.setModel(model);
+            comboRobot.addItemListener(new ItemListener() {
+                @Override
+                public void itemStateChanged(ItemEvent e) {
+                    if (e.getStateChange() == ItemEvent.SELECTED) {
+                        int index = model.getIndexOf(e.getItem());
+                        fireRobotChanged(index);
+                    }
+                }
+            });
+            GridBagConstraints gbc_comboRobot = new GridBagConstraints();
+            gbc_comboRobot.insets = new Insets(0, 0, 5, 0);
+            gbc_comboRobot.fill = GridBagConstraints.HORIZONTAL;
+            gbc_comboRobot.gridx = 1;
+            gbc_comboRobot.gridy = 8;
+            panel_1.add(comboRobot, gbc_comboRobot);
+        }
+        {
+            lblNewLabel_3 = new JLabel("API key");
+            GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
+            gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
+            gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
+            gbc_lblNewLabel_3.gridx = 0;
+            gbc_lblNewLabel_3.gridy = 9;
+            panel_1.add(lblNewLabel_3, gbc_lblNewLabel_3);
+        }
+        {
+            textApiKey = new JTextField();
+            GridBagConstraints gbc_textApiKey = new GridBagConstraints();
+            gbc_textApiKey.insets = new Insets(0, 0, 5, 0);
+            gbc_textApiKey.fill = GridBagConstraints.HORIZONTAL;
+            gbc_textApiKey.gridx = 1;
+            gbc_textApiKey.gridy = 9;
+            panel_1.add(textApiKey, gbc_textApiKey);
+            textApiKey.setColumns(10);
+        }
+        {
+            JLabel lblNewLabel_3 = new JLabel("参数设置");
+            GridBagConstraints gbc_lblNewLabel_3 = new GridBagConstraints();
+            gbc_lblNewLabel_3.anchor = GridBagConstraints.WEST;
+            gbc_lblNewLabel_3.insets = new Insets(0, 0, 5, 5);
+            gbc_lblNewLabel_3.gridx = 0;
+            gbc_lblNewLabel_3.gridy = 10;
+            panel_1.add(lblNewLabel_3, gbc_lblNewLabel_3);
+        }
+        {
+            textExtra = new JTextArea(5, 10);
+            GridBagConstraints gbc_textApiKey = new GridBagConstraints();
+            gbc_textApiKey.insets = new Insets(0, 0, 5, 5);
+            gbc_textApiKey.fill = GridBagConstraints.HORIZONTAL;
+            gbc_textApiKey.gridx = 1;
+            gbc_textApiKey.gridy = 10;
+            panel_1.add(textExtra, gbc_textApiKey);
+        }
+
+        int idx = settings.getState().ROBOT_TYPE;
+        if (idx >= 0 && idx < comboRobot.getItemCount()) {
+            comboRobot.setSelectedIndex(idx);
+        }
     }
 
     public void reset() {
         int idx = settings.getState().ROBOT_TYPE;
         if (idx >= 0 && idx < comboRobot.getItemCount()) {
             comboRobot.setSelectedIndex(idx);
+            fireRobotChanged(idx);
         }
         chkRobot.setSelected(settings.getState().ROBOT_ENABLE);
         chkFriendAny.setSelected(settings.getState().ROBOT_FRIEND_ANY);
         chkGroupAny.setSelected(settings.getState().ROBOT_GROUP_ANY);
-        textApiKey.setText(settings.getState().ROBOT_KEY);
+
         textReplyEmpty.setText(settings.getState().ROBOT_REPLY_EMPTY);
         textRobotName.setText(settings.getState().ROBOT_NAME);
         textWelcome.setText(settings.getState().ROBOT_GROUP_WELCOME);
@@ -186,9 +217,24 @@ public class RobotPanel extends JPanel {
         settings.getState().ROBOT_ENABLE = chkRobot.isSelected();
         settings.getState().ROBOT_FRIEND_ANY = chkFriendAny.isSelected();
         settings.getState().ROBOT_GROUP_ANY = chkGroupAny.isSelected();
-        settings.getState().ROBOT_KEY = textApiKey.getText().trim();
         settings.getState().ROBOT_REPLY_EMPTY = textReplyEmpty.getText().trim();
         settings.getState().ROBOT_NAME = textRobotName.getText().trim();
         settings.getState().ROBOT_GROUP_WELCOME = textWelcome.getText().trim();
+        if (settings.getState().ROBOT_TYPE == RobotFactory.ROBOT_OPENAI) {
+            settings.getState().ROBOT_OPENAI_KEY = textApiKey.getText().trim();
+            settings.getState().ROBOT_OPENAI_EXTRA = textExtra.getText().trim();
+        } else {
+            settings.getState().ROBOT_KEY = textApiKey.getText().trim();
+        }
+    }
+
+    private void fireRobotChanged(int index) {
+        if (index == RobotFactory.ROBOT_OPENAI) {
+            textApiKey.setText(settings.getState().ROBOT_OPENAI_KEY);
+            textExtra.setText(settings.getState().ROBOT_OPENAI_EXTRA);
+        } else {
+            textApiKey.setText(settings.getState().ROBOT_KEY);
+            textExtra.setText("");
+        }
     }
 }

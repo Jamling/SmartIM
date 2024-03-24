@@ -1,31 +1,18 @@
 package cn.ieclipse.smartim.settings;
 
-import java.awt.BorderLayout;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JFileChooser;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JTextField;
-import javax.swing.UIManager;
-import javax.swing.UIManager.LookAndFeelInfo;
-import javax.swing.plaf.basic.BasicComboBoxRenderer;
-
 import cn.ieclipse.common.BareBonesBrowserLaunch;
 import cn.ieclipse.smartim.IMClientFactory;
 import cn.ieclipse.smartim.common.RestUtils;
 import cn.ieclipse.smartim.common.SwingUtils;
+
+import javax.swing.*;
+import javax.swing.UIManager.LookAndFeelInfo;
+import javax.swing.plaf.basic.BasicComboBoxRenderer;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class GeneralPanel extends JPanel {
     private JCheckBox chkNotify;
@@ -279,7 +266,7 @@ public class GeneralPanel extends JPanel {
         linkAbout.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                BareBonesBrowserLaunch.openURL(RestUtils.about_url);
+                BareBonesBrowserLaunch.openURL(RestUtils.ABOUT_URL);
             }
         });
     }
