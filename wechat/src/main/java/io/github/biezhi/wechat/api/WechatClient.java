@@ -56,7 +56,6 @@ public class WechatClient extends AbstractSmartClient {
     }
     
     public WechatClient(Proxy proxy) {
-        WechatClient.initSSL();
         Environment environment = Environment.of("classpath:config.properties");
         api = new WechatApi(environment, proxy);
         addMessageInterceptor(new TypeMessageInterceptor());
@@ -607,11 +606,6 @@ public class WechatClient extends AbstractSmartClient {
                     api.session.getSkey());
         }
         return null;
-    }
-    
-    public static void initSSL() {
-        System.setProperty("https.protocols", "TLSv1");
-        System.setProperty("jsse.enableSNIExtension", "false");
     }
     
     public static void main(String[] args) throws Exception {

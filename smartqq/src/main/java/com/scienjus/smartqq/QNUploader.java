@@ -15,23 +15,16 @@
  */
 package com.scienjus.smartqq;
 
-import java.io.File;
-
-import javax.net.ssl.HostnameVerifier;
-import javax.net.ssl.SSLSession;
-
 import com.google.gson.Gson;
 import com.qiniu.common.Zone;
 import com.qiniu.storage.Configuration;
 import com.qiniu.storage.UploadManager;
 import com.scienjus.smartqq.client.CookieManager;
+import okhttp3.*;
 
-import okhttp3.Call;
-import okhttp3.FormBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
+import javax.net.ssl.HostnameVerifier;
+import javax.net.ssl.SSLSession;
+import java.io.File;
 
 /**
  * 类/接口描述
@@ -89,7 +82,12 @@ public class QNUploader {
         }
         return info.data;
     }
-    
+
+    public UploadInfo upload(String qq, File file, String ak, String sk,
+                             String bucket) throws Exception {
+        return upload(qq, file, ak, sk, bucket, null);
+    }
+
     public UploadInfo upload(String qq, File file, String ak, String sk,
             String bucket, Zone zone) throws Exception {
             

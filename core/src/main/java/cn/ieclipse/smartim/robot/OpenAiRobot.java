@@ -3,7 +3,6 @@ package cn.ieclipse.smartim.robot;
 import cn.ieclipse.smartim.model.IContact;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.sun.istack.internal.NotNull;
 import okhttp3.*;
 
 import java.io.IOException;
@@ -27,7 +26,7 @@ public class OpenAiRobot extends AbsRobot {
         baseRequest = null;
     }
 
-    private String getRequestBody(@NotNull String text, IContact contact, String groupId) {
+    private String getRequestBody(String text, IContact contact, String groupId) {
         CompletionRequest req;
         try {
             req = (CompletionRequest) baseRequest.clone();

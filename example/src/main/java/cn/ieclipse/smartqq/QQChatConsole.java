@@ -1,7 +1,10 @@
 package cn.ieclipse.smartqq;
 
-import java.io.File;
-
+import cn.ieclipse.smartim.common.IMUtils;
+import cn.ieclipse.smartim.console.IMChatConsole;
+import cn.ieclipse.smartim.model.IContact;
+import cn.ieclipse.smartim.model.impl.AbstractFrom;
+import cn.ieclipse.smartim.settings.SmartIMSettings;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.scienjus.smartqq.QNUploader;
@@ -12,11 +15,7 @@ import com.scienjus.smartqq.handler.msg.GroupMessageHandler;
 import com.scienjus.smartqq.model.Friend;
 import com.scienjus.smartqq.model.QQMessage;
 
-import cn.ieclipse.smartim.common.IMUtils;
-import cn.ieclipse.smartim.console.IMChatConsole;
-import cn.ieclipse.smartim.model.IContact;
-import cn.ieclipse.smartim.model.impl.AbstractFrom;
-import cn.ieclipse.smartim.settings.SmartIMSettings;
+import java.io.File;
 
 /**
  * Created by Jamling on 2017/7/1.
@@ -92,7 +91,7 @@ public class QQChatConsole extends IMChatConsole {
             ak = "";
             sk = "";
         }
-        QNUploader.UploadInfo info = uploader.upload(qq, f, ak, sk, bucket, null);
+        QNUploader.UploadInfo info = uploader.upload(qq, f, ak, sk, bucket);
         String url = info.getUrl(domain, ts);
 
         final String msg = String.format("来自SmartQQ的文件: %s (大小%s), 点击链接 %s 查看", IMUtils.getName(file),

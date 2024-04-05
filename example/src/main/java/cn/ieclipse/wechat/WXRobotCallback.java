@@ -132,12 +132,8 @@ public class WXRobotCallback extends IMRobotCallback {
                     return;
                 }
 
-                if (from instanceof UserFrom) {
+                if (gf.getMember().isUnknown()) {
                     return;
-                } else if (from instanceof GroupFrom) {
-                    if (((GroupFrom)from).getMember().isUnknown()) {
-                        return;
-                    }
                 }
 
                 String reply = getReply(text, gf.getMember(), gf.getName());

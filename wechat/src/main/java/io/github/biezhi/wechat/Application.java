@@ -1,8 +1,5 @@
 package io.github.biezhi.wechat;
 
-import java.io.File;
-import java.util.Date;
-
 import cn.ieclipse.smartim.callback.ReceiveCallback;
 import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
@@ -10,6 +7,9 @@ import cn.ieclipse.smartim.model.impl.AbstractMessage;
 import io.github.biezhi.wechat.api.WechatClient;
 import io.github.biezhi.wechat.model.Environment;
 import io.github.biezhi.wechat.ui.QRCodeFrame;
+
+import java.io.File;
+import java.util.Date;
 
 /**
  * wechat启动程序
@@ -72,8 +72,6 @@ public class Application {
     }
     
     public static void main(String[] args) throws Exception {
-        System.setProperty("https.protocols", "TLSv1");
-        System.setProperty("jsse.enableSNIExtension", "false");
         
         Environment environment = Environment.of("classpath:config.properties");
         

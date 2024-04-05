@@ -7,7 +7,6 @@ import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.smartqq.SmartQQPanel;
 import cn.ieclipse.wechat.WechatPanel;
 import icons.SmartIcons;
-import io.github.biezhi.wechat.api.WechatClient;
 
 import javax.swing.*;
 import java.awt.*;
@@ -18,9 +17,9 @@ public class Application {
 
     /**
      * Launch the application.
+     *
      */
     public static void main(String[] args) {
-        WechatClient.initSSL();
         SmartIMSettings.getInstance().loadProp();
         EventQueue.invokeLater(() -> {
             try {
