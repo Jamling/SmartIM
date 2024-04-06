@@ -14,6 +14,7 @@ buildscript {
 plugins {
     id 'java'
     id 'application'
+    id 'signing'
     id "de.gliderpilot.jnlp" version "1.2.6"
 }
 
@@ -21,6 +22,14 @@ version '3.0.0'
 mainClassName = 'cn.ieclipse.smartim.Application'
 def launcherName = 'SmartIM-App'
 def codebaseUrl = 'https://dl.ieclipse.cn/jws'
+
+signing {
+    sign configurations.runtimeElements
+    //storeFile = file('keystore.jks')
+    //storePassword = findProperty('keystore_password')
+    //keyAlias = 'swing'
+    //keyPassword = findProperty('key_password')
+}
 jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     archiveFileName = "${launcherName}.jar"
@@ -61,7 +70,7 @@ jnlp {
             argument('-verbose')
         }
     }
-    //signJarParams = [keystore: '../keystore.ks', alias: 'myalias', storepass: 'mystorepass']
+    //signJarParams = [keystore: 'keystore.jks', alias: 'swing', storepass: findProperty('keystore_password').toString()]
 }
 
 // 其他配置...
