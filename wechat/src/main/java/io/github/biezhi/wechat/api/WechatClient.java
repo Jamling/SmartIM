@@ -65,7 +65,7 @@ public class WechatClient extends AbstractSmartClient {
     }
     
     private boolean waitForLogin() {
-        int maxCount = 10;
+        int maxCount = 30;
         while (maxCount > 0) {
             Utils.sleep(maxCount < 5 ? 500 : 1000);
             log.info(Const.LOG_MSG_SCAN_QRCODE);

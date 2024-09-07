@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class WechatApi {
     
     private static final Logger log = LoggerFactory.getLogger(WechatApi.class);
-    
+    private static boolean hasShowAvatar;
     // 配置文件环境参数
     protected Environment environment;
     
@@ -166,6 +166,7 @@ public class WechatApi {
         String response = null;
         try {
             response = doGet(url, null);
+            log.debug("请求类型 {} 请求结果 {}",tip,response);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -181,9 +182,10 @@ public class WechatApi {
             return false;
         }
         
-        if (code.equals("201")) {
+        if (code.equals("201")&&!hasShowAvatar) {
             String avatar = Utils.match("window.userAvatar = 'data:img/jpg;base64,(.*)';", response);
             setAvatar(avatar);
+            hasShowAvatar=true;
             return true;
         }
         if (code.equals("200")) {
