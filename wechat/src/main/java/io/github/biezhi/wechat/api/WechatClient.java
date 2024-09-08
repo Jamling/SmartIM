@@ -10,6 +10,7 @@ import cn.ieclipse.smartim.model.IMessage;
 import cn.ieclipse.smartim.model.impl.AbstractContact;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
+import cn.ieclipse.util.FileUtils;
 import cn.ieclipse.util.StringUtils;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -43,7 +44,7 @@ public class WechatClient extends AbstractSmartClient {
     private List<Contact> memberList;
     private List<Contact> recentList;
     private List<Contact> allList;
-    private Contact accout;
+    private Contact account;
     
     private WechatContactHandler contactHandler = new WechatContactHandler();
     
@@ -66,14 +67,18 @@ public class WechatClient extends AbstractSmartClient {
     
     private boolean waitForLogin() {
         int maxCount = 30;
+        boolean scanned = false;
         while (maxCount > 0) {
             Utils.sleep(maxCount < 5 ? 500 : 1000);
-            log.info(Const.LOG_MSG_SCAN_QRCODE);
-            // 这是一个阻塞方法
-            if (!api.waitforlogin(1)) {
-                maxCount--;
-                continue;
+            if (!scanned) {
+                log.info(Const.LOG_MSG_SCAN_QRCODE);
+                // 这是一个阻塞方法
+                if (!api.waitforlogin(1)) {
+                    maxCount--;
+                    continue;
+                }
             }
+            scanned = true;
             File avatar = new File(workDir, "avatar.jpg");
             if (loginCallback != null && avatar.exists()) {
                 loginCallback.onAvatar(avatar.getAbsolutePath());
@@ -91,6 +96,15 @@ public class WechatClient extends AbstractSmartClient {
     public void login() {
         isLogin = false;
         try {
+            if (autoLogin()) {
+                log.info("自动登录成功");
+                isLogin = true;
+                account = contactHandler.handle(api.account);
+                if (loginCallback != null) {
+                    loginCallback.onLogin(true, null);
+                }
+                return;
+            }
             log.info(Const.LOG_MSG_GET_UUID);
             api.getUUID();
             log.info(Const.LOG_MSG_GET_QRCODE);
@@ -100,7 +114,7 @@ public class WechatClient extends AbstractSmartClient {
             }
             if (waitForLogin() && api.login() && api.webwxinit()) {
                 isLogin = true;
-                accout = contactHandler.handle(api.account);
+                account = contactHandler.handle(api.account);
                 if (loginCallback != null) {
                     loginCallback.onLogin(true, null);
                 }
@@ -109,6 +123,20 @@ public class WechatClient extends AbstractSmartClient {
         } catch (Exception e) {
             loginCallback.onLogin(false, e);
         }
+    }
+
+    private boolean autoLogin() {
+        if (!isAutoLogin) {
+            return false;
+        }
+        LoginData data = (LoginData) FileUtils.readObject(getWorkDir(null), "login_data.cfg");
+        if (data != null) {
+            api.session = data.session;
+            api.cookie = data.cookie;
+            api.baseRequest = data.baseRequest;
+            return api.webwxinit();
+        }
+        return false;
     }
     
     public void close() {
@@ -122,6 +150,10 @@ public class WechatClient extends AbstractSmartClient {
     public void setWorkDir(File path) {
         super.setWorkDir(path);
         api.setWorkDir(path);
+    }
+
+    public void setAutoLogin(boolean isAutoLogin) {
+        this.isAutoLogin = isAutoLogin;
     }
     
     @Override
@@ -360,9 +392,9 @@ public class WechatClient extends AbstractSmartClient {
             }
             else {
                 UserFrom from = new UserFrom();
-                if (msg.src.equals(accout.UserName)) {
+                if (msg.src.equals(account.UserName)) {
                     from.setUser(getContact(msg.ToUserName));
-                    from.setTarget(accout);
+                    from.setTarget(account);
                     from.setOut();
                 }
                 else {
@@ -573,7 +605,7 @@ public class WechatClient extends AbstractSmartClient {
     
     @Override
     public IContact getAccount() {
-        return accout;
+        return account;
     }
     
     public List<Contact> getGroupList() {

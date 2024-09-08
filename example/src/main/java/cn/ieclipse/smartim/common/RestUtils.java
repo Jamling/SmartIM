@@ -36,7 +36,7 @@ public class RestUtils {
     public final static String CSS_URL = "http://dl.ieclipse.cn/r/smartim.css";
     public final static String UPDATE_URL = "http://dl.ieclipse.cn/jws/SmartIM-App.jnlp";
     public final static String ABOUT_URL = "http://dl.ieclipse.cn/jws/about.html";
-    public static final String VERSION = "3.0.0";
+    public static final String VERSION = "3.1.0";
 
     public static String getWelcome(String im) {
         if (im.equals("qq")) {
@@ -80,7 +80,7 @@ public class RestUtils {
 
     public static void loadStyleSync(final StyleSheet styleSheet) {
         try {
-            styleSheet.importStyleSheet(new URL("http://dl.ieclipse.cn/r/smartim.css"));
+            styleSheet.importStyleSheet(new URL(CSS_URL));
         } catch (MalformedURLException e1) {
             e1.printStackTrace();
         }

@@ -15,8 +15,6 @@
  */
 package cn.ieclipse.smartim;
 
-import java.io.File;
-
 import cn.ieclipse.smartim.callback.LoginCallback;
 import cn.ieclipse.smartim.callback.ModificationCallback;
 import cn.ieclipse.smartim.callback.ReceiveCallback;
@@ -24,6 +22,8 @@ import cn.ieclipse.smartim.callback.SendCallback;
 import cn.ieclipse.smartim.handler.MessageInterceptor;
 import cn.ieclipse.smartim.model.IContact;
 import cn.ieclipse.smartim.model.IMessage;
+
+import java.io.File;
 
 /**
  * IM抽象客户端
@@ -46,6 +46,8 @@ public interface SmartClient {
     public boolean isClose();
     
     public void login();
+
+    default void setAutoLogin(boolean isAutoLogin) {};
     
     public void init() throws Exception;
     

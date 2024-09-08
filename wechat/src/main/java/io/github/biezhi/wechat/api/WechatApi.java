@@ -1,9 +1,8 @@
 package io.github.biezhi.wechat.api;
 
+import cn.ieclipse.common.EmptyHostnameVerifier;
 import cn.ieclipse.smartim.exception.LogicException;
-import cn.ieclipse.util.EncodeUtils;
-import cn.ieclipse.util.FileUtils;
-import cn.ieclipse.util.StringUtils;
+import cn.ieclipse.util.*;
 import com.google.gson.*;
 import io.github.biezhi.wechat.Utils;
 import io.github.biezhi.wechat.model.*;
@@ -11,6 +10,7 @@ import okhttp3.*;
 import okhttp3.logging.HttpLoggingInterceptor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -27,7 +27,7 @@ import java.util.concurrent.TimeUnit;
 public class WechatApi {
     
     private static final Logger log = LoggerFactory.getLogger(WechatApi.class);
-    private static boolean hasShowAvatar;
+    private boolean hasShowAvatar;
     // 配置文件环境参数
     protected Environment environment;
     
@@ -51,7 +51,7 @@ public class WechatApi {
     // device_id: 登录手机设备
     // web wechat 的格式为: e123456789012345 (e+15位随机数)
     // mobile wechat 的格式为: A1234567890abcde (A+15位随机数字或字母)
-    protected String deviceId = "e" + System.currentTimeMillis();
+    protected String deviceId = "e234567" + DateUtils.format(System.currentTimeMillis(), "yyyyMMdd");
     
     protected String userAgent = Const.API_USER_AGENT[new Random().nextInt(2)];
     protected String cookie;
@@ -79,7 +79,8 @@ public class WechatApi {
                 .writeTimeout(writeTimeout, TimeUnit.SECONDS)
                 .readTimeout(readTimeout, TimeUnit.SECONDS)
                 .addInterceptor(loggingInterceptor)
-                .hostnameVerifier((arg0, arg1) -> true);
+                .sslSocketFactory(SSLManager.newSSLContext().getSocketFactory(), SSLManager.newX509TrustManager())
+                .hostnameVerifier(new EmptyHostnameVerifier());
         if (proxy != null) {
             builder.proxy(proxy);
         }
@@ -87,7 +88,7 @@ public class WechatApi {
     }
     
     /**
-     * 获取uuid
+     * Step1: 获取uuid
      * 响应：
      * window.QRLogin.code = 200; window.QRLogin.uuid = "Id8YaCz3aQ==";
      * @return
@@ -158,9 +159,9 @@ public class WechatApi {
      */
     public boolean waitforlogin(int tip) {
         Utils.sleep(tip);
-        String url = URLConst.API.LOGIN.url() + "?loginicon=true&tip=%d&uuid=%s&r=-%s&_=%s";
+        String url = URLConst.API.LOGIN.url() + "?loginicon=true&tip=%d&uuid=%s&r=%s&_=%s";
         url = String.format(url, tip, session.getUuid(),
-                System.currentTimeMillis() / 1000,
+                System.currentTimeMillis() / 1579,
                 System.currentTimeMillis());
                 
         String response = null;
@@ -182,16 +183,15 @@ public class WechatApi {
             return false;
         }
         
-        if (code.equals("201")&&!hasShowAvatar) {
+        if (code.equals("201") && tip == 1) {
             String avatar = Utils.match("window.userAvatar = 'data:img/jpg;base64,(.*)';", response);
             setAvatar(avatar);
-            hasShowAvatar=true;
             return true;
         }
-        if (code.equals("200")) {
+        if (code.equals("200") && tip == 0) {
             String pm = Utils.match("window.redirect_uri=\"(\\S+?)\";",
                     response);
-            String r_uri = pm + "&fun=new&target=t";
+            String r_uri = pm + "&fun=new&target=t&version=v2";
             this.redirectUri = r_uri;
             this.wxHost = r_uri.split("://")[1].split("/")[0];
             URLConst.init(this.wxHost);
@@ -242,36 +242,43 @@ public class WechatApi {
         log.debug("[*] 请求 => {}\n", request);
         
         Response response = client.newCall(request).execute();
-        String body = response.body().string();
-        Headers headers = response.headers();
-        if (headers.get("Content-Type").startsWith("text/html")) {
-            String msgDesc = Utils.match("<p class=\"msg-desc\">(.*)</p>", body);
-            throw new LogicException(-1, msgDesc.replaceAll("&nbsp;", " "));
+        if (!response.isSuccessful()) {
+            throw new LogicException(response.code(), "登录响应错误");
         }
+        Document doc = XPathUtils.parse(response.body().byteStream());
+//<error>
+//  <ret>0</ret>
+//  <message></message>
+//  <skey>@crypt_abcd_abdftyzekmxkk</skey>
+//  <wxsid>abcdefghi</wxsid>
+//  <wxuin>987432189</wxuin>
+//  <pass_ticket>wawvwjokljhaax</pass_ticket>
+//  <isgrayscale>1</isgrayscale>
+//</error>
+
+        Headers headers = response.headers();
         List<String> cookies = headers.values("Set-Cookie");
         this.cookie = Utils.getCookie(cookies);
         log.info("[*] 设置cookie [{}]", this.cookie);
-        if (Utils.isBlank(body)) {
-            throw new LogicException(-1, "登录失败");
+        String ret = XPathUtils.findElement(doc, "/error/ret").getTextContent();
+        if (!"0".equals(ret)) {
+            throw new LogicException(Integer.parseInt(ret),
+                    XPathUtils.findElement(doc,"/error/message").getTextContent());
         }
-        String error = Utils.match("<error>([\\S ]+)</error>", body);
-        if (!StringUtils.isEmpty(error)) {
-            String code = Utils.match("<ret>([\\S ]+)</ret>", error);
-            String msg = Utils.match("<message>([\\S ]+)</message>", error);
-            if (!"0".equals(code) && msg != null) {
-                throw new LogicException(Integer.parseInt(code), msg);
-            }
-        }
-        session.setSkey(Utils.match("<skey>(\\S+)</skey>", body));
-        session.setSid(Utils.match("<wxsid>(\\S+)</wxsid>", body));
-        session.setUin(Utils.match("<wxuin>(\\S+)</wxuin>", body));
-        session.setPassTicket(
-                Utils.match("<pass_ticket>(\\S+)</pass_ticket>", body));
+        session.setSkey(XPathUtils.findElement(doc,"/error/message").getTextContent());
+        session.setSid(XPathUtils.findElement(doc,"/error/wxsid").getTextContent());
+        session.setUin(XPathUtils.findElement(doc,"/error/wxuin").getTextContent());
+        session.setPassTicket(XPathUtils.findElement(doc,"/error/pass_ticket").getTextContent());
+
                 
         this.baseRequest = Utils.createMap("Uin",
                 Long.valueOf(session.getUin()), "Sid", session.getSid(), "Skey",
                 session.getSkey(), "DeviceID", this.deviceId);
-                
+        LoginData data = new LoginData();
+        data.cookie = this.cookie;
+        data.session = this.session;
+        data.baseRequest = this.baseRequest;
+        FileUtils.writeObject(workDir, "login_data.cfg", data);
         File output = new File("temp.jpg");
         if (output.exists()) {
             output.delete();

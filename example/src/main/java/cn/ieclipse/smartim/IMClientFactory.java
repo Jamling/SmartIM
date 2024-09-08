@@ -12,16 +12,15 @@
  */
 package cn.ieclipse.smartim;
 
+import cn.ieclipse.smartim.settings.SmartIMSettings;
+import cn.ieclipse.util.StringUtils;
+import com.scienjus.smartqq.client.SmartQQClient;
+import io.github.biezhi.wechat.api.WechatClient;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-
-import com.scienjus.smartqq.client.SmartQQClient;
-
-import cn.ieclipse.smartim.settings.SmartIMSettings;
-import cn.ieclipse.util.StringUtils;
-import io.github.biezhi.wechat.api.WechatClient;
 
 /**
  * 类/接口描述
@@ -57,6 +56,7 @@ public class IMClientFactory {
         SmartClient client = clients.get(type);
         if (client == null || client.isClose()) {
             client = create(type);
+            client.setAutoLogin(SmartIMSettings.getInstance().getState().AUTO_LOGIN);
             String wp = SmartIMSettings.getInstance().getState().WORK_PATH;
             boolean cwp = false;
             if (!StringUtils.isEmpty(wp)) {

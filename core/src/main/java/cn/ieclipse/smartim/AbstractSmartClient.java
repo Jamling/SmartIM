@@ -15,13 +15,6 @@
  */
 package cn.ieclipse.smartim;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.slf4j.ILoggerFactory;
-import org.slf4j.LoggerFactory;
-
 import ch.qos.logback.classic.LoggerContext;
 import ch.qos.logback.classic.util.ContextInitializer;
 import ch.qos.logback.core.joran.spi.JoranException;
@@ -32,6 +25,12 @@ import cn.ieclipse.smartim.callback.SendCallback;
 import cn.ieclipse.smartim.handler.MessageInterceptor;
 import cn.ieclipse.smartim.model.impl.AbstractFrom;
 import cn.ieclipse.smartim.model.impl.AbstractMessage;
+import org.slf4j.ILoggerFactory;
+import org.slf4j.LoggerFactory;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * 类/接口描述
@@ -50,6 +49,7 @@ public abstract class AbstractSmartClient implements SmartClient {
     
     protected LoginCallback loginCallback;
     protected boolean isLogin = false;
+    protected boolean isAutoLogin = false;
     protected boolean pollStarted = false;
     protected boolean isClose = false;
     protected String name = "";

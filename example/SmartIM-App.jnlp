@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <jnlp
         spec="1.0+"
-        version="3.0.0"
+        version="3.1.0"
         codebase="https://dl.ieclipse.cn/jws"
         href="SmartIM-App.jnlp">
     <information>
@@ -20,7 +20,7 @@
     <security>
         <all-permissions/>
     </security>
-    <version>3.0.0</version>
+    <version>3.1.0</version>
     <application-desc main-class='cn.ieclipse.smartim.Application'>
         <argument>-verbose</argument>
     </application-desc>

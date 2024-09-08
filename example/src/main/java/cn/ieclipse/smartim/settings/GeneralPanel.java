@@ -15,6 +15,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class GeneralPanel extends JPanel {
+    private JCheckBox chkAutoLogin;
     private JCheckBox chkNotify;
     private JCheckBox chkNotifyUnread;
     private JCheckBox chkSendBtn;
@@ -210,13 +211,23 @@ public class GeneralPanel extends JPanel {
             }
         }
         {
-            panel_1 = new JPanel();
+            chkAutoLogin = new JCheckBox("开启自动登录", settings.getState().AUTO_LOGIN);
             GridBagConstraints gbc_panel_1 = new GridBagConstraints();
             gbc_panel_1.gridwidth = 2;
             gbc_panel_1.insets = new Insets(5, 5, 5, 0);
             gbc_panel_1.fill = GridBagConstraints.HORIZONTAL;
             gbc_panel_1.gridx = 0;
             gbc_panel_1.gridy = 8;
+            add(chkAutoLogin, gbc_panel_1);
+        }
+        {
+            panel_1 = new JPanel();
+            GridBagConstraints gbc_panel_1 = new GridBagConstraints();
+            gbc_panel_1.gridwidth = 2;
+            gbc_panel_1.insets = new Insets(5, 5, 5, 0);
+            gbc_panel_1.fill = GridBagConstraints.HORIZONTAL;
+            gbc_panel_1.gridx = 0;
+            gbc_panel_1.gridy = 9;
             add(panel_1, gbc_panel_1);
             panel_1.setLayout(new BorderLayout(0, 0));
             panel_1.add(new JLabel("主题"), BorderLayout.WEST);
@@ -242,7 +253,7 @@ public class GeneralPanel extends JPanel {
             gbc_lblNewLabel_1.anchor = GridBagConstraints.WEST;
             gbc_lblNewLabel_1.fill = GridBagConstraints.VERTICAL;
             gbc_lblNewLabel_1.gridx = 0;
-            gbc_lblNewLabel_1.gridy = 9;
+            gbc_lblNewLabel_1.gridy = 10;
             contentPanel.add(linkUpdate, gbc_lblNewLabel_1);
         }
         {
@@ -252,7 +263,7 @@ public class GeneralPanel extends JPanel {
             gbc_lblNewLabel_2.anchor = GridBagConstraints.WEST;
             gbc_lblNewLabel_2.fill = GridBagConstraints.VERTICAL;
             gbc_lblNewLabel_2.gridx = 1;
-            gbc_lblNewLabel_2.gridy = 9;
+            gbc_lblNewLabel_2.gridy = 10;
             contentPanel.add(linkAbout, gbc_lblNewLabel_2);
         }
 
@@ -304,6 +315,7 @@ public class GeneralPanel extends JPanel {
             IMClientFactory.getInstance().setWorkDir(tfWorkDir.getText());
         }
         settings.getState().WORK_PATH = tfWorkDir.getText();
+        settings.getState().AUTO_LOGIN = chkAutoLogin.isSelected();
         if (settings.getState().THEME != comboTheme.getSelectedIndex()) {
             SwingUtils.setLookAndFeel(comboTheme.getSelectedIndex());
             JOptionPane.showMessageDialog(null, "您已修改主题，建议重启本应用");

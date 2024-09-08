@@ -8,3 +8,7 @@ dependencies {
 }
 
 description = 'smartim-qq'
+
+jar {
+    exclude 'logback.xml'
+}

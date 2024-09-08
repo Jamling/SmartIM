@@ -12,12 +12,12 @@
  */
 package cn.ieclipse.smartim.settings;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-
 import cn.ieclipse.smartim.common.LOG;
 import cn.ieclipse.smartim.robot.RobotFactory;
 import cn.ieclipse.util.FileUtils;
+
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  * 类/接口描述
@@ -118,5 +118,7 @@ public class SmartIMSettings {
         public String QN_AK = "";
         public String QN_SK = "";
         public boolean QN_TS = false;
+
+        public boolean AUTO_LOGIN = true;
     }
 }
