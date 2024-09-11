@@ -1,14 +1,14 @@
 package cn.ieclipse.smartim.actions;
 
-import java.awt.event.ActionEvent;
-
-import javax.swing.JOptionPane;
-
 import cn.ieclipse.smartim.SmartClient;
 import cn.ieclipse.smartim.callback.impl.DefaultLoginCallback;
 import cn.ieclipse.smartim.common.LOG;
+import cn.ieclipse.smartim.settings.SmartIMSettings;
 import cn.ieclipse.smartim.views.IMPanel;
 import icons.SmartIcons;
+
+import javax.swing.*;
+import java.awt.event.ActionEvent;
 
 /**
  * Created by Jamling on 2017/7/12.
@@ -28,6 +28,7 @@ public class LoginAction extends IMPanelAction {
             ok = JOptionPane.showConfirmDialog(null, "您已处于登录状态，确定要重新登录吗？") == 0;
         }
         if (ok) {
+            client.setAutoLogin(SmartIMSettings.getInstance().getState().AUTO_LOGIN);
             client.setLoginCallback(new DefaultLoginCallback() {
                 protected void onLoginFinish(boolean success, Exception e) {
                     if (success) {
@@ -37,12 +38,7 @@ public class LoginAction extends IMPanelAction {
                     }
                 };
             });
-            new Thread() {
-                @Override
-                public void run() {
-                    client.login();
-                }
-            }.start();
+            new Thread(() -> client.login()).start();
         } else {
             panel.initContacts();
         }
